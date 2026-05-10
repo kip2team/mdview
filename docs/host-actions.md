@@ -4,6 +4,9 @@
 
 > 状态：**alpha 开发完成**。下面是发布前还要做的本机操作。
 
+> **📖 一键发布 / npm registry 逻辑 / 故障排查 → 看 [release.md](./release.md)。**
+> 这份文档是高层次 checklist，发布动作的细节、命令、坑都在 release.md 里写完了。
+
 ## 0. 工程基础（一次性，已完成）
 
 - [x] 清理沙盒残留 `.git`，重新 init
@@ -73,19 +76,29 @@ git -C /Users/king/work/workspace-kip2/mdview remote set-url origin https://gith
 - [ ] 社交账号：Twitter / X `@mdview_sh`、ProductHunt 账号
 - [ ] Chrome Web Store / VS Code Marketplace publisher 账号
 
-## 4. CDN 部署（cdn.mdview.sh）
+## 4. CDN 部署（cdn.mdview.sh，走 Cloudflare Pages）
+
+选 Pages 而非 R2 —— 原因：免费、不需要绑卡，对静态资源完全够用。
 
 ```bash
-# 构建 CDN 资源
-pnpm cdn:build
-# → cdn-dist/ 包含 r/v1.js、themes/*.css、ext/extensions.css
+# 一次性：创建 Pages 项目
+wrangler pages project create mdview-cdn --production-branch main
 
-# 上传到 Cloudflare R2（需 wrangler 已登录）
-# 配置 cloudflare 把 cdn.mdview.sh 子域指向 R2 bucket
-wrangler r2 bucket create mdview-cdn
-# 然后 wrangler r2 object put 上传所有文件
-# 或简单用 rsync / s3 sync 到一个 R2-compatible endpoint
+# 一键 build + deploy
+pnpm cdn:deploy
+# 等价于：pnpm cdn:build + wrangler pages deploy cdn-dist --project-name mdview-cdn --branch main
+
+# 首次部署后在 Cloudflare dashboard 绑域名：
+#   Pages → mdview-cdn → Custom Domains → Add → cdn.mdview.sh
 ```
+
+`scripts/build-cdn.js` 会同时生成 `cdn-dist/_headers`，里面定义了：
+
+- `/r/v1.<hash>.js` 永久缓存
+- `/r/v1.js` 1 小时缓存（滚动版本）
+- `/themes/*` `/ext/*` 1 天缓存
+- `/manifest.json` 5 分钟缓存
+- `/*` `Access-Control-Allow-Origin: *`（CORS 全开，允许任何站点引用 CDN 资源）
 
 ## 5. mdview.sh Web 端部署
 

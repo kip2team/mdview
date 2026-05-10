@@ -32,7 +32,15 @@
     "web:deploy": "pnpm --filter @mdview/mdview-sh run deploy",
     "cli": "pnpm --filter @mdview/cli run start",
     "cdn:build": "pnpm --filter @mdview/engine-browser build && node scripts/build-cdn.js",
-    "docs:api": "typedoc"
+    "cdn:deploy": "pnpm cdn:build && wrangler pages deploy cdn-dist --project-name mdview-cdn --branch main --commit-dirty=true",
+    "docs:api": "typedoc",
+    "release:check": "node scripts/release-check.js",
+    "release:web": "pnpm web:deploy",
+    "release:cdn": "pnpm cdn:deploy",
+    "release:npm": "pnpm build && pnpm changeset publish",
+    "release:all": "node scripts/release-all.js",
+    "changeset": "changeset",
+    "changeset:version": "changeset version && pnpm install --lockfile-only"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
