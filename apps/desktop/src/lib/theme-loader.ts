@@ -3,6 +3,9 @@
 import defaultThemeUrl from '@mdview/themes/default.css?url';
 import githubThemeUrl from '@mdview/themes/github.css?url';
 import mediumThemeUrl from '@mdview/themes/medium.css?url';
+import darkThemeUrl from '@mdview/themes/dark.css?url';
+import solarizedThemeUrl from '@mdview/themes/solarized.css?url';
+import sepiaThemeUrl from '@mdview/themes/sepia.css?url';
 import { BUILT_IN_THEMES, type ThemeMeta } from '@mdview/themes';
 
 /** 主题 ID → 打包后的 CSS URL —— 只覆盖内置主题；自定义 / CDN 主题以后另接 */
@@ -10,6 +13,9 @@ const BUILT_IN_THEME_URLS: Record<string, string> = {
   default: defaultThemeUrl,
   github: githubThemeUrl,
   medium: mediumThemeUrl,
+  dark: darkThemeUrl,
+  solarized: solarizedThemeUrl,
+  sepia: sepiaThemeUrl,
 };
 
 /** 暴露给 UI 的所有可选主题 */

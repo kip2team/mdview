@@ -100,6 +100,22 @@ cli
     console.log(`✓ converted to ${options.to} → ${outPath}`);
   });
 
+// ── serve: 本地浏览器预览 + watch ──────────────────────────────
+cli
+  .command('serve <file>', '起一个本地服务渲染 markdown，文件改动自动刷新')
+  .option('--port <port>', '端口', { default: 3030 })
+  .option('--theme <id>', '主题 ID', { default: 'default' })
+  .option('--no-watch', '不启用文件监听')
+  .action(async (file: string, options: { port: number; theme: string; watch: boolean }) => {
+    const { startServer } = await import('./serve.js');
+    await startServer({
+      file: resolve(file),
+      port: Number(options.port),
+      theme: options.theme,
+      watch: options.watch !== false,
+    });
+  });
+
 cli.help();
 cli.version('0.0.1');
 cli.parse();

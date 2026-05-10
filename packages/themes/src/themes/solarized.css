@@ -1,0 +1,119 @@
+/* Solarized theme — Ethan Schoonover 的经典配色
+ * Light / Dark 都遵循 Solarized 调色板
+ */
+
+:root {
+  /* Solarized Light */
+  --bg: #fdf6e3;
+  --bg-alt: #eee8d5;
+  --fg: #586e75;
+  --fg-strong: #002b36;
+  --fg-muted: #93a1a1;
+  --link: #268bd2;
+  --link-hover: #2aa198;
+  --border: #93a1a1;
+  --border-soft: #eee8d5;
+  --code-bg: #eee8d5;
+  --pre-bg: #eee8d5;
+  --accent: #cb4b16;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme='light']) {
+    /* Solarized Dark */
+    --bg: #002b36;
+    --bg-alt: #073642;
+    --fg: #93a1a1;
+    --fg-strong: #fdf6e3;
+    --fg-muted: #586e75;
+    --link: #268bd2;
+    --link-hover: #2aa198;
+    --border: #586e75;
+    --border-soft: #073642;
+    --code-bg: #073642;
+    --pre-bg: #073642;
+  }
+}
+html[data-color-scheme='dark'] {
+  --bg: #002b36;
+  --bg-alt: #073642;
+  --fg: #93a1a1;
+  --fg-strong: #fdf6e3;
+  --fg-muted: #586e75;
+  --link: #268bd2;
+  --link-hover: #2aa198;
+  --border: #586e75;
+  --border-soft: #073642;
+  --code-bg: #073642;
+  --pre-bg: #073642;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+#mdview-output {
+  font-family: 'Iowan Old Style', Georgia, 'PingFang SC', serif;
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 720px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  color: var(--fg);
+}
+
+#mdview-output h1,
+#mdview-output h2,
+#mdview-output h3,
+#mdview-output h4 {
+  color: var(--fg-strong);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.8em 0 0.6em;
+}
+#mdview-output h1 { font-size: 2em; border-bottom: 1px solid var(--border-soft); padding-bottom: 0.3em; }
+#mdview-output h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-soft); padding-bottom: 0.3em; }
+#mdview-output h3 { font-size: 1.25em; }
+
+#mdview-output p { margin: 0 0 1em; }
+#mdview-output a { color: var(--link); text-decoration: none; border-bottom: 1px dotted var(--link); }
+#mdview-output a:hover { color: var(--link-hover); border-bottom-color: var(--link-hover); }
+
+#mdview-output ul,
+#mdview-output ol { margin: 0 0 1em; padding-left: 1.8em; }
+
+#mdview-output blockquote {
+  margin: 1em 0;
+  padding: 0 1em;
+  color: var(--fg-muted);
+  border-left: 4px solid var(--accent, var(--link));
+  font-style: italic;
+}
+
+#mdview-output code {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  background: var(--code-bg);
+  border-radius: 3px;
+  color: var(--fg-strong);
+}
+#mdview-output pre {
+  margin: 1em 0;
+  padding: 1em;
+  background: var(--pre-bg);
+  border-radius: 4px;
+  overflow: auto;
+}
+
+#mdview-output table { border-collapse: collapse; margin: 1em 0; }
+#mdview-output th,
+#mdview-output td { padding: 0.4em 0.8em; border: 1px solid var(--border-soft); }
+#mdview-output th { background: var(--bg-alt); font-weight: 600; }
+
+#mdview-output hr { height: 1px; border: 0; background: var(--border-soft); margin: 2em 0; }
+#mdview-output img { max-width: 100%; height: auto; border-radius: 3px; }

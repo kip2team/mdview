@@ -6,9 +6,11 @@ import {
   openFileDialog,
   readMarkdownFile,
   listenForOpenedPath,
+  listenForMenuEvents,
   saveFileDialog,
   writeTextToFile,
   isTauriRuntime,
+  watchFileMtime,
 } from './ipc';
 import { sanitize } from './lib/sanitize';
 import { highlightHtml } from './lib/highlight';
@@ -22,6 +24,11 @@ import { TocSidebar } from './components/TocSidebar';
 import { DropOverlay } from './components/DropOverlay';
 import { Welcome } from './components/Welcome';
 import { Editor } from './components/Editor';
+import { CommandPalette } from './components/CommandPalette';
+import { ReadingStats } from './components/ReadingStats';
+import { FolderSidebar } from './components/FolderSidebar';
+import { browseFolder, type FolderEntry } from './lib/folder-browse';
+import { Onboarding } from './components/Onboarding';
 
 /** 三态视图模式：纯阅读 / 分屏（左源右渲染）/ 纯源码 */
 type ViewMode = 'read' | 'split' | 'source';
@@ -69,6 +76,9 @@ export function App(): JSX.Element {
   const [markdown, setMarkdown] = useState<string | null>(null);
   const [themeId, setThemeId] = useState<string>(getStoredTheme);
   const [exportOpen, setExportOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [zenMode, setZenMode] = useState(false);
+  const [folder, setFolder] = useState<{ root: string; files: FolderEntry[] } | null>(null);
   const [dragging, setDragging] = useState(false);
   const [recents, setRecents] = useState<RecentFile[]>(() => loadRecents());
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
@@ -140,6 +150,11 @@ export function App(): JSX.Element {
     persistTheme(themeId);
   }, [themeId]);
 
+  // 把文档的 colorScheme 元数据反映到 <html data-color-scheme> 上
+  // 主题 CSS 通过 [data-color-scheme="dark"] 等属性选择器接管色调
+  // colorScheme === 'auto' 或缺省时去掉属性，让浏览器 prefers-color-scheme 媒体查询生效
+  // 这一段必须放在 result 之后，所以稍后用 useEffect
+
   // 渲染区与编辑器的引用，用于滚动同步（仅 split 模式）
   // hydrate 不在 ref 回调里跑 —— 用单独的 useEffect 监听 safeHtml 变化，便于 cancel
   const outputRef = useCallback((el: HTMLElement | null) => {
@@ -202,6 +217,16 @@ export function App(): JSX.Element {
     document.title = result?.meta.title ?? filePath ?? 'mdview';
   }, [result?.meta.title, filePath]);
 
+  // colorScheme 强制色彩模式 —— 把作者意图反映到 <html data-color-scheme>
+  useEffect(() => {
+    const scheme = result?.meta.colorScheme;
+    if (scheme === 'light' || scheme === 'dark') {
+      document.documentElement.dataset.colorScheme = scheme;
+    } else {
+      delete document.documentElement.dataset.colorScheme;
+    }
+  }, [result?.meta.colorScheme]);
+
   // 加载文件 —— 各入口（菜单、拖拽、Rust 推送、最近文件）共用这个
   const loadFile = useCallback(async (path: string) => {
     try {
@@ -218,6 +243,14 @@ export function App(): JSX.Element {
     const selected = await openFileDialog();
     if (!selected) return;
     await loadFile(selected);
+  }, [loadFile]);
+
+  /** 打开文件夹模式（只在 Tauri runtime 下可用） */
+  const handleOpenFolder = useCallback(async () => {
+    const result = await browseFolder();
+    if (!result) return;
+    setFolder(result);
+    if (result.files[0]) await loadFile(result.files[0].path);
   }, [loadFile]);
 
   /** 保存当前 markdown：有 filePath 直接覆盖；否则弹另存为 */
@@ -250,6 +283,62 @@ export function App(): JSX.Element {
     return () => off?.();
   }, [loadFile]);
 
+  // 外部编辑器修改了当前打开的文件 → 自动 reload
+  // 仅 Tauri runtime 下生效；用户在 split 模式编辑时通过比较 markdown 内容避免覆盖
+  useEffect(() => {
+    if (!filePath || !isTauriRuntime()) return;
+    const off = watchFileMtime(filePath, async () => {
+      try {
+        const fresh = await readMarkdownFile(filePath);
+        // 只有外部内容确实和当前不同时才更新（避免我们自己保存触发的环回）
+        if (fresh !== markdown) {
+          setMarkdown(fresh);
+        }
+      } catch {
+        // ignore
+      }
+    });
+    return () => off?.();
+  }, [filePath, markdown]);
+
+  // 来自 Rust 原生菜单的事件 —— 把菜单点击桥接到对应 handler
+  useEffect(() => {
+    const off = listenForMenuEvents((id) => {
+      switch (id) {
+        case 'open':
+          void handleOpen();
+          break;
+        case 'open-folder':
+          void handleOpenFolder();
+          break;
+        case 'save':
+          void handleSave();
+          break;
+        case 'export':
+          if (markdown != null) setExportOpen(true);
+          break;
+        case 'palette':
+          setPaletteOpen(true);
+          break;
+        case 'zen':
+          setZenMode((v) => !v);
+          break;
+        case 'cycle-view':
+          if (markdown != null) {
+            setViewMode((m) => {
+              const idx = VIEW_MODES.indexOf(m);
+              return VIEW_MODES[(idx + 1) % VIEW_MODES.length]!;
+            });
+          }
+          break;
+        case 'docs':
+          window.open('https://mdview.sh/docs', '_blank');
+          break;
+      }
+    });
+    return () => off?.();
+  }, [handleOpen, handleOpenFolder, handleSave, markdown]);
+
   // 键盘快捷键：⌘O 打开 / ⌘E 导出 / ⌘\ 在三种视图间循环
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -265,6 +354,13 @@ export function App(): JSX.Element {
       } else if (key === 's') {
         e.preventDefault();
         void handleSave();
+      } else if (key === 'k') {
+        e.preventDefault();
+        setPaletteOpen(true);
+      } else if (key === '.') {
+        // ⌘. → 全屏 zen 模式
+        e.preventDefault();
+        setZenMode((v) => !v);
       } else if (key === '\\') {
         e.preventDefault();
         if (markdown == null) return;
@@ -277,6 +373,24 @@ export function App(): JSX.Element {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [handleOpen, handleSave, markdown]);
+
+  // Esc 退出 zen 模式
+  useEffect(() => {
+    if (!zenMode) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setZenMode(false);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [zenMode]);
+
+  // body class 反映 zen 状态，CSS 据此隐藏 chrome
+  useEffect(() => {
+    document.body.classList.toggle('mdv-zen', zenMode);
+  }, [zenMode]);
 
   // 拖拽：实时反馈 + 落点接住文件
   useEffect(() => {
@@ -336,6 +450,14 @@ export function App(): JSX.Element {
             <span aria-hidden>📂</span>
             <span className="mdv-toolbar-btn-label">Open</span>
           </button>
+          <button
+            type="button"
+            className="mdv-toolbar-btn"
+            title="Open folder"
+            onClick={handleOpenFolder}
+          >
+            <span aria-hidden>📁</span>
+          </button>
           <ViewModeToggle value={viewMode} onChange={setViewMode} />
           <button
             type="button"
@@ -348,6 +470,16 @@ export function App(): JSX.Element {
           </button>
           <ThemeSwitcher value={themeId} onChange={setThemeId} />
         </Toolbar>
+      )}
+
+      {folder && markdown != null && (
+        <FolderSidebar
+          root={folder.root}
+          files={folder.files}
+          activePath={filePath}
+          onPick={(f) => void loadFile(f.path)}
+          onClose={() => setFolder(null)}
+        />
       )}
 
       {markdown == null ? (
@@ -364,11 +496,16 @@ export function App(): JSX.Element {
             </div>
           )}
           {(viewMode === 'split' || viewMode === 'read') && (
-            <main
-              id="mdview-output"
-              ref={outputRef}
-              dangerouslySetInnerHTML={{ __html: safeHtml }}
-            />
+            <div className="mdv-output-wrap">
+              {result?.meta.readingTime && (
+                <ReadingStats markdown={markdown} show={true} />
+              )}
+              <main
+                id="mdview-output"
+                ref={outputRef}
+                dangerouslySetInnerHTML={{ __html: safeHtml }}
+              />
+            </div>
           )}
         </div>
       )}
@@ -376,6 +513,21 @@ export function App(): JSX.Element {
       {result && <TocSidebar headings={result.headings} toc={result.meta.toc} />}
 
       <DropOverlay visible={dragging} />
+
+      <Onboarding active={markdown != null} />
+
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        onOpen={handleOpen}
+        onExport={() => setExportOpen(true)}
+        onSave={handleSave}
+        onSetTheme={setThemeId}
+        onSetViewMode={setViewMode}
+        onPickRecent={(f) => void loadFile(f.path)}
+        recents={recents}
+        hasFile={markdown != null}
+      />
 
       {exportOpen && markdown != null && (
         <ExportDialog

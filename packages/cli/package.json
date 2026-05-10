@@ -9,7 +9,10 @@
     "mdv": "./dist/cli.js"
   },
   "main": "./dist/cli.js",
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
@@ -20,6 +23,7 @@
     "@mdview/core": "workspace:*",
     "@mdview/format": "workspace:*",
     "@mdview/themes": "workspace:*",
-    "cac": "^6.7.14"
+    "cac": "^6.7.14",
+    "chokidar": "^4.0.1"
   }
 }

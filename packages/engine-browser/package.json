@@ -5,7 +5,10 @@
   "license": "MIT",
   "type": "module",
   "main": "./dist/v1.js",
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "node ./build.js",
     "dev": "node ./build.js --watch",

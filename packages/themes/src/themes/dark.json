@@ -1,0 +1,14 @@
+{
+  "id": "dark",
+  "name": "Dark",
+  "version": "0.0.1",
+  "author": "mdview",
+  "description": "Dark-first reading. Comfortable on OLED; ignores system light mode.",
+  "defaults": {
+    "font": "system",
+    "fontSize": "16px",
+    "lineHeight": 1.65,
+    "maxWidth": "760px",
+    "codeTheme": "github-dark"
+  }
+}

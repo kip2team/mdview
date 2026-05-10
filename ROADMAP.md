@@ -51,6 +51,7 @@
 
 ## 🧪 Exploring
 
+- **Live Preview 模式（Obsidian 风格）**：编辑与渲染合一，光标离开行时隐藏 markdown 标记符号。基于 CodeMirror 6 Decoration API。预估 2-3 周专注开发。当前 mdview 阅读器优先定位与编辑器红海竞争错位，等用户需求明确再启动
 - 主题市场（用户上传 / 浏览 / 付费）
 - 团队空间 / 私有 URL（带 token 拉私有 GitHub）
 - 文档级评论 / 反应（giscus 集成）

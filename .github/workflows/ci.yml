@@ -45,6 +45,54 @@ jobs:
       - name: Build
         run: pnpm -r run build
 
+  e2e:
+    name: e2e (chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build workspace packages
+        run: pnpm -r --filter '@mdview/core' --filter '@mdview/themes' --filter '@mdview/format' run build
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @mdview/desktop exec playwright install --with-deps chromium
+
+      - name: Start vite dev in background
+        run: pnpm --filter @mdview/desktop run dev &
+        env:
+          CI: '1'
+
+      - name: Wait for dev server
+        run: npx wait-on http://localhost:1420 --timeout 60000
+
+      - name: Run E2E
+        run: pnpm --filter @mdview/desktop run test:e2e
+        env:
+          MDVIEW_E2E_URL: http://localhost:1420
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/desktop/playwright-report
+          retention-days: 7
+
   lint:
     name: lint · format
     runs-on: ubuntu-latest

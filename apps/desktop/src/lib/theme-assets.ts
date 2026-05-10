@@ -4,23 +4,35 @@
 import defaultUrl from '@mdview/themes/default.css?url';
 import githubUrl from '@mdview/themes/github.css?url';
 import mediumUrl from '@mdview/themes/medium.css?url';
+import darkUrl from '@mdview/themes/dark.css?url';
+import solarizedUrl from '@mdview/themes/solarized.css?url';
+import sepiaUrl from '@mdview/themes/sepia.css?url';
 import extensionsUrl from '@mdview/themes/extensions.css?url';
 
 import defaultRaw from '@mdview/themes/default.css?raw';
 import githubRaw from '@mdview/themes/github.css?raw';
 import mediumRaw from '@mdview/themes/medium.css?raw';
+import darkRaw from '@mdview/themes/dark.css?raw';
+import solarizedRaw from '@mdview/themes/solarized.css?raw';
+import sepiaRaw from '@mdview/themes/sepia.css?raw';
 import extensionsRaw from '@mdview/themes/extensions.css?raw';
 
 export const THEME_CSS_URLS: Record<string, string> = {
   default: defaultUrl,
   github: githubUrl,
   medium: mediumUrl,
+  dark: darkUrl,
+  solarized: solarizedUrl,
+  sepia: sepiaUrl,
 };
 
 export const THEME_CSS_RAW: Record<string, string> = {
   default: defaultRaw,
   github: githubRaw,
   medium: mediumRaw,
+  dark: darkRaw,
+  solarized: solarizedRaw,
+  sepia: sepiaRaw,
 };
 
 export const EXTENSIONS_CSS_URL = extensionsUrl;

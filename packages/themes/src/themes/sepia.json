@@ -1,0 +1,14 @@
+{
+  "id": "sepia",
+  "name": "Sepia",
+  "version": "0.0.1",
+  "author": "mdview",
+  "description": "Warm, low-contrast paper-like reading surface. Easy on the eyes for long sessions.",
+  "defaults": {
+    "font": "charter",
+    "fontSize": "19px",
+    "lineHeight": 1.75,
+    "maxWidth": "660px",
+    "codeTheme": "github"
+  }
+}

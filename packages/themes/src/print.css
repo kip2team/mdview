@@ -1,0 +1,120 @@
+/* 打印 / PDF 导出共享样式 —— 所有主题之上叠加
+ * 桌面端 ⌘P、浏览器 Save as PDF、Tauri webview.print 都会触发 @media print
+ *
+ * 目标：
+ *  - 隐藏 mdview chrome（toolbar / TOC / drop overlay / modal）
+ *  - 内容铺满 A4，去阴影边框，强制黑白友好
+ *  - 代码块允许换行（非滚动），跨页友好
+ */
+
+@media print {
+  /* 隐藏所有 chrome */
+  .mdv-toolbar,
+  .mdv-toc,
+  .mdv-drop-overlay,
+  .mdv-modal-backdrop,
+  .mdv-modal,
+  .mdv-welcome,
+  .mdv-viewmode-toggle,
+  .mdv-editor-wrap,
+  .mdv-editor {
+    display: none !important;
+  }
+
+  /* 内容铺满，去多余装饰 */
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #mdview-output {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* 标题不要在页脚断 */
+  #mdview-output h1,
+  #mdview-output h2,
+  #mdview-output h3,
+  #mdview-output h4,
+  #mdview-output h5,
+  #mdview-output h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* 段落 / 列表跨页时尽量保持完整 */
+  #mdview-output p,
+  #mdview-output li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* 代码块允许换行 + 跨页 */
+  #mdview-output pre {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    page-break-inside: auto;
+    background: #f6f8fa !important;
+    color: #000000 !important;
+    border: 1px solid #d0d7de !important;
+  }
+
+  /* 表格不要在中间断（除非太长） */
+  #mdview-output table {
+    page-break-inside: avoid;
+    border-collapse: collapse !important;
+  }
+  #mdview-output th,
+  #mdview-output td {
+    border: 1px solid #c0c0c0 !important;
+  }
+
+  /* 链接打印出 URL（在标准 print stylesheet 风格） */
+  #mdview-output a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    color: #555555;
+    word-break: break-all;
+  }
+  /* 锚点链接（#xxx）不要把 URL 打出来，太啰嗦 */
+  #mdview-output a[href^='#']::after {
+    content: '';
+  }
+
+  /* mermaid / math hydrate 后的 SVG 不要被 chrome 限制 */
+  .mdv-mermaid svg,
+  .mdv-math svg {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* callout：弱化背景，保留边框 */
+  .mdv-callout {
+    background: transparent !important;
+    border: 1px solid #888888 !important;
+    border-left: 4px solid #888888 !important;
+  }
+
+  /* 代码高亮 fallback：黑白打印时强制黑字 */
+  .shiki,
+  .shiki span {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+}
+
+/* 横屏 A4 适合代码 / 图表多的文档 —— 用户可在系统打印对话框选 */
+@page {
+  size: auto;
+  margin: 18mm 16mm;
+}

@@ -9,7 +9,21 @@
 
 - 价值：★ 一般 / ★★ 高 / ★★★ 关键
 - 成本：◐ 小（≤几天） / ◑ 中（1-2 周） / ● 大（数周）
-- 状态：建议进 MVP / 1.0 / 2.0 / 长期 / 看情况
+- 状态：✅ 完成 / 🟡 进行中 / 🔲 未开始
+
+## 当前完成进度（2026-05-10）
+
+| Phase | 状态 | 备注 |
+|---|---|---|
+| Phase 0 · Foundation | ✅ | monorepo / CI / lint / changeset 全配 |
+| Phase 1 · Desktop reader | ✅ | 三态视图、扩展 hydrate、shiki、TOC、最近文件、保存、滚动同步、export 对话框 |
+| Phase 2 · Web 端 mdview.sh | ✅ | URL 预览 / 短链 / OG / 文档站 / 主题切换 / sanitize / hydrate islands |
+| Phase 3 · 自渲染格式 | ✅ | .mdv.html 三形态 + browser engine bundle + CDN 构建脚本 |
+| Phase 4 · 插件 | ✅（scaffold） | 浏览器扩展 + VS Code 扩展骨架，待商店上架 |
+| Phase 5 · 主题导入 | ✅ | Typora / Obsidian 导入器 + CLI |
+| Phase 6 · AI | ✅ | MCP server + Claude Skill |
+
+> 已实现的扩展（共 8 个）：mdv:color、mdv:callout、mdv:math、mdv:mermaid、mdv:kbd、mdv:details、mdv:sub-sup、mdv:badge
 
 ---
 

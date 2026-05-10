@@ -5,6 +5,11 @@ import { colorExtension } from './color.js';
 import { calloutExtension } from './callout.js';
 import { mathExtension } from './math.js';
 import { mermaidExtension } from './mermaid.js';
+import { kbdExtension } from './kbd.js';
+import { detailsExtension } from './details.js';
+import { subSupExtension } from './sub-sup.js';
+import { badgeExtension } from './badge.js';
+import { progressExtension } from './progress.js';
 
 /** 扩展工厂签名 —— 接收 markdown-it 实例，原地修改它 */
 export type ExtensionFactory = (md: MarkdownIt) => void;
@@ -15,6 +20,11 @@ export const BUILT_IN_EXTENSIONS: Readonly<Record<string, ExtensionFactory>> = O
   'mdv:callout': calloutExtension,
   'mdv:math': mathExtension,
   'mdv:mermaid': mermaidExtension,
+  'mdv:kbd': kbdExtension,
+  'mdv:details': detailsExtension,
+  'mdv:sub-sup': subSupExtension,
+  'mdv:badge': badgeExtension,
+  'mdv:progress': progressExtension,
 });
 
 /** 第三方注册表 —— 用全局 Map 是为了支持 ESM 多次 import 场景 */
@@ -76,3 +86,8 @@ export { colorExtension } from './color.js';
 export { calloutExtension } from './callout.js';
 export { mathExtension } from './math.js';
 export { mermaidExtension } from './mermaid.js';
+export { kbdExtension } from './kbd.js';
+export { detailsExtension } from './details.js';
+export { subSupExtension } from './sub-sup.js';
+export { badgeExtension } from './badge.js';
+export { progressExtension } from './progress.js';

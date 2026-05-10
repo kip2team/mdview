@@ -1,12 +1,55 @@
-/* Default theme — neutral, clean, system fonts */
+/* Default theme — neutral, clean, system fonts
+ *
+ * 色调由 CSS 变量驱动：
+ * - 默认 light 值定义在 :root
+ * - dark 通过两条规则触发：(a) 系统是 dark 且未被 [data-color-scheme="light"] 锁死
+ *                          (b) [data-color-scheme="dark"] 被强制
+ * 这样作者用 colorScheme: light/dark/auto 元数据可以覆盖系统偏好
+ */
 
-/* 让导出的 .mdv.html 在 dark mode 下也有正确的 body 背景 */
+:root {
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --fg-muted: #59636e;
+  --link: #0969da;
+  --border: #d8dee4;
+  --border-strong: #d0d7de;
+  --code-bg: #eff1f3;
+  --pre-bg: #f6f8fa;
+  --th-bg: #f6f8fa;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme='light']) {
+    --bg: #0d1117;
+    --fg: #e6edf3;
+    --fg-muted: #9198a1;
+    --link: #4493f8;
+    --border: #30363d;
+    --border-strong: #30363d;
+    --code-bg: #21262d;
+    --pre-bg: #161b22;
+    --th-bg: #161b22;
+  }
+}
+html[data-color-scheme='dark'] {
+  --bg: #0d1117;
+  --fg: #e6edf3;
+  --fg-muted: #9198a1;
+  --link: #4493f8;
+  --border: #30363d;
+  --border-strong: #30363d;
+  --code-bg: #21262d;
+  --pre-bg: #161b22;
+  --th-bg: #161b22;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  background: #ffffff;
-  color: #1f2328;
+  background: var(--bg);
+  color: var(--fg);
 }
 
 #mdview-output {
@@ -17,7 +60,7 @@ body {
   max-width: 760px;
   margin: 2.5rem auto;
   padding: 0 1.25rem;
-  color: #1f2328;
+  color: var(--fg);
   word-wrap: break-word;
 }
 
@@ -32,41 +75,34 @@ body {
   margin: 1.8em 0 0.6em;
   scroll-margin-top: 2rem;
 }
-
-#mdview-output h1 { font-size: 2em; border-bottom: 1px solid #d8dee4; padding-bottom: 0.3em; }
-#mdview-output h2 { font-size: 1.5em; border-bottom: 1px solid #d8dee4; padding-bottom: 0.3em; }
+#mdview-output h1 { font-size: 2em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+#mdview-output h2 { font-size: 1.5em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
 #mdview-output h3 { font-size: 1.25em; }
 #mdview-output h4 { font-size: 1em; }
 #mdview-output h5 { font-size: 0.875em; }
-#mdview-output h6 { font-size: 0.85em; color: #59636e; }
+#mdview-output h6 { font-size: 0.85em; color: var(--fg-muted); }
 
 #mdview-output p { margin: 0 0 1em; }
 
-#mdview-output a {
-  color: #0969da;
-  text-decoration: none;
-}
+#mdview-output a { color: var(--link); text-decoration: none; }
 #mdview-output a:hover { text-decoration: underline; }
 
 #mdview-output ul,
-#mdview-output ol {
-  margin: 0 0 1em;
-  padding-left: 2em;
-}
+#mdview-output ol { margin: 0 0 1em; padding-left: 2em; }
 #mdview-output li + li { margin-top: 0.25em; }
 
 #mdview-output blockquote {
   margin: 0 0 1em;
   padding: 0 1em;
-  color: #59636e;
-  border-left: 4px solid #d0d7de;
+  color: var(--fg-muted);
+  border-left: 4px solid var(--border-strong);
 }
 
 #mdview-output code {
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 0.9em;
   padding: 0.2em 0.4em;
-  background: #eff1f3;
+  background: var(--code-bg);
   border-radius: 4px;
 }
 
@@ -74,16 +110,11 @@ body {
   margin: 0 0 1em;
   padding: 1em;
   overflow: auto;
-  background: #f6f8fa;
+  background: var(--pre-bg);
   border-radius: 6px;
   line-height: 1.5;
 }
-
-#mdview-output pre code {
-  padding: 0;
-  background: transparent;
-  font-size: 0.875em;
-}
+#mdview-output pre code { padding: 0; background: transparent; font-size: 0.875em; }
 
 #mdview-output table {
   display: block;
@@ -95,14 +126,14 @@ body {
 #mdview-output th,
 #mdview-output td {
   padding: 0.5em 0.75em;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--border-strong);
 }
-#mdview-output th { background: #f6f8fa; font-weight: 600; }
+#mdview-output th { background: var(--th-bg); font-weight: 600; }
 
 #mdview-output hr {
   height: 1px;
   border: 0;
-  background: #d0d7de;
+  background: var(--border-strong);
   margin: 2em 0;
 }
 
@@ -110,26 +141,4 @@ body {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
-}
-
-@media (prefers-color-scheme: dark) {
-  html,
-  body {
-    background: #0d1117;
-    color: #e6edf3;
-  }
-  #mdview-output {
-    color: #e6edf3;
-  }
-  #mdview-output h1,
-  #mdview-output h2 { border-bottom-color: #30363d; }
-  #mdview-output h6 { color: #9198a1; }
-  #mdview-output a { color: #4493f8; }
-  #mdview-output blockquote { color: #9198a1; border-left-color: #30363d; }
-  #mdview-output code { background: #21262d; }
-  #mdview-output pre { background: #161b22; }
-  #mdview-output th { background: #161b22; }
-  #mdview-output th,
-  #mdview-output td { border-color: #30363d; }
-  #mdview-output hr { background: #30363d; }
 }

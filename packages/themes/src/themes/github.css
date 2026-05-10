@@ -1,12 +1,50 @@
-/* GitHub theme — tight, narrow content area like GitHub README */
+/* GitHub theme — tight, narrow content area like GitHub README
+ * 色调由 CSS 变量驱动；dark 通过 @media + [data-color-scheme="dark"] 双触发
+ */
 
-/* 让导出的 .mdv.html 在 dark mode 下也有正确的 body 背景 */
+:root {
+  --bg: #f6f8fa;
+  --content-bg: #ffffff;
+  --fg: #1f2328;
+  --fg-muted: #59636e;
+  --link: #0969da;
+  --border: #d0d7de;
+  --code-bg: rgba(175, 184, 193, 0.2);
+  --pre-bg: #f6f8fa;
+  --row-alt: #f6f8fa;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme='light']) {
+    --bg: #010409;
+    --content-bg: #0d1117;
+    --fg: #e6edf3;
+    --fg-muted: #9198a1;
+    --link: #4493f8;
+    --border: #30363d;
+    --code-bg: rgba(110, 118, 129, 0.4);
+    --pre-bg: #161b22;
+    --row-alt: #161b22;
+  }
+}
+html[data-color-scheme='dark'] {
+  --bg: #010409;
+  --content-bg: #0d1117;
+  --fg: #e6edf3;
+  --fg-muted: #9198a1;
+  --link: #4493f8;
+  --border: #30363d;
+  --code-bg: rgba(110, 118, 129, 0.4);
+  --pre-bg: #161b22;
+  --row-alt: #161b22;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  background: #f6f8fa;
-  color: #1f2328;
+  background: var(--bg);
+  color: var(--fg);
 }
 
 #mdview-output {
@@ -17,9 +55,9 @@ body {
   max-width: 1012px;
   margin: 2rem auto;
   padding: 2rem 3rem;
-  color: #1f2328;
-  background: #ffffff;
-  border: 1px solid #d0d7de;
+  color: var(--fg);
+  background: var(--content-bg);
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
@@ -34,14 +72,14 @@ body {
   margin: 24px 0 16px;
   scroll-margin-top: 2rem;
 }
-#mdview-output h1 { font-size: 2em; padding-bottom: 0.3em; border-bottom: 1px solid #d0d7de; }
-#mdview-output h2 { font-size: 1.5em; padding-bottom: 0.3em; border-bottom: 1px solid #d0d7de; }
+#mdview-output h1 { font-size: 2em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
+#mdview-output h2 { font-size: 1.5em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
 #mdview-output h3 { font-size: 1.25em; }
 #mdview-output h4 { font-size: 1em; }
 
 #mdview-output p { margin: 0 0 16px; }
 
-#mdview-output a { color: #0969da; text-decoration: none; }
+#mdview-output a { color: var(--link); text-decoration: none; }
 #mdview-output a:hover { text-decoration: underline; }
 
 #mdview-output ul,
@@ -49,8 +87,8 @@ body {
 
 #mdview-output blockquote {
   padding: 0 1em;
-  color: #59636e;
-  border-left: 0.25em solid #d0d7de;
+  color: var(--fg-muted);
+  border-left: 0.25em solid var(--border);
   margin: 0 0 16px;
 }
 
@@ -59,7 +97,7 @@ body {
   margin: 0;
   font-size: 85%;
   white-space: break-spaces;
-  background-color: rgba(175, 184, 193, 0.2);
+  background-color: var(--code-bg);
   border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 }
@@ -68,7 +106,7 @@ body {
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: #f6f8fa;
+  background-color: var(--pre-bg);
   border-radius: 6px;
   margin: 0 0 16px;
 }
@@ -83,8 +121,8 @@ body {
   margin: 0 0 16px;
 }
 #mdview-output th,
-#mdview-output td { padding: 6px 13px; border: 1px solid #d0d7de; }
-#mdview-output tr:nth-child(2n) { background: #f6f8fa; }
+#mdview-output td { padding: 6px 13px; border: 1px solid var(--border); }
+#mdview-output tr:nth-child(2n) { background: var(--row-alt); }
 
 #mdview-output img { max-width: 100%; height: auto; }
 
@@ -92,22 +130,6 @@ body {
   height: 0.25em;
   padding: 0;
   margin: 24px 0;
-  background-color: #d0d7de;
+  background-color: var(--border);
   border: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  html,
-  body { background: #010409; color: #e6edf3; }
-  #mdview-output { color: #e6edf3; background: #0d1117; border-color: #30363d; }
-  #mdview-output h1,
-  #mdview-output h2 { border-bottom-color: #30363d; }
-  #mdview-output a { color: #4493f8; }
-  #mdview-output blockquote { color: #9198a1; border-left-color: #30363d; }
-  #mdview-output code { background: rgba(110, 118, 129, 0.4); }
-  #mdview-output pre { background: #161b22; }
-  #mdview-output tr:nth-child(2n) { background: #161b22; }
-  #mdview-output th,
-  #mdview-output td { border-color: #30363d; }
-  #mdview-output hr { background: #30363d; }
 }

@@ -42,6 +42,13 @@ export interface MdviewMetadata {
 
   // 演出 / 样式字段
   theme?: string;
+  /**
+   * 强制色彩模式。
+   * - 'light' / 'dark'：作者意志，无视读者系统
+   * - 'auto'（默认）：跟随读者 prefers-color-scheme
+   * 实现：viewer 在 <html> 上加 data-color-scheme 属性，主题 CSS 用属性选择器接管 @media 查询
+   */
+  colorScheme?: 'light' | 'dark' | 'auto';
   font?: string;
   fontSize?: string;
   lineHeight?: number;

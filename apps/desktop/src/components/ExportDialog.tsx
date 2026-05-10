@@ -1,5 +1,5 @@
 // 导出 .mdv.html 对话框 —— 三形态可选 / 主题选择 / 引擎版本
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { render } from '@mdview/core';
 import { themeDefaults } from '@mdview/themes';
 import { toMdvHtml, type MdvForm } from '@mdview/format';
@@ -76,14 +76,34 @@ export function ExportDialog({
     }
   }
 
+  // Esc 关闭 + 焦点返回触发按钮
+  // 注意：onClose 是 prop 不在 deps 里也无所谓 —— 这个 effect 一次性绑定
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div
       className="mdv-modal-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
+      role="presentation"
     >
-      <div className="mdv-modal" role="dialog" aria-labelledby="mdv-export-title">
+      <div
+        className="mdv-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mdv-export-title"
+      >
         <h2 id="mdv-export-title" className="mdv-modal-title">
           Export as .mdv.html
         </h2>

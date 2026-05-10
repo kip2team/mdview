@@ -66,14 +66,20 @@ function isLikelyMarkdownPage(url: string): boolean {
 }
 
 async function readTheme(): Promise<string | null> {
-  return new Promise((resolve) => {
-    if (typeof chrome === 'undefined' || !chrome.storage) {
+  // Firefox 暴露 `browser`（promise-based），Chrome 暴露 `chrome`（callback-based）
+  // 用 callback 形式包成 promise，两边都能跑
+  const api =
+    (globalThis as unknown as { browser?: typeof chrome }).browser ??
+    (typeof chrome !== 'undefined' ? chrome : undefined);
+  if (!api?.storage) return null;
+  return new Promise<string | null>((resolve) => {
+    try {
+      api.storage.sync.get(STORAGE_KEY, (data: Record<string, unknown>) => {
+        resolve((data[STORAGE_KEY] as string) ?? null);
+      });
+    } catch {
       resolve(null);
-      return;
     }
-    chrome.storage.sync.get(STORAGE_KEY, (data) => {
-      resolve((data[STORAGE_KEY] as string) ?? null);
-    });
   });
 }
 

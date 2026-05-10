@@ -85,6 +85,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       description: 'List built-in mdview themes.',
       inputSchema: { type: 'object', properties: {} },
     },
+    {
+      name: 'extract_text',
+      description:
+        'Strip Markdown formatting and return plain text + heading tree. Useful when an LLM wants a token-efficient summary input or for indexing.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          markdown: { type: 'string' },
+        },
+        required: ['markdown'],
+      },
+    },
   ],
 }));
 
@@ -135,6 +147,30 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
 
     case 'list_themes': {
       return jsonResult({ themes: BUILT_IN_THEMES });
+    }
+
+    case 'extract_text': {
+      const a = args as { markdown: string };
+      const result = render(a.markdown, {});
+      // 把 HTML 剥成纯文本：去标签 + 把 entities 还原 + collapse whitespace
+      const plain = result.html
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/\s+/g, ' ')
+        .trim();
+      return jsonResult({
+        plainText: plain,
+        wordCount: plain.split(/\s+/).filter(Boolean).length,
+        headings: result.headings,
+        meta: result.meta,
+      });
     }
 
     default:

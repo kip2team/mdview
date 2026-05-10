@@ -16,7 +16,11 @@ pnpm --filter @mdview/browser-ext build
 3. "加载已解压的扩展程序" → 选 `packages/browser-ext/dist`
 4. 访问任意 raw `.md` 链接（例如 https://raw.githubusercontent.com/microsoft/vscode/main/README.md）
 
+## Firefox
+
+manifest 已加 `browser_specific_settings.gecko`，content / popup 代码用了 `browser ?? chrome` 兜底，理论支持 Firefox 115+（MV3）。但因 Firefox 对 `host_permissions` 与 `content_scripts` 的处理略有差异，**首次安装需手动到 about:addons 给 mdview 授予对应主机的权限**。
+
 ## 已知限制（MVP）
 
-- 主题切换通过 popup 选，但当前 popup CSS 不会下发到内容脚本（只在切换后下次访问生效）
-- 暂未支持 Firefox（manifest v3 浏览器对 host_permissions 有差异）
+- 主题切换通过 popup 选，但当前 popup CSS 不会下发到正在打开的 tab；切换后下次访问生效
+- 暂未做 ESM module worker（Firefox 对 import.meta 处理与 Chrome 略有差异）

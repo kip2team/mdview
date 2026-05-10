@@ -14,9 +14,16 @@
     "./default.css": "./src/themes/default.css",
     "./github.css": "./src/themes/github.css",
     "./medium.css": "./src/themes/medium.css",
-    "./extensions.css": "./src/extensions.css"
+    "./dark.css": "./src/themes/dark.css",
+    "./solarized.css": "./src/themes/solarized.css",
+    "./sepia.css": "./src/themes/sepia.css",
+    "./extensions.css": "./src/extensions.css",
+    "./print.css": "./src/print.css"
   },
-  "files": ["dist", "src/themes"],
+  "files": ["dist", "src/themes", "src/extensions.css", "src/print.css"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",

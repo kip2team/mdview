@@ -8,16 +8,24 @@ main = "./dist/_worker.js/index.js"
 compatibility_date = "2026-05-01"
 compatibility_flags = ["nodejs_compat"]
 
+# 把 worker 绑到 mdview.sh 与 www.mdview.sh
+# custom_domain = true 表示用 Custom Domain 模式（自动 SSL，apex 域名也能用）
+# 而不是 route 模式（需要 DNS 上 orange-cloud + 手配 SSL）
+routes = [
+  { pattern = "mdview.sh", custom_domain = true },
+  { pattern = "www.mdview.sh", custom_domain = true }
+]
+
 [assets]
 directory = "./dist"
 
 [[kv_namespaces]]
 binding = "SHORTLINKS"
-id = "REPLACE_WITH_REAL_KV_ID"
+id = "c6611441850c4d89bafa98cfe16f13e6"
 
 [[kv_namespaces]]
 binding = "RATE_KV"
-id = "REPLACE_WITH_REAL_RATE_KV_ID"
+id = "d6fd580e044f48768f0e38eafc769496"
 
 [observability]
 enabled = true

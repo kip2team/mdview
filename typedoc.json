@@ -1,0 +1,24 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "packages/core/src/index.ts",
+    "packages/format/src/index.ts",
+    "packages/themes/src/index.ts",
+    "packages/importer/src/index.ts"
+  ],
+  "out": "docs/api",
+  "name": "mdview API",
+  "tsconfig": "tsconfig.base.json",
+  "exclude": ["**/node_modules/**", "**/*.test.ts", "**/*.bench.ts", "**/dist/**"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": false,
+  "githubPages": false,
+  "readme": "README.md",
+  "navigationLinks": {
+    "GitHub": "https://github.com/kip2team/mdview",
+    "Docs site": "https://mdview.sh/docs"
+  },
+  "categorizeByGroup": false,
+  "sort": ["source-order"]
+}

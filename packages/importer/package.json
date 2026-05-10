@@ -15,7 +15,10 @@
   "bin": {
     "mdview-import": "./dist/cli.js"
   },
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",

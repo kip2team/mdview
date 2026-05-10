@@ -2,6 +2,9 @@
 import defaultMeta from './themes/default.json' with { type: 'json' };
 import githubMeta from './themes/github.json' with { type: 'json' };
 import mediumMeta from './themes/medium.json' with { type: 'json' };
+import darkMeta from './themes/dark.json' with { type: 'json' };
+import solarizedMeta from './themes/solarized.json' with { type: 'json' };
+import sepiaMeta from './themes/sepia.json' with { type: 'json' };
 
 /** 主题元数据接口（与 theme.json 对应） */
 export interface ThemeMeta {
@@ -25,6 +28,9 @@ export const BUILT_IN_THEMES: ThemeMeta[] = [
   defaultMeta as ThemeMeta,
   githubMeta as ThemeMeta,
   mediumMeta as ThemeMeta,
+  darkMeta as ThemeMeta,
+  solarizedMeta as ThemeMeta,
+  sepiaMeta as ThemeMeta,
 ];
 
 /** 通过 id 查找主题 */

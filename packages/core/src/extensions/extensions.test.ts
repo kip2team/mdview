@@ -1,4 +1,5 @@
-// mdv:color / mdv:callout 扩展冒烟测试
+// mdview 内置扩展冒烟测试
+// 覆盖：mdv:color / mdv:callout / mdv:math / mdv:mermaid / mdv:kbd / mdv:details / mdv:sub-sup / mdv:badge
 import { describe, expect, it } from 'vitest';
 import { render } from '../render.js';
 
@@ -179,5 +180,172 @@ describe('mdv:mermaid extension', () => {
     );
     const { html } = render(md);
     expect(html).toContain('class="mdv-mermaid"');
+  });
+});
+
+describe('mdv:kbd extension', () => {
+  it('未启用时 [[Cmd+K]] 当作普通文本', () => {
+    const { html } = render('按 [[Cmd+K]] 打开', {});
+    expect(html).not.toContain('<kbd');
+    expect(html).toContain('[[Cmd+K]]');
+  });
+
+  it('启用后 [[Cmd+K]] 渲染为 kbd 序列 + plus 分隔符', () => {
+    const { html } = render('按 [[Cmd+K]] 打开', { extensions: ['mdv:kbd'] });
+    expect(html).toContain('<kbd class="mdv-kbd">Cmd</kbd>');
+    expect(html).toContain('<kbd class="mdv-kbd">K</kbd>');
+    expect(html).toContain('mdv-kbd-plus');
+  });
+
+  it('空格分隔的连按用 then 分隔符', () => {
+    const { html } = render('按 [[g g]]', { extensions: ['mdv:kbd'] });
+    expect(html).toContain('<kbd class="mdv-kbd">g</kbd>');
+    expect(html).toContain('mdv-kbd-then');
+  });
+
+  it('支持 Unicode 修饰键符号（⌘⌥⇧⌃）', () => {
+    const { html } = render('按 [[⌘+⇧+P]]', { extensions: ['mdv:kbd'] });
+    expect(html).toContain('<kbd class="mdv-kbd">⌘</kbd>');
+    expect(html).toContain('<kbd class="mdv-kbd">⇧</kbd>');
+    expect(html).toContain('<kbd class="mdv-kbd">P</kbd>');
+  });
+});
+
+describe('mdv:details extension', () => {
+  it('未启用时 ::: details 块当作普通文本', () => {
+    const md = ['::: details Click me', 'Hidden', ':::'].join('\n');
+    const { html } = render(md, {});
+    expect(html).not.toContain('<details');
+  });
+
+  it('启用后渲染为 <details><summary>', () => {
+    const md = ['::: details Click me', '', 'Hidden content', ':::'].join('\n');
+    const { html } = render(md, { extensions: ['mdv:details'] });
+    expect(html).toContain('<details class="mdv-details">');
+    expect(html).toContain('<summary class="mdv-details-summary">Click me</summary>');
+    expect(html).toContain('Hidden content');
+  });
+
+  it('未提供 summary 时用 "Details" 兜底', () => {
+    const md = ['::: details', '', 'body', ':::'].join('\n');
+    const { html } = render(md, { extensions: ['mdv:details'] });
+    expect(html).toContain('<summary class="mdv-details-summary">Details</summary>');
+  });
+
+  it('内部支持嵌套 markdown', () => {
+    const md = ['::: details Title', '', '**bold**', ':::'].join('\n');
+    const { html } = render(md, { extensions: ['mdv:details'] });
+    expect(html).toContain('<strong>bold</strong>');
+  });
+});
+
+describe('mdv:sub-sup extension', () => {
+  it('未启用时 ^x^ / ~x~ 保持原样', () => {
+    const { html } = render('E = mc^2^ 和 H~2~O', {});
+    expect(html).not.toContain('<sup>');
+    expect(html).not.toContain('<sub>');
+  });
+
+  it('启用后 ^2^ → <sup>2</sup>', () => {
+    const { html } = render('E = mc^2^', { extensions: ['mdv:sub-sup'] });
+    expect(html).toContain('<sup>2</sup>');
+  });
+
+  it('启用后 ~2~ → <sub>2</sub>', () => {
+    const { html } = render('H~2~O', { extensions: ['mdv:sub-sup'] });
+    expect(html).toContain('<sub>2</sub>');
+  });
+
+  it('双 ~~ 删除线不被误识别为下标（GFM 处理）', () => {
+    const { html } = render('删除线 ~~old~~', { extensions: ['mdv:sub-sup'] });
+    expect(html).toContain('<s>old</s>');
+    expect(html).not.toContain('<sub>');
+  });
+
+  it('跨行不算 delimiter', () => {
+    const { html } = render('开始^然后\n结束^', { extensions: ['mdv:sub-sup'] });
+    expect(html).not.toContain('<sup>');
+  });
+});
+
+describe('mdv:badge extension', () => {
+  it('未启用时 ![[badge:passing|green]] 保持原样', () => {
+    const { html } = render('状态 ![[badge:passing|green]]', {});
+    expect(html).not.toContain('mdv-badge');
+    expect(html).toContain('![[badge:passing|green]]');
+  });
+
+  it('启用后渲染带 named color 的徽章', () => {
+    const { html } = render('![[badge:passing|green]]', { extensions: ['mdv:badge'] });
+    expect(html).toContain('class="mdv-badge"');
+    expect(html).toContain('--mdv-badge-bg:#1a7f37');
+    expect(html).toContain('passing');
+  });
+
+  it('支持自定义 hex 色', () => {
+    const { html } = render('![[badge:custom|#ff6b35]]', { extensions: ['mdv:badge'] });
+    expect(html).toContain('--mdv-badge-bg:#ff6b35');
+  });
+
+  it('未指定色用默认 gray', () => {
+    const { html } = render('![[badge:plain]]', { extensions: ['mdv:badge'] });
+    expect(html).toContain('--mdv-badge-bg:#6e7781');
+  });
+
+  it('多个徽章在同一行都被识别', () => {
+    const { html } = render('![[badge:a|red]] ![[badge:b|blue]]', {
+      extensions: ['mdv:badge'],
+    });
+    expect((html.match(/class="mdv-badge"/g) ?? []).length).toBe(2);
+  });
+});
+
+describe('mdv:progress extension', () => {
+  it('未启用时 [==70%==] 当作普通文本', () => {
+    const { html } = render('进度 [==70%==]', {});
+    expect(html).not.toContain('mdv-progress');
+    expect(html).toContain('[==70%==]');
+  });
+
+  it('启用后渲染为带 ARIA 的进度条', () => {
+    const { html } = render('进度 [==70%==]', { extensions: ['mdv:progress'] });
+    expect(html).toContain('class="mdv-progress"');
+    expect(html).toContain('role="progressbar"');
+    expect(html).toContain('aria-valuenow="70"');
+    expect(html).toContain('aria-valuemin="0"');
+    expect(html).toContain('aria-valuemax="100"');
+    expect(html).toContain('width:70%');
+    expect(html).toContain('70%');
+  });
+
+  it('支持 named color', () => {
+    const { html } = render('[==90%==|green]', { extensions: ['mdv:progress'] });
+    expect(html).toContain('--mdv-progress-fill:#1a7f37');
+  });
+
+  it('支持自定义 hex', () => {
+    const { html } = render('[==45%==|#ff6b35]', { extensions: ['mdv:progress'] });
+    expect(html).toContain('--mdv-progress-fill:#ff6b35');
+  });
+
+  it('未指定颜色用默认 blue', () => {
+    const { html } = render('[==50%==]', { extensions: ['mdv:progress'] });
+    expect(html).toContain('--mdv-progress-fill:#0969da');
+  });
+
+  it('clamp 边界值（0 / 100 / 超界）', () => {
+    const r1 = render('[==0%==]', { extensions: ['mdv:progress'] }).html;
+    const r2 = render('[==100%==]', { extensions: ['mdv:progress'] }).html;
+    const r3 = render('[==150%==]', { extensions: ['mdv:progress'] }).html;
+    expect(r1).toContain('aria-valuenow="0"');
+    expect(r2).toContain('aria-valuenow="100"');
+    expect(r3).toContain('aria-valuenow="100"'); // 150 → clamp 100
+  });
+
+  it('多个进度条在同一行都被识别', () => {
+    const { html } = render('CPU [==45%==|red] / RAM [==75%==|blue]', {
+      extensions: ['mdv:progress'],
+    });
+    expect((html.match(/class="mdv-progress"/g) ?? []).length).toBe(2);
   });
 });

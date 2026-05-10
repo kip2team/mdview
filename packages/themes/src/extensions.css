@@ -45,6 +45,135 @@
   font-style: italic;
 }
 
+/* ─── mdv:progress 进度条 ──────────────────────────── */
+.mdv-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  vertical-align: middle;
+  position: relative;
+  width: 12em;
+  max-width: 100%;
+  height: 0.95em;
+  background: rgba(127, 127, 127, 0.18);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.mdv-progress-bar {
+  position: absolute;
+  inset: 0;
+  background: var(--mdv-progress-fill, #0969da);
+  border-radius: 9999px;
+  transition: width 200ms ease;
+}
+.mdv-progress-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  z-index: 1;
+}
+
+/* ─── mdv:details 折叠块 ───────────────────────────── */
+.mdv-details {
+  margin: 1em 0;
+  padding: 0.6em 1em;
+  border: 1px solid rgba(127, 127, 127, 0.25);
+  border-radius: 6px;
+  background: rgba(127, 127, 127, 0.04);
+}
+.mdv-details[open] {
+  background: rgba(127, 127, 127, 0.08);
+}
+.mdv-details-summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.mdv-details-summary::-webkit-details-marker { display: none; }
+.mdv-details-summary::before {
+  content: '▶';
+  font-size: 0.7em;
+  transition: transform 120ms ease;
+  color: rgba(127, 127, 127, 0.7);
+}
+.mdv-details[open] .mdv-details-summary::before {
+  transform: rotate(90deg);
+}
+.mdv-details > *:not(summary) {
+  margin-top: 0.6em;
+}
+
+/* ─── mdv:badge 徽章 ───────────────────────────────── */
+.mdv-badge {
+  display: inline-block;
+  padding: 0.1em 0.6em;
+  font-size: 0.75em;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--mdv-badge-bg, #6e7781);
+  color: #ffffff;
+  border-radius: 9999px;
+  vertical-align: 0.15em;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  line-height: 1.4;
+}
+
+/* ─── mdv:kbd 快捷键 ───────────────────────────────── */
+.mdv-kbd {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  line-height: 1;
+  color: rgba(31, 35, 40, 0.85);
+  background: linear-gradient(to bottom, #ffffff, #f6f8fa);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 4px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  vertical-align: 0.1em;
+}
+.mdv-kbd-plus,
+.mdv-kbd-then {
+  display: inline-block;
+  margin: 0 0.15em;
+  font-size: 0.85em;
+  color: rgba(31, 35, 40, 0.55);
+  font-weight: 500;
+}
+.mdv-kbd-then {
+  font-style: italic;
+  font-size: 0.75em;
+  margin: 0 0.4em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mdv-kbd {
+    color: rgba(230, 237, 243, 0.9);
+    background: linear-gradient(to bottom, #161b22, #0d1117);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  .mdv-kbd-plus,
+  .mdv-kbd-then {
+    color: rgba(230, 237, 243, 0.55);
+  }
+}
+
 /* ─── mdv:color 色块 ──────────────────────────────────── */
 .mdv-color {
   display: inline-flex;

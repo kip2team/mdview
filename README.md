@@ -1,106 +1,118 @@
+---
+mdview: 1
+title: mdview
+description: A reader-first home for Markdown. One engine, every surface.
+theme: medium
+font: charter
+fontSize: 18px
+maxWidth: 720px
+toc: true
+toc.position: right
+readingTime: true
+extensions:
+  - mdv:callout
+  - mdv:color
+  - mdv:kbd
+  - mdv:badge
+brand:
+  primary: '#0969da'
+  accent: '#ff6b35'
+---
+
 # mdview
 
-Engine-first Markdown rendering / reading / sharing across desktop, web, plugins, CLI and MCP.
+> ![[badge:status:alpha|orange]] ![[badge:license:MIT|green]] ![[badge:engine:30KB|blue]]
+>
+> Engine-first Markdown rendering / reading / sharing across desktop, web, plugins, CLI and MCP.
 
-> mdview is a reader-first home for Markdown. Open a `.md` file, get a Medium-class reading experience. Share a `.md` URL, get a beautiful preview link. Same engine, every surface.
+## What
 
-## Status
+mdview is a reader-first home for Markdown. Same engine on every surface, identical look:
 
-This repository is in **Phase 0 / 1**. The engine, themes, format, and CLI packages have a working skeleton; the desktop app scaffolding is in place and runs once Rust + Tauri CLI are installed locally.
+- **Desktop** (Tauri 2 + Vite + React) — three view modes, theme switching, ⌘K command palette, export `.mdv.html`
+- **Web** ([mdview.sh](https://mdview.sh)) — paste any `.md` URL, get a beautiful preview, generate short links
+- **Browser extension** — auto-render raw GitHub / gist `.md` pages
+- **VS Code extension** — replace default Markdown preview
+- **CLI** — `mdview render` / `export` / `convert` / `serve --watch`
+- **MCP server** — let Claude render and export Markdown beautifully
 
-See `docs/01-PRD-and-Plan.md` for the full plan.
+> [!tip] One Markdown, every surface
+> Write Markdown once. mdview makes it look beautiful everywhere it shows up.
 
-## Repository layout
+## Differentiators
 
-```
-mdview/
-├── docs/                      # Product & format documents
-│   ├── 01-PRD-and-Plan.md     # Vision, architecture, roadmap, naming
-│   ├── 02-Format-Spec.md      # .mdv.html spec, metadata schema
-│   └── 03-Feature-Backlog.md  # Categorised feature backlog
-├── packages/
-│   ├── core/                  # @mdview/core — markdown → HTML engine
-│   ├── themes/                # @mdview/themes — built-in themes
-│   ├── format/                # @mdview/format — .mdv.html serializer
-│   └── cli/                   # @mdview/cli — render / export / convert
-├── apps/
-│   └── desktop/               # Tauri 2 + Vite + React desktop reader
-└── (future)
-    ├── apps/mdview-sh/        # Astro web app at mdview.sh
-    ├── packages/browser-ext/  # Chrome / Firefox extension
-    ├── packages/vscode/       # VS Code extension
-    └── packages/mcp/          # MCP server
-```
+> [!info] Engine-first
+> All surfaces consume `@mdview/core` (~30KB gzipped, pure TypeScript). New surface = thin shell. Themes / extensions register once, work everywhere.
 
-## Prerequisites
+> [!info] Self-rendering HTML — `.mdv.html`
+> Exports look like normal HTML in browsers but the body is still Markdown wrapped in `<script type="text/x-mdview">`. Open in a text editor — it's still `.md`. Hand to a non-technical friend — they just open in a browser.
 
-- Node.js ≥ 20
-- pnpm ≥ 9 (`npm i -g pnpm`)
-- For desktop development:
-  - Rust ≥ 1.77 (`curl https://sh.rustup.rs -sSf | sh`)
-  - Tauri 2 system requirements: https://tauri.app/start/prerequisites/
+> [!info] Metadata as stage direction
+> YAML front matter doesn't just carry attributes — it specifies how the document should look (theme, fonts, toc, extensions, brand colors). Hand a `.md` to anyone, they see your intended presentation.
 
-## Get started
-
-Install dependencies:
+## Try it in 30 seconds
 
 ```bash
-pnpm install
-```
+# Web — paste any markdown URL
+open https://mdview.sh
 
-Build all packages:
+# Desktop — needs Rust + Tauri prereqs (one-time setup)
+git clone https://github.com/kip2team/mdview
+cd mdview && pnpm install && pnpm desktop:dev
 
-```bash
-pnpm build
-```
+# CLI
+npm install -g @mdview/cli
+mdview render README.md > readme.html
+mdview serve README.md --theme medium
 
-Run tests:
-
-```bash
-pnpm test
-```
-
-### Try the CLI
-
-```bash
-# Render a markdown file's body HTML to stdout
-pnpm cli -- render path/to/foo.md
-
-# Export to .mdv.html (Progressive form by default)
-pnpm cli -- export path/to/foo.md --form progressive --theme medium
-
-# Export all three forms at once
-pnpm cli -- export path/to/foo.md --form all --theme github
-
-# Convert between forms
-pnpm cli -- convert foo.mdv.html --to standalone -o foo.standalone.mdv.html
-```
-
-### Run the desktop app
-
-Once Rust + the Tauri CLI prerequisites are installed:
-
-```bash
-pnpm desktop:dev
-# under the hood: pnpm --filter @mdview/desktop run tauri dev
-```
-
-The first run will fetch a lot of Rust crates and will take a while; subsequent runs are fast.
-
-You can also run only the front-end (no Rust required) for UI iteration:
-
-```bash
-pnpm --filter @mdview/desktop run dev
-# open http://localhost:1420
+# Scaffold a doc project
+npm create mdview-doc my-article
 ```
 
 ## Documentation
 
-- [Product Plan](./docs/01-PRD-and-Plan.md)
-- [.mdv.html Format Spec](./docs/02-Format-Spec.md)
-- [Feature Backlog](./docs/03-Feature-Backlog.md)
-- [Getting Started for Contributors](./docs/getting-started.md)
+| Doc | Use |
+| --- | --- |
+| [PRD & Plan](./docs/01-PRD-and-Plan.md) | Vision, architecture, decisions |
+| [`.mdv.html` Format Spec](./docs/02-Format-Spec.md) | The self-rendering HTML protocol |
+| [Feature Backlog](./docs/03-Feature-Backlog.md) | Full feature catalog with priorities |
+| [Plugin authoring](./docs/plugin-authoring.md) | Write your own `mdv:*` extensions |
+| [Cookbook](./docs/cookbook/README.md) | Real-world templates |
+| [Roadmap](./ROADMAP.md) | Public roadmap |
+
+## Repository
+
+```
+packages/
+  core/                 # @mdview/core — engine
+  themes/               # @mdview/themes — built-in themes
+  format/               # @mdview/format — .mdv.html serializer
+  cli/                  # @mdview/cli — command line
+  engine-browser/       # @mdview/engine-browser — CDN bootstrap
+  importer/             # @mdview/importer — Typora / Obsidian
+  mcp/                  # @mdview/mcp — Claude / AI integration
+  browser-ext/          # @mdview/browser-ext — Chrome / Firefox MV3
+  vscode/               # mdview — VS Code extension
+  create-mdview-doc/    # npm create mdview-doc
+
+apps/
+  desktop/              # Tauri 2 desktop reader
+  mdview-sh/            # mdview.sh — Astro on Cloudflare Workers
+```
+
+## Status
+
+> [!warning] Alpha
+> mdview is pre-1.0 and APIs may shift. Most surfaces work end-to-end; rough edges remain. See [ROADMAP.md](./ROADMAP.md).
+
+## Contributing
+
+PRs welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md). Code of conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md). Security: [SECURITY.md](./SECURITY.md).
+
+Most useful contribution at this stage: **try mdview, find a bug, file an issue with a reproducer.**
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE) — built by people who think Markdown deserves a reader.
+
+> Press [[⌘K]] in the desktop app for everything.

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussion
+    url: https://github.com/kip2team/mdview/discussions
+    about: General questions, ideas, or chats with the community
+  - name: 📚 Documentation
+    url: https://mdview.sh/docs
+    about: Read the format spec, plugin authoring guide, and roadmap

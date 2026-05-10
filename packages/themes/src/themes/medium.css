@@ -1,12 +1,50 @@
-/* Medium theme — long-form reading: serif, generous spacing, narrow column */
+/* Medium theme — long-form reading: serif, generous spacing, narrow column
+ * 色调由 CSS 变量驱动；dark 通过 @media + [data-color-scheme="dark"] 双触发
+ */
 
-/* 让导出的 .mdv.html 在 dark mode 下也有正确的 body 背景 */
+:root {
+  --bg: #ffffff;
+  --fg: rgba(41, 41, 41, 1);
+  --fg-soft: rgba(41, 41, 41, 0.85);
+  --fg-muted: rgba(41, 41, 41, 0.5);
+  --link-underline: rgba(41, 41, 41, 0.4);
+  --link-underline-hover: rgba(41, 41, 41, 1);
+  --border: rgba(41, 41, 41, 0.7);
+  --border-soft: rgba(41, 41, 41, 0.2);
+  --code-bg: rgba(242, 242, 242, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme='light']) {
+    --bg: #0d1117;
+    --fg: rgba(230, 237, 243, 0.92);
+    --fg-soft: rgba(230, 237, 243, 0.78);
+    --fg-muted: rgba(230, 237, 243, 0.5);
+    --link-underline: rgba(230, 237, 243, 0.45);
+    --link-underline-hover: rgba(230, 237, 243, 0.95);
+    --border: rgba(230, 237, 243, 0.6);
+    --border-soft: rgba(230, 237, 243, 0.2);
+    --code-bg: rgba(255, 255, 255, 0.07);
+  }
+}
+html[data-color-scheme='dark'] {
+  --bg: #0d1117;
+  --fg: rgba(230, 237, 243, 0.92);
+  --fg-soft: rgba(230, 237, 243, 0.78);
+  --fg-muted: rgba(230, 237, 243, 0.5);
+  --link-underline: rgba(230, 237, 243, 0.45);
+  --link-underline-hover: rgba(230, 237, 243, 0.95);
+  --border: rgba(230, 237, 243, 0.6);
+  --border-soft: rgba(230, 237, 243, 0.2);
+  --code-bg: rgba(255, 255, 255, 0.07);
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  background: #ffffff;
-  color: rgba(41, 41, 41, 1);
+  background: var(--bg);
+  color: var(--fg);
 }
 
 #mdview-output {
@@ -17,7 +55,7 @@ body {
   max-width: 680px;
   margin: 3rem auto;
   padding: 0 1.5rem;
-  color: rgba(41, 41, 41, 1);
+  color: var(--fg);
   letter-spacing: -0.003em;
 }
 
@@ -30,10 +68,9 @@ body {
   letter-spacing: -0.012em;
   line-height: 1.2;
   margin: 2.2em 0 0.6em;
-  color: rgba(41, 41, 41, 1);
+  color: var(--fg);
   scroll-margin-top: 2rem;
 }
-
 #mdview-output h1 { font-size: 2.4em; margin-top: 0.6em; }
 #mdview-output h2 { font-size: 1.7em; }
 #mdview-output h3 { font-size: 1.3em; }
@@ -42,12 +79,12 @@ body {
 #mdview-output p { margin: 0 0 1.4em; }
 
 #mdview-output a {
-  color: rgba(41, 41, 41, 1);
+  color: var(--fg);
   text-decoration: underline;
-  text-decoration-color: rgba(41, 41, 41, 0.4);
+  text-decoration-color: var(--link-underline);
   text-underline-offset: 3px;
 }
-#mdview-output a:hover { text-decoration-color: rgba(41, 41, 41, 1); }
+#mdview-output a:hover { text-decoration-color: var(--link-underline-hover); }
 
 #mdview-output ul,
 #mdview-output ol { margin: 0 0 1.4em; padding-left: 1.6em; }
@@ -56,24 +93,24 @@ body {
 #mdview-output blockquote {
   margin: 1.4em 0;
   padding-left: 1.5em;
-  border-left: 3px solid rgba(41, 41, 41, 0.7);
+  border-left: 3px solid var(--border);
   font-style: italic;
-  color: rgba(41, 41, 41, 0.85);
+  color: var(--fg-soft);
 }
 
 #mdview-output code {
   font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
   font-size: 0.85em;
   padding: 0.15em 0.4em;
-  background: rgba(242, 242, 242, 1);
+  background: var(--code-bg);
   border-radius: 3px;
-  color: rgba(41, 41, 41, 1);
+  color: var(--fg);
 }
 
 #mdview-output pre {
   margin: 1.4em 0;
   padding: 1.2em 1.4em;
-  background: rgba(242, 242, 242, 1);
+  background: var(--code-bg);
   border-radius: 4px;
   overflow: auto;
   line-height: 1.5;
@@ -95,7 +132,7 @@ body {
 }
 #mdview-output hr::before {
   content: '· · ·';
-  color: rgba(41, 41, 41, 0.5);
+  color: var(--fg-muted);
   font-size: 1.5em;
   letter-spacing: 0.5em;
 }
@@ -106,28 +143,5 @@ body {
   width: 100%;
 }
 #mdview-output th,
-#mdview-output td { padding: 0.5em 0.8em; border-bottom: 1px solid rgba(41, 41, 41, 0.2); }
+#mdview-output td { padding: 0.5em 0.8em; border-bottom: 1px solid var(--border-soft); }
 #mdview-output th { font-weight: 700; text-align: left; }
-
-@media (prefers-color-scheme: dark) {
-  html,
-  body { background: #0d1117; color: rgba(230, 237, 243, 0.92); }
-  #mdview-output { color: rgba(230, 237, 243, 0.92); }
-  #mdview-output h1,
-  #mdview-output h2,
-  #mdview-output h3,
-  #mdview-output h4 { color: rgba(230, 237, 243, 0.96); }
-  #mdview-output a {
-    color: rgba(230, 237, 243, 0.92);
-    text-decoration-color: rgba(230, 237, 243, 0.45);
-  }
-  #mdview-output a:hover { text-decoration-color: rgba(230, 237, 243, 0.95); }
-  #mdview-output blockquote {
-    border-left-color: rgba(230, 237, 243, 0.6);
-    color: rgba(230, 237, 243, 0.78);
-  }
-  #mdview-output code,
-  #mdview-output pre { background: rgba(255, 255, 255, 0.07); }
-  #mdview-output th,
-  #mdview-output td { border-bottom-color: rgba(230, 237, 243, 0.2); }
-}

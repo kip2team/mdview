@@ -13,6 +13,81 @@ body {
   min-height: 100vh;
 }
 
+/* ── Onboarding 一次性提示 ──────────────────────────── */
+.mdv-onboarding {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #1f2328;
+  color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  max-width: calc(100vw - 48px);
+  animation: mdv-fade-in 200ms ease;
+}
+.mdv-onboarding-content { display: inline-flex; align-items: center; gap: 8px; }
+.mdv-onboarding-content strong {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.mdv-onboarding-content kbd {
+  display: inline-block;
+  padding: 0.05em 0.35em;
+  margin: 0 0.1em;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 11.5px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.mdv-onboarding-dismiss {
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 6px;
+  opacity: 0.6;
+}
+.mdv-onboarding-dismiss:hover { opacity: 1; }
+
+/* ── Zen 沉浸阅读模式 ──────────────────────────────── */
+/* ⌘. 切换；隐藏所有 chrome，只剩内容 */
+body.mdv-zen .mdv-toolbar,
+body.mdv-zen .mdv-toc,
+body.mdv-zen .mdv-reading-stats {
+  display: none !important;
+}
+body.mdv-zen #mdview-output {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+/* ── 全局焦点态：键盘聚焦时显示明显的 outline ─────────── */
+:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+@media (prefers-color-scheme: dark) {
+  :focus-visible {
+    outline-color: #4493f8;
+  }
+}
+
 /* ── 顶部工具栏 ─────────────────────────────────────────
    设计意图：默认半透明、不抢主内容；hover 时显形 */
 .mdv-toolbar {
@@ -104,6 +179,115 @@ body {
 .mdv-theme-menu button span {
   font-size: 11.5px;
   color: rgba(31, 35, 40, 0.6);
+}
+
+/* ── 文件夹侧栏（D5）───────────────────────────────── */
+.mdv-folder-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  background: rgba(246, 248, 250, 0.95);
+  backdrop-filter: blur(8px);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  z-index: 800;
+  font-size: 13px;
+}
+.mdv-folder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 12.5px;
+  position: sticky;
+  top: 0;
+  background: inherit;
+  z-index: 1;
+}
+.mdv-folder-close {
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  color: inherit;
+  line-height: 1;
+  padding: 0 4px;
+}
+.mdv-folder-empty {
+  padding: 14px;
+  font-size: 12px;
+  color: rgba(31, 35, 40, 0.5);
+}
+.mdv-folder-sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+.mdv-folder-sidebar li button {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.mdv-folder-sidebar li button:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+.mdv-folder-sidebar li button.is-active {
+  background: rgba(9, 105, 218, 0.1);
+  color: #0969da;
+}
+.mdv-folder-dir {
+  font-size: 11px;
+  color: rgba(31, 35, 40, 0.5);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+body:has(.mdv-folder-sidebar) #mdview-output,
+body:has(.mdv-folder-sidebar) .mdv-stage {
+  margin-left: 240px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mdv-folder-sidebar {
+    background: rgba(13, 17, 23, 0.95);
+    border-right-color: rgba(255, 255, 255, 0.08);
+  }
+  .mdv-folder-header { border-bottom-color: rgba(255, 255, 255, 0.06); }
+  .mdv-folder-empty { color: rgba(230, 237, 243, 0.5); }
+  .mdv-folder-sidebar li button:hover { background: rgba(255, 255, 255, 0.04); }
+  .mdv-folder-sidebar li button.is-active {
+    background: rgba(56, 139, 253, 0.15);
+    color: #4493f8;
+  }
+  .mdv-folder-dir { color: rgba(230, 237, 243, 0.5); }
+}
+
+/* ── 阅读统计（字数 / 时长）─────────────────────────── */
+.mdv-output-wrap {
+  display: contents;
+}
+.mdv-reading-stats {
+  max-width: 760px;
+  margin: 1.5rem auto -1rem;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(127, 127, 127, 0.85);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.mdv-reading-stats span[aria-hidden] {
+  opacity: 0.5;
 }
 
 /* ── 视图模式切换器 ─────────────────────────────────── */
@@ -417,6 +601,117 @@ body {
   .shiki span {
     color: var(--shiki-dark) !important;
     background-color: var(--shiki-dark-bg) !important;
+  }
+}
+
+/* ── 命令面板 (⌘K) ───────────────────────────────────── */
+.mdv-cmdk-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  animation: mdv-fade-in 80ms ease;
+}
+.mdv-cmdk {
+  width: 540px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2328;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.mdv-cmdk-input {
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 14px 16px;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+}
+.mdv-cmdk-results {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  overflow-y: auto;
+  flex: 1;
+}
+.mdv-cmdk-empty {
+  padding: 16px;
+  font-size: 13px;
+  color: rgba(31, 35, 40, 0.5);
+  text-align: center;
+}
+.mdv-cmdk-group {
+  margin-bottom: 4px;
+}
+.mdv-cmdk-group-label {
+  padding: 6px 16px 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(31, 35, 40, 0.45);
+}
+.mdv-cmdk-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mdv-cmdk-group li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  gap: 12px;
+}
+.mdv-cmdk-group li.is-active {
+  background: rgba(9, 105, 218, 0.08);
+}
+.mdv-cmdk-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mdv-cmdk-hint {
+  font-size: 11.5px;
+  color: rgba(31, 35, 40, 0.5);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  flex-shrink: 0;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mdv-cmdk {
+    background: #161b22;
+    color: #e6edf3;
+  }
+  .mdv-cmdk-input {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+  .mdv-cmdk-empty,
+  .mdv-cmdk-group-label,
+  .mdv-cmdk-hint {
+    color: rgba(230, 237, 243, 0.5);
+  }
+  .mdv-cmdk-group li.is-active {
+    background: rgba(56, 139, 253, 0.15);
   }
 }
 

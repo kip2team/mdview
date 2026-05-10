@@ -1,7 +1,7 @@
 // 与 Rust 端的桥接 —— 用 Tauri 官方插件
 // 在浏览器里跑（vite dev 时）这些函数会回退到 input[type=file]，方便不装 Rust 也能调试 UI
 import { open, save } from '@tauri-apps/plugin-dialog';
-import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
+import { readTextFile, writeTextFile, stat } from '@tauri-apps/plugin-fs';
 import { listen } from '@tauri-apps/api/event';
 
 declare global {
@@ -62,6 +62,56 @@ export function listenForOpenedPath(handler: (path: string) => void): (() => voi
     unlistenFn = un;
   });
   return () => unlistenFn?.();
+}
+
+/** 菜单项 id —— 与 Rust 端 MenuItemBuilder 的 with_id 对齐 */
+export type MenuId =
+  | 'open'
+  | 'open-folder'
+  | 'save'
+  | 'export'
+  | 'palette'
+  | 'zen'
+  | 'cycle-view'
+  | 'docs';
+
+/** 监听 native 菜单点击 —— 各菜单 id 见 src-tauri/src/lib.rs */
+export function listenForMenuEvents(handler: (id: MenuId) => void): (() => void) | undefined {
+  if (!isTauri()) return undefined;
+  let unlistenFn: (() => void) | undefined;
+  listen<string>('mdview://menu', (event) => handler(event.payload as MenuId)).then((un) => {
+    unlistenFn = un;
+  });
+  return () => unlistenFn?.();
+}
+
+/** 轮询 mtime 检测外部修改 —— 简单可靠，每 2 秒一次 */
+export function watchFileMtime(
+  path: string,
+  onChange: () => void,
+): (() => void) | undefined {
+  if (!isTauri()) return undefined;
+  let lastMtime: number | undefined;
+  let stopped = false;
+  const tick = async () => {
+    if (stopped) return;
+    try {
+      const info = await stat(path);
+      const m = info.mtime ? new Date(info.mtime).getTime() : 0;
+      if (lastMtime !== undefined && m > lastMtime) {
+        onChange();
+      }
+      lastMtime = m;
+    } catch {
+      // 文件被删 / 临时不可读 —— 忽略，下次轮询再试
+    }
+  };
+  void tick(); // 立即跑一次记录初始 mtime
+  const interval = setInterval(() => void tick(), 2000);
+  return () => {
+    stopped = true;
+    clearInterval(interval);
+  };
 }
 
 /**

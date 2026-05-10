@@ -44,6 +44,10 @@ src-tauri/Cargo.lock
 # 临时
 .tmp
 *.tmp
+.omc
 
 # CDN 构建产物
 cdn-dist
+
+# typedoc 输出
+docs/api

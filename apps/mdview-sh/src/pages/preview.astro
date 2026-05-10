@@ -40,10 +40,25 @@ if (!targetUrl) {
     errorMessage ? (
       <main class="error-card">
         <h1>Couldn't render this URL</h1>
-        <p>{errorMessage}</p>
-        <p>
-          <a href="/">← Back to home</a>
-        </p>
+        <p class="error-detail">{errorMessage}</p>
+        {targetUrl && (
+          <p class="error-source">
+            Tried fetching: <code>{targetUrl}</code>
+          </p>
+        )}
+        <ul class="error-actions">
+          <li>
+            <a href="/">← Back to home</a>
+          </li>
+          {targetUrl && (
+            <li>
+              <a href={`/preview?url=${encodeURIComponent(targetUrl)}`}>↻ Retry</a>
+            </li>
+          )}
+          <li>
+            <a href="/docs">Read the docs</a>
+          </li>
+        </ul>
       </main>
     ) : (
       <>
@@ -61,24 +76,49 @@ if (!targetUrl) {
 
 <style>
   .error-card {
-    max-width: 480px;
+    max-width: 520px;
     margin: 80px auto;
     padding: 32px;
     text-align: center;
   }
   .error-card h1 {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 12px;
   }
-  .error-card p {
-    color: rgba(31, 35, 40, 0.65);
+  .error-card .error-detail {
+    color: rgba(31, 35, 40, 0.75);
     font-size: 14px;
     margin: 8px 0;
   }
+  .error-card .error-source {
+    font-size: 12.5px;
+    color: rgba(31, 35, 40, 0.5);
+    word-break: break-all;
+    margin: 16px 0;
+  }
+  .error-card .error-source code {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+  }
+  .error-card .error-actions {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    font-size: 13px;
+  }
+  .error-card .error-actions a {
+    color: #0969da;
+  }
   @media (prefers-color-scheme: dark) {
-    .error-card p {
-      color: rgba(230, 237, 243, 0.65);
-    }
+    .error-card .error-detail { color: rgba(230, 237, 243, 0.75); }
+    .error-card .error-source { color: rgba(230, 237, 243, 0.5); }
+    .error-card .error-source code { background: rgba(255, 255, 255, 0.06); }
+    .error-card .error-actions a { color: #4493f8; }
   }
 </style>
