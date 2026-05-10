@@ -1,0 +1,44 @@
+{
+  "name": "@mdview/desktop",
+  "version": "0.0.1",
+  "description": "mdview desktop reader (Tauri 2 + Vite + React).",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@mdview/core": "workspace:*",
+    "@mdview/format": "workspace:*",
+    "@mdview/themes": "workspace:*",
+    "@tauri-apps/api": "^2.1.0",
+    "@tauri-apps/plugin-dialog": "^2.0.1",
+    "@tauri-apps/plugin-fs": "^2.0.2",
+    "dompurify": "^3.1.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@codemirror/lang-markdown": "^6.3.0",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.34.1",
+    "codemirror": "^6.0.1",
+    "katex": "^0.16.11",
+    "mermaid": "^11.4.1",
+    "shiki": "^1.22.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0",
+    "@types/dompurify": "^3.0.5",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.8"
+  }
+}

@@ -1,0 +1,189 @@
+---
+// mdview.sh 首页 —— 简洁 landing：标语 + URL 输入框 + 简单介绍
+import Base from '../layouts/Base.astro';
+
+// 如果 URL 上带了 ?url= 直接重定向到 /preview
+const urlParam = Astro.url.searchParams.get('url');
+if (urlParam) {
+  return Astro.redirect(`/preview?url=${encodeURIComponent(urlParam)}`);
+}
+---
+
+<Base>
+  <main class="landing">
+    <header>
+      <h1>mdview</h1>
+      <p>Markdown, beautifully rendered. Anywhere.</p>
+    </header>
+
+    <form action="/preview" method="GET" class="url-form">
+      <input
+        type="url"
+        name="url"
+        placeholder="Paste a Markdown URL (e.g. https://raw.githubusercontent.com/.../README.md)"
+        required
+        autofocus
+      />
+      <button type="submit">Render</button>
+    </form>
+
+    <p class="try-demo">
+      No URL handy? <a href="/docs/demo">Try the demo</a> —
+      a single page that exercises every mdview feature.
+    </p>
+
+    <section class="features">
+      <article>
+        <h3>Reader-first</h3>
+        <p>
+          Open any <code>.md</code> URL and get a Medium-class reading experience —
+          theme-able, distraction-free.
+        </p>
+      </article>
+      <article>
+        <h3>Self-rendering HTML</h3>
+        <p>
+          Export a <code>.mdv.html</code> file. It's still HTML, but the body is your
+          original Markdown — so anyone can edit it with a plain text editor.
+        </p>
+      </article>
+      <article>
+        <h3>Engine everywhere</h3>
+        <p>
+          Same engine on desktop, web, browser extension, IDE plugins, CLI and MCP.
+          One Markdown, every surface.
+        </p>
+      </article>
+    </section>
+
+    <footer>
+      <a href="https://github.com/mdview-sh/mdview">GitHub</a>
+      <span>·</span>
+      <a href="/docs">Docs</a>
+      <span>·</span>
+      <a href="https://github.com/mdview-sh/mdview/blob/main/docs/02-Format-Spec.md">
+        .mdv.html spec
+      </a>
+    </footer>
+  </main>
+</Base>
+
+<style>
+  .landing {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 80px 24px 40px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  header h1 {
+    font-size: 56px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  header p {
+    margin: 0;
+    color: rgba(31, 35, 40, 0.65);
+    font-size: 17px;
+  }
+
+  .url-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 56px;
+  }
+  .url-form input {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #ffffff;
+  }
+  .url-form input:focus {
+    outline: none;
+    border-color: #0969da;
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2);
+  }
+  .url-form button {
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 8px;
+    background: #0969da;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .url-form button:hover {
+    background: #0859b6;
+  }
+
+  .try-demo {
+    text-align: center;
+    margin: -32px 0 56px;
+    font-size: 13px;
+    color: rgba(31, 35, 40, 0.6);
+  }
+  .try-demo a {
+    color: #0969da;
+    font-weight: 500;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .features h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .features p {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: rgba(31, 35, 40, 0.7);
+    margin: 0;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.92em;
+    background: rgba(0, 0, 0, 0.06);
+    padding: 0.05em 0.4em;
+    border-radius: 3px;
+  }
+
+  footer {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    color: rgba(31, 35, 40, 0.5);
+    font-size: 12.5px;
+  }
+  footer a {
+    color: inherit;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    header p,
+    .features p {
+      color: rgba(230, 237, 243, 0.65);
+    }
+    .url-form input {
+      background: #161b22;
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #e6edf3;
+    }
+    code {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    footer {
+      color: rgba(230, 237, 243, 0.5);
+    }
+  }
+</style>

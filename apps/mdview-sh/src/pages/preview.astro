@@ -1,0 +1,84 @@
+---
+// mdview.sh URL 预览页 —— 服务端 fetch + render，把渲染好的 HTML 直接 SSR 出去
+// 路由：/preview?url=<encoded>&theme=<id>
+import Base from '../layouts/Base.astro';
+import { render } from '@mdview/core';
+import { themeDefaults } from '@mdview/themes';
+import { fetchMarkdownFromUrl } from '../lib/fetch-markdown';
+import { sanitize } from '../lib/sanitize';
+import { PreviewToolbar } from '../components/PreviewToolbar';
+import { HydrateExtensions } from '../components/HydrateExtensions';
+
+const targetUrl = Astro.url.searchParams.get('url');
+const themeOverride = Astro.url.searchParams.get('theme') ?? undefined;
+
+let pageTitle = 'mdview · Preview';
+let html = '';
+let errorMessage: string | undefined;
+let renderedThemeId = themeOverride ?? 'default';
+
+if (!targetUrl) {
+  errorMessage = 'Missing ?url= parameter';
+} else {
+  const fetched = await fetchMarkdownFromUrl(targetUrl);
+  if (!fetched.ok) {
+    errorMessage = fetched.error;
+  } else {
+    const result = render(fetched.markdown, {
+      themeDefaults: themeDefaults(renderedThemeId),
+      override: themeOverride ? { theme: themeOverride } : undefined,
+    });
+    renderedThemeId = result.meta.theme ?? renderedThemeId;
+    html = sanitize(result.html);
+    if (result.meta.title) pageTitle = `${result.meta.title} · mdview`;
+  }
+}
+---
+
+<Base title={pageTitle} themeId={renderedThemeId}>
+  {
+    errorMessage ? (
+      <main class="error-card">
+        <h1>Couldn't render this URL</h1>
+        <p>{errorMessage}</p>
+        <p>
+          <a href="/">← Back to home</a>
+        </p>
+      </main>
+    ) : (
+      <>
+        <PreviewToolbar
+          client:idle
+          theme={renderedThemeId}
+          sourceUrl={targetUrl ?? ''}
+        />
+        <main id="mdview-output" set:html={html} />
+        <HydrateExtensions client:idle />
+      </>
+    )
+  }
+</Base>
+
+<style>
+  .error-card {
+    max-width: 480px;
+    margin: 80px auto;
+    padding: 32px;
+    text-align: center;
+  }
+  .error-card h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .error-card p {
+    color: rgba(31, 35, 40, 0.65);
+    font-size: 14px;
+    margin: 8px 0;
+  }
+  @media (prefers-color-scheme: dark) {
+    .error-card p {
+      color: rgba(230, 237, 243, 0.65);
+    }
+  }
+</style>

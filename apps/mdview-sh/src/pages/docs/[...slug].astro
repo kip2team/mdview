@@ -1,0 +1,171 @@
+---
+// /docs/<slug> —— 把仓库根目录 docs/ 下的 markdown 用 mdview 自渲染呈现
+// 用 Vite 的 import.meta.glob 在构建期把所有 .md 文件作为 raw 字符串导入
+// 这样不需要运行时文件系统访问，Cloudflare Workers 也跑得起来
+import Base from '../../layouts/Base.astro';
+import { render } from '@mdview/core';
+import { themeDefaults } from '@mdview/themes';
+import { sanitize } from '../../lib/sanitize';
+import { WebThemeSwitcher } from '../../components/WebThemeSwitcher';
+import { HydrateExtensions } from '../../components/HydrateExtensions';
+
+// 仓库根的 docs/ 目录里所有 .md
+const allDocs = import.meta.glob<string>('../../../../../docs/**/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
+
+// 构造 slug → 内容映射
+const docs: Record<string, string> = {};
+for (const path of Object.keys(allDocs)) {
+  // 去掉路径前缀 → slug
+  const slug = path
+    .replace(/^.*\/docs\//, '')
+    .replace(/\.md$/, '')
+    .replace(/\/index$/, '');
+  docs[slug] = allDocs[path]!;
+  if (slug === 'index') docs[''] = allDocs[path]!;
+}
+
+const slug = (Astro.params.slug as string | undefined) ?? '';
+const md = docs[slug] ?? docs[slug + '/index'];
+
+let pageTitle = 'mdview · Docs';
+let html = '';
+let renderedThemeId = 'default';
+let errorMessage: string | undefined;
+
+if (!md) {
+  errorMessage = `Doc not found: ${slug || '(index)'}`;
+} else {
+  const themeOverride = Astro.url.searchParams.get('theme') ?? 'default';
+  const result = render(md, { themeDefaults: themeDefaults(themeOverride) });
+  renderedThemeId = result.meta.theme ?? themeOverride;
+  html = sanitize(result.html);
+  if (result.meta.title) pageTitle = `${result.meta.title} · mdview docs`;
+}
+
+// 文档导航 —— 把所有可用 slug 给侧栏
+const navItems = Object.keys(docs)
+  .filter((s) => s !== '')
+  .sort()
+  .map((s) => ({ slug: s, label: titleize(s) }));
+
+function titleize(slug: string): string {
+  // 01-PRD-and-Plan → PRD and Plan
+  return slug
+    .replace(/^\d+-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+---
+
+<Base title={pageTitle} themeId={renderedThemeId}>
+  <div class="docs-shell">
+    <nav class="docs-nav" aria-label="Documentation">
+      <strong>mdview docs</strong>
+      <ul>
+        <li>
+          <a href="/docs" class={slug === '' ? 'is-active' : ''}>Overview</a>
+        </li>
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={`/docs/${item.slug}`}
+                class={item.slug === slug ? 'is-active' : ''}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      errorMessage ? (
+        <main class="docs-content error-card">
+          <h1>{errorMessage}</h1>
+          <p>
+            <a href="/docs">← Back to docs</a>
+          </p>
+        </main>
+      ) : (
+        <main id="mdview-output" class="docs-content" set:html={html} />
+      )
+    }
+  </div>
+
+  <div class="mdv-web-toolbar">
+    <WebThemeSwitcher client:idle current={renderedThemeId} />
+  </div>
+
+  <HydrateExtensions client:idle />
+</Base>
+
+<style>
+  .docs-shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 32px;
+    padding: 32px 24px;
+  }
+  @media (max-width: 900px) {
+    .docs-shell { grid-template-columns: 1fr; }
+  }
+  .docs-nav {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    font-size: 13px;
+    color: rgba(31, 35, 40, 0.7);
+  }
+  .docs-nav strong {
+    display: block;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: rgba(31, 35, 40, 0.5);
+    margin-bottom: 12px;
+  }
+  .docs-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .docs-nav li { margin: 0; }
+  .docs-nav a {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 5px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .docs-nav a:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: #0969da;
+  }
+  .docs-nav a.is-active {
+    background: rgba(9, 105, 218, 0.08);
+    color: #0969da;
+    font-weight: 500;
+  }
+  .docs-content {
+    min-width: 0; /* 防止 grid 子项撑爆 */
+  }
+  .error-card { text-align: center; padding: 80px 24px; }
+
+  @media (prefers-color-scheme: dark) {
+    .docs-nav { color: rgba(230, 237, 243, 0.7); }
+    .docs-nav strong { color: rgba(230, 237, 243, 0.5); }
+    .docs-nav a:hover { background: rgba(255, 255, 255, 0.05); }
+    .docs-nav a.is-active {
+      background: rgba(56, 139, 253, 0.15);
+      color: #4493f8;
+    }
+  }
+</style>

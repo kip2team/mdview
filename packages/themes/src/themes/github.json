@@ -1,0 +1,14 @@
+{
+  "id": "github",
+  "name": "GitHub",
+  "version": "0.0.1",
+  "author": "mdview",
+  "description": "GitHub README look-alike: tight typography, blue accent.",
+  "defaults": {
+    "font": "system",
+    "fontSize": "16px",
+    "lineHeight": 1.5,
+    "maxWidth": "1012px",
+    "codeTheme": "github"
+  }
+}

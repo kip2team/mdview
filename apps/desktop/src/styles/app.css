@@ -1,0 +1,683 @@
+/* 桌面端应用层样式 —— 不要影响 #mdview-output 主题 CSS
+   "chrome" 部分使用 .mdv- 前缀做命名隔离 */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  height: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ── 顶部工具栏 ─────────────────────────────────────────
+   设计意图：默认半透明、不抢主内容；hover 时显形 */
+.mdv-toolbar {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  opacity: 0.55;
+  transition: opacity 120ms ease;
+}
+.mdv-toolbar:hover {
+  opacity: 1;
+}
+
+.mdv-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #1f2328;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 80ms ease;
+}
+.mdv-toolbar-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+.mdv-toolbar-btn-label {
+  font-weight: 500;
+}
+
+/* ── 主题下拉菜单 ───────────────────────────────────── */
+.mdv-theme-switcher {
+  position: relative;
+}
+
+.mdv-theme-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.mdv-theme-menu li {
+  margin: 0;
+}
+.mdv-theme-menu button {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+}
+.mdv-theme-menu button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.mdv-theme-menu button.is-active {
+  background: rgba(9, 105, 218, 0.08);
+  color: #0969da;
+}
+.mdv-theme-menu button strong {
+  font-weight: 600;
+}
+.mdv-theme-menu button span {
+  font-size: 11.5px;
+  color: rgba(31, 35, 40, 0.6);
+}
+
+/* ── 视图模式切换器 ─────────────────────────────────── */
+.mdv-viewmode-toggle {
+  display: inline-flex;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.mdv-viewmode-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: 0;
+  background: transparent;
+  color: #1f2328;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+.mdv-viewmode-toggle button:last-child { border-right: 0; }
+.mdv-viewmode-toggle button:hover:not(.is-active) { background: rgba(0, 0, 0, 0.05); }
+.mdv-viewmode-toggle button.is-active {
+  background: rgba(9, 105, 218, 0.1);
+  color: #0969da;
+  font-weight: 500;
+}
+
+/* ── 编辑融合视图 ───────────────────────────────────── */
+.mdv-stage {
+  min-height: 100vh;
+}
+/* split 模式：左编辑器 + 右渲染区 */
+.mdv-stage.mdv-mode-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+}
+.mdv-stage.mdv-mode-split #mdview-output {
+  margin: 0; /* 主题 CSS 默认有 auto margin，分屏时去掉 */
+  height: 100vh;
+  overflow: auto;
+  padding: 32px;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+/* source 模式：编辑器全屏 */
+.mdv-stage.mdv-mode-source .mdv-editor {
+  height: 100vh;
+}
+
+.mdv-editor {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 14px;
+}
+.mdv-editor .cm-editor {
+  height: 100%;
+}
+.mdv-editor .cm-scroller {
+  font-family: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mdv-viewmode-toggle {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .mdv-viewmode-toggle button {
+    color: #e6edf3;
+    border-right-color: rgba(255, 255, 255, 0.1);
+  }
+  .mdv-viewmode-toggle button:hover:not(.is-active) {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .mdv-viewmode-toggle button.is-active {
+    background: rgba(56, 139, 253, 0.15);
+    color: #4493f8;
+  }
+  .mdv-stage.mdv-mode-split #mdview-output {
+    border-left-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ── 欢迎页 ─────────────────────────────────────────── */
+.mdv-welcome {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1f2328;
+}
+.mdv-welcome-card {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+.mdv-welcome-logo {
+  font-size: 56px;
+  margin-bottom: 8px;
+}
+.mdv-welcome-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+.mdv-welcome-tagline {
+  font-size: 14px;
+  color: rgba(31, 35, 40, 0.6);
+  margin: 0 0 28px;
+}
+.mdv-welcome-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+.mdv-welcome-actions .mdv-btn {
+  padding: 9px 18px;
+  font-size: 14px;
+}
+.mdv-welcome-hint {
+  font-size: 12.5px;
+  color: rgba(31, 35, 40, 0.55);
+}
+.mdv-welcome-hint code {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.05em 0.4em;
+  border-radius: 3px;
+}
+.mdv-welcome-recent {
+  text-align: left;
+  margin-bottom: 28px;
+}
+.mdv-welcome-recent h2 {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(31, 35, 40, 0.5);
+  margin: 0 0 8px;
+}
+.mdv-welcome-recent ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mdv-welcome-recent li {
+  margin: 0;
+}
+.mdv-welcome-recent button {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+.mdv-welcome-recent button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.mdv-recent-name {
+  font-weight: 500;
+}
+.mdv-recent-path {
+  font-size: 11.5px;
+  color: rgba(31, 35, 40, 0.5);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.mdv-welcome-shortcuts {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 12px;
+  color: rgba(31, 35, 40, 0.55);
+}
+.mdv-welcome-shortcuts kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.03);
+  margin-right: 4px;
+}
+
+/* ── 拖拽视觉反馈 ────────────────────────────────────── */
+.mdv-drop-overlay {
+  position: fixed;
+  inset: 16px;
+  z-index: 3000;
+  border: 3px dashed rgba(9, 105, 218, 0.5);
+  border-radius: 14px;
+  background: rgba(9, 105, 218, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: mdv-fade-in 100ms ease;
+}
+.mdv-drop-overlay-inner {
+  text-align: center;
+  color: #0969da;
+}
+.mdv-drop-icon {
+  font-size: 56px;
+  margin-bottom: 8px;
+}
+.mdv-drop-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ── TOC 侧栏 ────────────────────────────────────────── */
+.mdv-toc {
+  position: fixed;
+  top: 60px;
+  width: 220px;
+  max-height: calc(100vh - 100px);
+  overflow: auto;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(31, 35, 40, 0.7);
+}
+.mdv-toc-right { right: 24px; }
+.mdv-toc-left  { left: 24px; }
+
+/* 视口过窄时藏起 TOC，避免和正文重叠 */
+@media (max-width: 1280px) {
+  .mdv-toc { display: none; }
+}
+
+.mdv-toc-title {
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(31, 35, 40, 0.55);
+  margin-bottom: 8px;
+}
+
+.mdv-toc nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+.mdv-toc nav li {
+  margin: 0;
+}
+.mdv-toc nav a {
+  display: block;
+  padding: 3px 0 3px 12px;
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+  color: inherit;
+  text-decoration: none;
+  transition: color 80ms ease, border-color 80ms ease;
+}
+.mdv-toc nav a:hover { color: #0969da; }
+.mdv-toc nav a.is-active {
+  color: #0969da;
+  border-left-color: #0969da;
+}
+.mdv-toc-l1 > a { font-weight: 600; }
+.mdv-toc-l2 > a { padding-left: 12px; }
+.mdv-toc-l3 > a { padding-left: 24px; }
+.mdv-toc-l4 > a { padding-left: 36px; }
+.mdv-toc-l5 > a { padding-left: 48px; }
+.mdv-toc-l6 > a { padding-left: 60px; }
+
+@media (prefers-color-scheme: dark) {
+  .mdv-toc { color: rgba(230, 237, 243, 0.65); }
+  .mdv-toc-title { color: rgba(230, 237, 243, 0.5); }
+  .mdv-toc nav ul { border-left-color: rgba(255, 255, 255, 0.1); }
+  .mdv-toc nav a:hover,
+  .mdv-toc nav a.is-active { color: #4493f8; }
+  .mdv-toc nav a.is-active { border-left-color: #4493f8; }
+}
+
+/* ── Shiki 双主题桥接 ─────────────────────────────────
+   shiki 在 codeToHtml({ themes: { light, dark } }) 模式下会输出
+   两套 CSS 变量（--shiki-light / --shiki-dark）+ 同名 background。
+   需要在暗色模式下把 .shiki 元素切到 dark 变量。
+*/
+.shiki,
+.shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+@media (prefers-color-scheme: dark) {
+  .shiki,
+  .shiki span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
+}
+
+/* ── Modal / 导出对话框 ───────────────────────────────── */
+.mdv-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  animation: mdv-fade-in 120ms ease;
+}
+
+.mdv-modal {
+  width: 540px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+  padding: 24px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2328;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+}
+
+.mdv-modal-title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.mdv-form-group {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+}
+.mdv-form-group legend {
+  font-weight: 600;
+  font-size: 13px;
+  color: #59636e;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.mdv-form-option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+  margin-bottom: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 80ms ease, border-color 80ms ease;
+}
+.mdv-form-option:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+.mdv-form-option:has(input:checked) {
+  background: rgba(9, 105, 218, 0.05);
+  border-color: rgba(9, 105, 218, 0.4);
+}
+.mdv-form-option input[type='radio'] {
+  margin-top: 3px;
+}
+.mdv-form-option-label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.mdv-form-option-desc {
+  font-size: 12.5px;
+  color: rgba(31, 35, 40, 0.65);
+  line-height: 1.45;
+}
+
+.mdv-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.mdv-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+.mdv-form-field span {
+  color: #59636e;
+  font-weight: 500;
+}
+.mdv-form-field select {
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  background: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.mdv-form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  color: #1f2328;
+}
+.mdv-form-checkbox input[type='checkbox'] {
+  margin: 0;
+}
+.mdv-hint {
+  font-size: 12px;
+  color: rgba(31, 35, 40, 0.55);
+}
+
+.mdv-error {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: rgba(207, 34, 46, 0.08);
+  color: #cf222e;
+  font-size: 12.5px;
+}
+
+.mdv-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.mdv-btn {
+  padding: 7px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  background: #ffffff;
+  color: #1f2328;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 80ms ease;
+}
+.mdv-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.04);
+}
+.mdv-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.mdv-btn-primary {
+  background: #1f6feb;
+  border-color: #1f6feb;
+  color: #ffffff;
+}
+.mdv-btn-primary:hover:not(:disabled) {
+  background: #1857c4;
+  border-color: #1857c4;
+}
+
+@keyframes mdv-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background: #0d1117;
+  }
+  .mdv-toolbar {
+    background: rgba(22, 27, 34, 0.78);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .mdv-toolbar-btn {
+    color: #e6edf3;
+  }
+  .mdv-toolbar-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .mdv-theme-menu {
+    background: #161b22;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  }
+  .mdv-theme-menu button:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .mdv-theme-menu button.is-active {
+    background: rgba(56, 139, 253, 0.15);
+    color: #4493f8;
+  }
+  .mdv-theme-menu button span {
+    color: rgba(230, 237, 243, 0.55);
+  }
+
+  .mdv-modal {
+    background: #161b22;
+    color: #e6edf3;
+  }
+  .mdv-form-group legend,
+  .mdv-form-field span {
+    color: rgba(230, 237, 243, 0.6);
+  }
+  .mdv-form-option {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .mdv-form-option:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .mdv-form-option:has(input:checked) {
+    background: rgba(56, 139, 253, 0.12);
+    border-color: rgba(56, 139, 253, 0.5);
+  }
+  .mdv-form-option-desc {
+    color: rgba(230, 237, 243, 0.55);
+  }
+  .mdv-form-field select,
+  .mdv-btn {
+    background: #0d1117;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e6edf3;
+  }
+  .mdv-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .mdv-btn-primary {
+    background: #1f6feb;
+    border-color: #1f6feb;
+    color: #ffffff;
+  }
+  .mdv-form-checkbox,
+  .mdv-error,
+  .mdv-hint {
+    color: rgba(230, 237, 243, 0.85);
+  }
+
+  .mdv-welcome { color: #e6edf3; }
+  .mdv-welcome-tagline,
+  .mdv-welcome-hint,
+  .mdv-welcome-shortcuts { color: rgba(230, 237, 243, 0.55); }
+  .mdv-welcome-hint code { background: rgba(255, 255, 255, 0.08); }
+  .mdv-welcome-recent h2 { color: rgba(230, 237, 243, 0.45); }
+  .mdv-welcome-recent button:hover { background: rgba(255, 255, 255, 0.05); }
+  .mdv-recent-path { color: rgba(230, 237, 243, 0.45); }
+  .mdv-welcome-shortcuts kbd {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  .mdv-drop-overlay {
+    border-color: rgba(68, 147, 248, 0.6);
+    background: rgba(68, 147, 248, 0.1);
+  }
+  .mdv-drop-overlay-inner { color: #4493f8; }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "medium",
+  "name": "Medium",
+  "version": "0.0.1",
+  "author": "mdview",
+  "description": "Long-form reading vibe: serif body, generous line height, narrow column.",
+  "defaults": {
+    "font": "charter",
+    "fontSize": "20px",
+    "lineHeight": 1.7,
+    "maxWidth": "680px",
+    "codeTheme": "github"
+  }
+}

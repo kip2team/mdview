@@ -1,0 +1,22 @@
+{
+  "name": "@mdview/engine-browser",
+  "version": "0.0.1",
+  "description": "Self-bootstrapping browser engine for .mdv.html files. The single JS bundle served at cdn.mdview.sh/r/v1.js.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/v1.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "node ./build.js",
+    "dev": "node ./build.js --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@mdview/core": "workspace:*",
+    "dompurify": "^3.1.7"
+  },
+  "devDependencies": {
+    "@types/dompurify": "^3.0.5",
+    "esbuild": "^0.24.0"
+  }
+}

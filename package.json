@@ -1,0 +1,42 @@
+{
+  "name": "mdview",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Engine-first Markdown rendering / reading / sharing across desktop, web, plugins, CLI and MCP.",
+  "license": "MIT",
+  "homepage": "https://mdview.sh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdview-sh/mdview.git"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "test": "pnpm -r run test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "pnpm -r run typecheck",
+    "clean": "pnpm -r exec rm -rf dist node_modules .turbo",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,html}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css,html}\"",
+    "desktop:dev": "pnpm --filter @mdview/desktop run dev",
+    "cli": "pnpm --filter @mdview/cli run start",
+    "cdn:build": "pnpm --filter @mdview/engine-browser build && node scripts/build-cdn.js"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "@eslint/js": "^9.13.0",
+    "@types/node": "^22.7.0",
+    "eslint": "^9.13.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.11.0",
+    "vitest": "^2.1.1"
+  }
+}

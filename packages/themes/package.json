@@ -1,0 +1,25 @@
+{
+  "name": "@mdview/themes",
+  "version": "0.0.1",
+  "description": "Built-in mdview themes (default / github / medium).",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./default.css": "./src/themes/default.css",
+    "./github.css": "./src/themes/github.css",
+    "./medium.css": "./src/themes/medium.css",
+    "./extensions.css": "./src/extensions.css"
+  },
+  "files": ["dist", "src/themes"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

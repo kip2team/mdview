@@ -1,0 +1,73 @@
+---
+// /s/{slug} —— 解析短链 → fetch + render，与 /preview 路径同样的 SSR
+import Base from '../../layouts/Base.astro';
+import { render } from '@mdview/core';
+import { themeDefaults } from '@mdview/themes';
+import { fetchMarkdownFromUrl } from '../../lib/fetch-markdown';
+import { sanitize } from '../../lib/sanitize';
+import { getShortLink, type CfBindings } from '../../lib/storage';
+import { WebThemeSwitcher } from '../../components/WebThemeSwitcher';
+import { HydrateExtensions } from '../../components/HydrateExtensions';
+
+const slug = Astro.params.slug;
+const env = (Astro.locals as { runtime?: { env?: CfBindings } }).runtime?.env ?? {};
+
+let pageTitle = `mdview · ${slug}`;
+let html = '';
+let errorMessage: string | undefined;
+let renderedThemeId = 'default';
+
+if (!slug) {
+  errorMessage = 'Missing slug';
+} else {
+  const record = await getShortLink(env, slug);
+  if (!record) {
+    errorMessage = `Short link not found or expired: ${slug}`;
+  } else {
+    const fetched = await fetchMarkdownFromUrl(record.url);
+    if (!fetched.ok) {
+      errorMessage = fetched.error;
+    } else {
+      const themeOverride = Astro.url.searchParams.get('theme') ?? record.theme;
+      const result = render(fetched.markdown, {
+        themeDefaults: themeDefaults(themeOverride ?? 'default'),
+        override: themeOverride ? { theme: themeOverride } : undefined,
+      });
+      renderedThemeId = result.meta.theme ?? 'default';
+      html = sanitize(result.html);
+      if (result.meta.title) pageTitle = `${result.meta.title} · mdview`;
+    }
+  }
+}
+---
+
+<Base title={pageTitle} themeId={renderedThemeId}>
+  {
+    errorMessage ? (
+      <main class="error-card">
+        <h1>This short link doesn't work anymore</h1>
+        <p>{errorMessage}</p>
+        <p>
+          <a href="/">← Back to home</a>
+        </p>
+      </main>
+    ) : (
+      <>
+        <div class="mdv-web-toolbar">
+          <WebThemeSwitcher client:idle current={renderedThemeId} />
+        </div>
+        <main id="mdview-output" set:html={html} />
+        <HydrateExtensions client:idle />
+      </>
+    )
+  }
+</Base>
+
+<style>
+  .error-card {
+    max-width: 480px;
+    margin: 80px auto;
+    padding: 32px;
+    text-align: center;
+  }
+</style>

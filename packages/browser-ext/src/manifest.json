@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "mdview - Beautiful Markdown",
+  "short_name": "mdview",
+  "description": "Render raw Markdown URLs (GitHub raw / gist / any .md) as a beautiful, theme-able document.",
+  "version": "0.0.1",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://raw.githubusercontent.com/*",
+    "https://gist.githubusercontent.com/*",
+    "https://*/*.md",
+    "https://*/*.markdown"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://raw.githubusercontent.com/*",
+        "https://gist.githubusercontent.com/*",
+        "https://*/*.md",
+        "https://*/*.markdown"
+      ],
+      "js": ["content.js"],
+      "css": ["styles/extensions.css", "styles/default-theme.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  }
+}

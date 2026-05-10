@@ -1,0 +1,70 @@
+{
+  "name": "mdview",
+  "displayName": "mdview",
+  "description": "Beautiful Markdown preview powered by mdview engine. Theme-able, extensible, cross-surface.",
+  "version": "0.0.1",
+  "publisher": "mdview",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": ["Visualization", "Other"],
+  "keywords": ["markdown", "preview", "renderer"],
+  "activationEvents": ["onLanguage:markdown"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mdview.openPreview",
+        "title": "mdview: Open Preview"
+      },
+      {
+        "command": "mdview.openPreviewToSide",
+        "title": "mdview: Open Preview to the Side"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "editorLangId == markdown",
+          "command": "mdview.openPreviewToSide",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "mdview",
+      "properties": {
+        "mdview.theme": {
+          "type": "string",
+          "default": "default",
+          "enum": ["default", "github", "medium"],
+          "description": "Theme to use for the mdview preview."
+        },
+        "mdview.extensions": {
+          "type": "array",
+          "default": [],
+          "description": "Built-in mdview extensions to enable (e.g. mdv:color, mdv:callout, mdv:math, mdv:mermaid)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node ./build.js",
+    "dev": "node ./build.js --watch",
+    "package": "vsce package",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@mdview/core": "workspace:*",
+    "@mdview/themes": "workspace:*",
+    "dompurify": "^3.1.7"
+  },
+  "devDependencies": {
+    "@types/dompurify": "^3.0.5",
+    "@types/vscode": "^1.95.0",
+    "esbuild": "^0.24.0"
+  }
+}

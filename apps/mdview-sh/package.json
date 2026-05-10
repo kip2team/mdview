@@ -1,0 +1,32 @@
+{
+  "name": "@mdview/mdview-sh",
+  "version": "0.0.1",
+  "description": "mdview.sh — public web app: URL preview + short links + theme switcher.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check && tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^11.0.4",
+    "@astrojs/react": "^3.6.2",
+    "@mdview/core": "workspace:*",
+    "@mdview/format": "workspace:*",
+    "@mdview/themes": "workspace:*",
+    "astro": "^4.16.0",
+    "isomorphic-dompurify": "^2.16.0",
+    "katex": "^0.16.11",
+    "mermaid": "^11.4.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0"
+  }
+}

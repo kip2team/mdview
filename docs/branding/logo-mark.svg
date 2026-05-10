@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="mdview mark">
+  <!-- 透明背景的纯标记版本，用于 favicon / inline 标识 -->
+  <path d="M48 200 L48 60 L84 60 L128 142 L172 60 L208 60 L208 200 L174 200 L174 110 L138 178 L118 178 L82 110 L82 200 Z"
+        fill="#1f6feb"/>
+  <rect x="48" y="216" width="160" height="8" rx="4" fill="#1f6feb" opacity="0.55"/>
+</svg>

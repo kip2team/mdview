@@ -1,0 +1,14 @@
+{
+  "id": "default",
+  "name": "Default",
+  "version": "0.0.1",
+  "author": "mdview",
+  "description": "Clean, neutral typography. Works well with light or dark UA.",
+  "defaults": {
+    "font": "system",
+    "fontSize": "16px",
+    "lineHeight": 1.65,
+    "maxWidth": "760px",
+    "codeTheme": "github"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "create-mdview-doc",
+  "version": "0.0.1",
+  "description": "Scaffold a new mdview-flavored Markdown document with proper front matter and a one-command export setup.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-mdview-doc": "./dist/cli.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "cac": "^6.7.14"
+  }
+}

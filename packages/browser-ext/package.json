@@ -1,0 +1,22 @@
+{
+  "name": "@mdview/browser-ext",
+  "version": "0.0.1",
+  "description": "mdview browser extension — auto-renders raw .md pages on GitHub / gist / arbitrary URLs.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ./build.js",
+    "dev": "node ./build.js --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@mdview/core": "workspace:*",
+    "dompurify": "^3.1.7"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.275",
+    "@types/dompurify": "^3.0.5",
+    "esbuild": "^0.24.0"
+  }
+}

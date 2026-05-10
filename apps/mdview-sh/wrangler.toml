@@ -1,0 +1,23 @@
+# Cloudflare Workers / Pages 配置 —— 通过 wrangler dev / deploy 使用
+# 部署前需要：
+#   1. wrangler kv namespace create SHORTLINKS
+#   2. 把生成的 id 填到下面 [[kv_namespaces]] 的 id 字段
+#   3. 同上为 RATE_KV 创建一个 namespace（也可以共用 SHORTLINKS，但分开更清晰）
+name = "mdview-sh"
+main = "./dist/_worker.js/index.js"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+
+[[kv_namespaces]]
+binding = "SHORTLINKS"
+id = "REPLACE_WITH_REAL_KV_ID"
+
+[[kv_namespaces]]
+binding = "RATE_KV"
+id = "REPLACE_WITH_REAL_RATE_KV_ID"
+
+[observability]
+enabled = true

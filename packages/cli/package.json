@@ -1,0 +1,25 @@
+{
+  "name": "@mdview/cli",
+  "version": "0.0.1",
+  "description": "mdview command-line: render / export / convert / serve.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "mdview": "./dist/cli.js",
+    "mdv": "./dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "start": "node ./dist/cli.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@mdview/core": "workspace:*",
+    "@mdview/format": "workspace:*",
+    "@mdview/themes": "workspace:*",
+    "cac": "^6.7.14"
+  }
+}

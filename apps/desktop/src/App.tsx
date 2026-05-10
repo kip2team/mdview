@@ -1,0 +1,374 @@
+// mdview 桌面端主界面
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { render } from '@mdview/core';
+import { themeDefaults } from '@mdview/themes';
+import {
+  openFileDialog,
+  readMarkdownFile,
+  listenForOpenedPath,
+  saveFileDialog,
+  writeTextToFile,
+  isTauriRuntime,
+} from './ipc';
+import { sanitize } from './lib/sanitize';
+import { highlightHtml } from './lib/highlight';
+import { hydrateExtensions } from './lib/hydrate';
+import { applyTheme, getStoredTheme, persistTheme } from './lib/theme-loader';
+import { loadRecents, pushRecent, type RecentFile } from './lib/recent-files';
+import { Toolbar } from './components/Toolbar';
+import { ThemeSwitcher } from './components/ThemeSwitcher';
+import { ExportDialog } from './components/ExportDialog';
+import { TocSidebar } from './components/TocSidebar';
+import { DropOverlay } from './components/DropOverlay';
+import { Welcome } from './components/Welcome';
+import { Editor } from './components/Editor';
+
+/** 三态视图模式：纯阅读 / 分屏（左源右渲染）/ 纯源码 */
+type ViewMode = 'read' | 'split' | 'source';
+const VIEW_MODES: ViewMode[] = ['read', 'split', 'source'];
+const VIEW_MODE_KEY = 'mdview:viewmode';
+const VIEW_MODE_LABEL: Record<ViewMode, { icon: string; label: string }> = {
+  read: { icon: '👁', label: 'Read' },
+  split: { icon: '⊟', label: 'Split' },
+  source: { icon: '✎', label: 'Source' },
+};
+
+function ViewModeToggle({
+  value,
+  onChange,
+}: {
+  value: ViewMode;
+  onChange: (m: ViewMode) => void;
+}): JSX.Element {
+  return (
+    <div className="mdv-viewmode-toggle" role="tablist" aria-label="View mode">
+      {VIEW_MODES.map((m) => {
+        const { icon, label } = VIEW_MODE_LABEL[m];
+        return (
+          <button
+            key={m}
+            type="button"
+            role="tab"
+            aria-selected={value === m}
+            className={value === m ? 'is-active' : ''}
+            title={`${label} mode (⌘\\ to cycle)`}
+            onClick={() => onChange(m)}
+          >
+            <span aria-hidden>{icon}</span>
+            <span className="mdv-toolbar-btn-label">{label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+export function App(): JSX.Element {
+  // 文档状态：filePath 标识当前文件；markdown 为 null 时表示"没文件"，进欢迎页
+  const [filePath, setFilePath] = useState<string | undefined>(undefined);
+  const [markdown, setMarkdown] = useState<string | null>(null);
+  const [themeId, setThemeId] = useState<string>(getStoredTheme);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [recents, setRecents] = useState<RecentFile[]>(() => loadRecents());
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    try {
+      const v = localStorage.getItem(VIEW_MODE_KEY);
+      return (VIEW_MODES.includes(v as ViewMode) ? v : 'read') as ViewMode;
+    } catch {
+      return 'read';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(VIEW_MODE_KEY, viewMode);
+    } catch {
+      // ignore
+    }
+  }, [viewMode]);
+
+  // 滚动同步用的元素引用（split 模式）
+  const outputElRef = useRef<HTMLElement | null>(null);
+  const editorWrapperElRef = useRef<HTMLElement | null>(null);
+
+  // split 模式滚动同步：哪一侧滚就把比例写到另一侧
+  // 加 syncing 锁，避免互相触发死循环
+  useEffect(() => {
+    if (viewMode !== 'split') return;
+    const out = outputElRef.current;
+    const editorWrap = editorWrapperElRef.current;
+    if (!out || !editorWrap) return;
+
+    // CodeMirror 实际滚动的是 .cm-scroller
+    const editorScroller = editorWrap.querySelector<HTMLElement>('.cm-scroller');
+    if (!editorScroller) return;
+
+    let syncing = false;
+    function ratio(el: HTMLElement): number {
+      const max = el.scrollHeight - el.clientHeight;
+      return max <= 0 ? 0 : el.scrollTop / max;
+    }
+    function applyRatio(el: HTMLElement, r: number): void {
+      const max = el.scrollHeight - el.clientHeight;
+      el.scrollTop = max * r;
+    }
+    const onEditorScroll = () => {
+      if (syncing) return;
+      syncing = true;
+      applyRatio(out, ratio(editorScroller!));
+      requestAnimationFrame(() => (syncing = false));
+    };
+    const onOutputScroll = () => {
+      if (syncing) return;
+      syncing = true;
+      applyRatio(editorScroller!, ratio(out));
+      requestAnimationFrame(() => (syncing = false));
+    };
+
+    editorScroller.addEventListener('scroll', onEditorScroll, { passive: true });
+    out.addEventListener('scroll', onOutputScroll, { passive: true });
+    return () => {
+      editorScroller.removeEventListener('scroll', onEditorScroll);
+      out.removeEventListener('scroll', onOutputScroll);
+    };
+  }, [viewMode, markdown]);
+
+  // 主题副作用
+  useEffect(() => {
+    applyTheme(themeId);
+    persistTheme(themeId);
+  }, [themeId]);
+
+  // 渲染区与编辑器的引用，用于滚动同步（仅 split 模式）
+  const outputRef = useCallback((el: HTMLElement | null) => {
+    outputElRef.current = el;
+    if (el) void hydrateExtensions(el);
+  }, []);
+  const editorWrapperRef = useCallback((el: HTMLElement | null) => {
+    editorWrapperElRef.current = el;
+  }, []);
+
+  // 渲染产物 —— 仅当有 markdown 时才跑
+  const result = useMemo(
+    () =>
+      markdown != null
+        ? render(markdown, { themeDefaults: themeDefaults(themeId) })
+        : null,
+    [markdown, themeId],
+  );
+
+  // 注入到 DOM 的最终 HTML —— 先未高亮、后异步替换为高亮版本
+  const [safeHtml, setSafeHtml] = useState<string>('');
+  useEffect(() => {
+    if (!result) {
+      setSafeHtml('');
+      return;
+    }
+    setSafeHtml(sanitize(result.html));
+    let cancelled = false;
+    highlightHtml(result.html)
+      .then((h) => {
+        if (cancelled) return;
+        if (h === result.html) return;
+        setSafeHtml(sanitize(h));
+      })
+      .catch((err) => {
+        console.warn('[mdview] highlight failed:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [result]);
+
+  // 文档标题更新
+  useEffect(() => {
+    document.title = result?.meta.title ?? filePath ?? 'mdview';
+  }, [result?.meta.title, filePath]);
+
+  // 加载文件 —— 各入口（菜单、拖拽、Rust 推送、最近文件）共用这个
+  const loadFile = useCallback(async (path: string) => {
+    try {
+      const content = await readMarkdownFile(path);
+      setFilePath(path);
+      setMarkdown(content);
+      setRecents(pushRecent(path));
+    } catch (err) {
+      console.error('Failed to load file:', err);
+    }
+  }, []);
+
+  const handleOpen = useCallback(async () => {
+    const selected = await openFileDialog();
+    if (!selected) return;
+    await loadFile(selected);
+  }, [loadFile]);
+
+  /** 保存当前 markdown：有 filePath 直接覆盖；否则弹另存为 */
+  const handleSave = useCallback(async (): Promise<void> => {
+    if (markdown == null) return;
+    let target = filePath;
+    // dev 浏览器模式没有真实路径或者 filePath 还是 file.name 这种伪路径时，弹另存为
+    if (!target || !isTauriRuntime()) {
+      const picked = await saveFileDialog({
+        defaultPath: filePath ?? 'untitled.md',
+        filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }],
+      });
+      if (!picked) return;
+      target = picked;
+    }
+    try {
+      await writeTextToFile(target, markdown);
+      setFilePath(target);
+      setRecents(pushRecent(target));
+    } catch (err) {
+      console.error('Save failed:', err);
+    }
+  }, [markdown, filePath]);
+
+  // 来自 Rust 端的 open-path 事件（双击 .md 启动）
+  useEffect(() => {
+    const off = listenForOpenedPath((path) => {
+      void loadFile(path);
+    });
+    return () => off?.();
+  }, [loadFile]);
+
+  // 键盘快捷键：⌘O 打开 / ⌘E 导出 / ⌘\ 在三种视图间循环
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const mod = e.metaKey || e.ctrlKey;
+      if (!mod) return;
+      const key = e.key.toLowerCase();
+      if (key === 'o') {
+        e.preventDefault();
+        handleOpen();
+      } else if (key === 'e') {
+        e.preventDefault();
+        if (markdown != null) setExportOpen(true);
+      } else if (key === 's') {
+        e.preventDefault();
+        void handleSave();
+      } else if (key === '\\') {
+        e.preventDefault();
+        if (markdown == null) return;
+        setViewMode((m) => {
+          const idx = VIEW_MODES.indexOf(m);
+          return VIEW_MODES[(idx + 1) % VIEW_MODES.length]!;
+        });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [handleOpen, handleSave, markdown]);
+
+  // 拖拽：实时反馈 + 落点接住文件
+  useEffect(() => {
+    let dragCounter = 0;
+    const onDragEnter = (e: DragEvent) => {
+      // 只有真的拖了文件才显示 overlay（不响应窗口内拖文字等）
+      if (!e.dataTransfer?.types.includes('Files')) return;
+      dragCounter++;
+      setDragging(true);
+    };
+    const onDragLeave = () => {
+      dragCounter--;
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        setDragging(false);
+      }
+    };
+    const onDragOver = (e: DragEvent) => {
+      // preventDefault 才能触发 drop 事件
+      if (e.dataTransfer?.types.includes('Files')) e.preventDefault();
+    };
+    const onDrop = async (e: DragEvent) => {
+      e.preventDefault();
+      dragCounter = 0;
+      setDragging(false);
+      const file = e.dataTransfer?.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      // dev 浏览器模式拿不到真实路径，用 file.name 作为占位
+      setFilePath(file.name);
+      setMarkdown(text);
+      setRecents(pushRecent(file.name));
+    };
+    window.addEventListener('dragenter', onDragEnter);
+    window.addEventListener('dragleave', onDragLeave);
+    window.addEventListener('dragover', onDragOver);
+    window.addEventListener('drop', onDrop);
+    return () => {
+      window.removeEventListener('dragenter', onDragEnter);
+      window.removeEventListener('dragleave', onDragLeave);
+      window.removeEventListener('dragover', onDragOver);
+      window.removeEventListener('drop', onDrop);
+    };
+  }, []);
+
+  return (
+    <>
+      {/* 工具栏只在有文件时显示，欢迎页有自己的入口按钮 */}
+      {markdown != null && (
+        <Toolbar>
+          <button
+            type="button"
+            className="mdv-toolbar-btn"
+            title="Open Markdown file (⌘O)"
+            onClick={handleOpen}
+          >
+            <span aria-hidden>📂</span>
+            <span className="mdv-toolbar-btn-label">Open</span>
+          </button>
+          <ViewModeToggle value={viewMode} onChange={setViewMode} />
+          <button
+            type="button"
+            className="mdv-toolbar-btn"
+            title="Export as .mdv.html (⌘E)"
+            onClick={() => setExportOpen(true)}
+          >
+            <span aria-hidden>⬇️</span>
+            <span className="mdv-toolbar-btn-label">Export</span>
+          </button>
+          <ThemeSwitcher value={themeId} onChange={setThemeId} />
+        </Toolbar>
+      )}
+
+      {markdown == null ? (
+        <Welcome
+          onOpen={handleOpen}
+          recents={recents}
+          onPickRecent={(f) => void loadFile(f.path)}
+        />
+      ) : (
+        <div className={`mdv-stage mdv-mode-${viewMode}`}>
+          {(viewMode === 'split' || viewMode === 'source') && (
+            <div className="mdv-editor-wrap" ref={editorWrapperRef}>
+              <Editor value={markdown} onChange={setMarkdown} />
+            </div>
+          )}
+          {(viewMode === 'split' || viewMode === 'read') && (
+            <main
+              id="mdview-output"
+              ref={outputRef}
+              dangerouslySetInnerHTML={{ __html: safeHtml }}
+            />
+          )}
+        </div>
+      )}
+
+      {result && <TocSidebar headings={result.headings} toc={result.meta.toc} />}
+
+      <DropOverlay visible={dragging} />
+
+      {exportOpen && markdown != null && (
+        <ExportDialog
+          markdown={markdown}
+          defaultThemeId={themeId}
+          filePath={filePath}
+          onClose={() => setExportOpen(false)}
+        />
+      )}
+    </>
+  );
+}

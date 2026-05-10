@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "mdview",
+  "version": "0.0.1",
+  "identifier": "sh.mdview.desktop",
+  "build": {
+    "beforeDevCommand": "pnpm --filter @mdview/desktop run dev",
+    "beforeBuildCommand": "pnpm --filter @mdview/desktop run build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "mdview",
+        "width": 920,
+        "height": 720,
+        "minWidth": 480,
+        "minHeight": 360,
+        "decorations": true,
+        "transparent": false,
+        "fileDropEnabled": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "fileAssociations": [
+      {
+        "ext": ["md", "markdown", "mdv"],
+        "name": "Markdown Document",
+        "description": "Markdown document opened with mdview",
+        "role": "Viewer",
+        "mimeType": "text/markdown"
+      }
+    ]
+  },
+  "plugins": {}
+}
