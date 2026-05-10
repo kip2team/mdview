@@ -68,9 +68,9 @@ function parseDetails(
   openTok.map = [startLine, nextLine];
 
   // 让 markdown-it 把中间行作为子内容继续解析
+  // state.md.block 在 14 的类型里已经是 public，无需 @ts-expect-error
   state.line = startLine + 1;
   state.lineMax = nextLine;
-  // @ts-expect-error md.block is internal but used in markdown-it plugins
   state.md.block.tokenize(state, startLine + 1, nextLine);
   state.lineMax = oldLineMax;
   state.parentType = oldParentType;

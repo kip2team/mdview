@@ -4,6 +4,7 @@
 //   H~2~O          → H<sub>2</sub>O
 // 注意：~~strikethrough~~ 由 GFM 处理（双 ~），我们的 ~x~ 是单 ~
 import type MarkdownIt from 'markdown-it';
+import type StateInline from 'markdown-it/lib/rules_inline/state_inline.mjs';
 
 export function subSupExtension(md: MarkdownIt): void {
   // 上标 ^...^
@@ -18,7 +19,7 @@ export function subSupExtension(md: MarkdownIt): void {
 
 /** 通用单字符 delimiter 行内解析：找 ch...ch 包围的非空白内容 */
 function parseDelimited(
-  state: import('markdown-it').StateInline,
+  state: StateInline,
   silent: boolean,
   ch: number,
   tag: 'sup' | 'sub',
