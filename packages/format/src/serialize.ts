@@ -88,11 +88,15 @@ export function toMdvHtml(markdown: string, options: ToMdvHtmlOptions): string {
     safeSource +
     `\n</script>`;
 
-  // progressive 形态：output 容器内可放预渲染 HTML，便于无 JS 时也能看
-  const outputTag =
-    form === 'progressive' && options.prerenderedHtml
-      ? `<main id="${MDVIEW_OUTPUT_ID}">\n${options.prerenderedHtml}\n</main>`
-      : `<main id="${MDVIEW_OUTPUT_ID}"></main>`;
+  // 把 prerendered HTML 写进 output 容器：
+  // - progressive：必写（首屏即可见，无需等引擎加载）
+  // - standalone：必写（不引用任何 CDN 引擎，prerendered 就是显示内容本身）
+  // - minimal：不写（minimal 体积最小，靠引擎实时渲染 source）
+  const shouldEmbedPrerendered =
+    (form === 'progressive' || form === 'standalone') && !!options.prerenderedHtml;
+  const outputTag = shouldEmbedPrerendered
+    ? `<main id="${MDVIEW_OUTPUT_ID}">\n${options.prerenderedHtml}\n</main>`
+    : `<main id="${MDVIEW_OUTPUT_ID}"></main>`;
 
   return [
     '<!DOCTYPE html>',

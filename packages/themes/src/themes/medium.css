@@ -1,5 +1,14 @@
 /* Medium theme — long-form reading: serif, generous spacing, narrow column */
 
+/* 让导出的 .mdv.html 在 dark mode 下也有正确的 body 背景 */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: rgba(41, 41, 41, 1);
+}
+
 #mdview-output {
   font-family: 'Charter', 'Iowan Old Style', 'Georgia', 'Source Serif Pro', 'PingFang SC',
     'Songti SC', serif;
@@ -101,6 +110,8 @@
 #mdview-output th { font-weight: 700; text-align: left; }
 
 @media (prefers-color-scheme: dark) {
+  html,
+  body { background: #0d1117; color: rgba(230, 237, 243, 0.92); }
   #mdview-output { color: rgba(230, 237, 243, 0.92); }
   #mdview-output h1,
   #mdview-output h2,
