@@ -19,7 +19,7 @@
         "minHeight": 360,
         "decorations": true,
         "transparent": false,
-        "fileDropEnabled": true
+        "dragDropEnabled": true
       }
     ],
     "security": {

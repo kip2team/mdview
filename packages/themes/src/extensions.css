@@ -3,6 +3,48 @@
    主题 CSS 不强制 import 这份，桌面 / Web / VS Code 等端按需引入。
 */
 
+/* ─── mdv:mermaid / mdv:math hydrate 状态指示 ─────────── */
+/* hydrate 之前显示低调的 loading 提示；hydrate 后由 inline SVG / KaTeX 接管，自然消失 */
+.mdv-mermaid:not([data-mdv-hydrated]) .mdv-mermaid-fallback {
+  background: rgba(127, 127, 127, 0.06);
+  border: 1px dashed rgba(127, 127, 127, 0.3);
+  padding: 1em;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.85em;
+  white-space: pre;
+  overflow: auto;
+  opacity: 0.7;
+}
+.mdv-mermaid:not([data-mdv-hydrated]) .mdv-mermaid-fallback::after {
+  content: '⏳ rendering diagram…';
+  display: block;
+  margin-top: 0.5em;
+  font-family: -apple-system, sans-serif;
+  font-size: 11px;
+  color: rgba(127, 127, 127, 0.7);
+  font-style: italic;
+  opacity: 1;
+}
+.mdv-mermaid-fallback.mdv-mermaid-error::after {
+  content: '⚠ rendering failed — see console';
+  color: #cf222e;
+}
+.mdv-mermaid[data-mdv-hydrated] {
+  display: flex;
+  justify-content: center;
+  margin: 1.4em 0;
+}
+.mdv-mermaid[data-mdv-hydrated] svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mdv-math:not([data-mdv-hydrated]) {
+  opacity: 0.65;
+  font-style: italic;
+}
+
 /* ─── mdv:color 色块 ──────────────────────────────────── */
 .mdv-color {
   display: inline-flex;

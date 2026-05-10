@@ -13,6 +13,17 @@ DOMPurify.addHook('afterSanitizeAttributes', (node) => {
   }
 });
 
+// 强制保留 data-mdv-* 属性 —— DOMPurify 默认会对含 `<`、`>`、`-->`、`[]` 等
+// 看起来像 HTML 标记的 data 属性值做 mXSS 拦截，把整个 attribute 剥掉
+// （flowchart / sequenceDiagram 源码就触发这个），导致 hydrate 拿不到源
+DOMPurify.addHook('uponSanitizeAttribute', (_node, data) => {
+  if (data.attrName.startsWith('data-mdv-')) {
+    data.keepAttr = true;
+    // 同时把 forceKeepAttr 标志置 true，绕过后续值校验
+    data.forceKeepAttr = true;
+  }
+});
+
 /**
  * 清洗渲染后的 HTML 片段，准备塞入 #mdview-output。
  *
@@ -25,9 +36,10 @@ DOMPurify.addHook('afterSanitizeAttributes', (node) => {
  */
 export function sanitize(html: string): string {
   return DOMPurify.sanitize(html, {
-    USE_PROFILES: { html: true },
+    // html + svg + svgFilters：mermaid 输出的 SVG 含 <foreignObject> / filter 等节点，
+    // 仅用 html profile 会被剥掉，导致 sequenceDiagram 等图缺失内容
+    USE_PROFILES: { html: true, svg: true, svgFilters: true },
     ADD_ATTR: ['target', 'rel', 'style'],
-    // 允许扩展用的 data-* 属性 —— DOMPurify 默认就允许 data-*，这里显式列出便于排查
     ADD_DATA_URI_TAGS: [],
     FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
     FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur'],

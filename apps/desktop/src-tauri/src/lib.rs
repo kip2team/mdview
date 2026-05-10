@@ -2,7 +2,7 @@
 // 1. 注册 dialog / fs 插件，前端通过它们读文件
 // 2. 监听系统级"用文件打开"事件（macOS 双击 .md / Windows 命令行参数）
 //    并通过 mdview://open-path 事件推送到前端
-use tauri::{Emitter, Manager};
+use tauri::Emitter;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -16,9 +16,9 @@ pub fn run() {
             if let Some(path) = args.iter().find(|a| !a.starts_with('-')) {
                 let handle = app.handle().clone();
                 let path = path.clone();
-                tauri::async_runtime::spawn(async move {
-                    // 给前端 React 组件一点时间挂载好事件监听
-                    tokio::time::sleep(std::time::Duration::from_millis(150)).await;
+                // 给前端 React 组件一点时间挂载好事件监听 —— 用 OS 线程小睡，零额外依赖
+                std::thread::spawn(move || {
+                    std::thread::sleep(std::time::Duration::from_millis(150));
                     let _ = handle.emit("mdview://open-path", path);
                 });
             }

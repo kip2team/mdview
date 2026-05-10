@@ -153,11 +153,11 @@ A flowchart:
 
 ```mermaid
 flowchart LR
-  A[.md source] --> B(@mdview/core)
-  B --> C{Form?}
-  C -->|progressive| D[.mdv.html]
+  A[".md source"] --> B("@mdview/core")
+  B --> C{"Form?"}
+  C -->|progressive| D[".mdv.html"]
   C -->|read| E[Desktop]
-  C -->|stream| F[mdview.sh]
+  C -->|stream| F["mdview.sh"]
 ```
 
 A sequence diagram:

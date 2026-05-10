@@ -30,6 +30,12 @@ function escapeHtml(s: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+// 注意必须 escape `<` 和 `>` —— mermaid / math 源码经常含 `-->` `->>` `<` 等，
+// 不 escape 时 DOMPurify 会把整个 data 属性当作含 HTML 标记的可疑值整体剥掉
 function escapeAttr(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }

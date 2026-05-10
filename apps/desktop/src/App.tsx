@@ -12,7 +12,7 @@ import {
 } from './ipc';
 import { sanitize } from './lib/sanitize';
 import { highlightHtml } from './lib/highlight';
-import { hydrateExtensions } from './lib/hydrate';
+import { hydrateExtensions, type CancelToken } from './lib/hydrate';
 import { applyTheme, getStoredTheme, persistTheme } from './lib/theme-loader';
 import { loadRecents, pushRecent, type RecentFile } from './lib/recent-files';
 import { Toolbar } from './components/Toolbar';
@@ -141,9 +141,9 @@ export function App(): JSX.Element {
   }, [themeId]);
 
   // 渲染区与编辑器的引用，用于滚动同步（仅 split 模式）
+  // hydrate 不在 ref 回调里跑 —— 用单独的 useEffect 监听 safeHtml 变化，便于 cancel
   const outputRef = useCallback((el: HTMLElement | null) => {
     outputElRef.current = el;
-    if (el) void hydrateExtensions(el);
   }, []);
   const editorWrapperRef = useCallback((el: HTMLElement | null) => {
     editorWrapperElRef.current = el;
@@ -180,6 +180,22 @@ export function App(): JSX.Element {
       cancelled = true;
     };
   }, [result]);
+
+  // safeHtml 变更后：等浏览器把新 DOM 挂上，再跑扩展 hydrate（math / mermaid）
+  // 用 cancel token 防止上一次在飞的 hydrate 把内容写到已经被替换掉的旧节点里
+  useEffect(() => {
+    if (!safeHtml) return;
+    const token: CancelToken = { cancelled: false };
+    // requestAnimationFrame 确保 dangerouslySetInnerHTML 把新内容刷到 DOM 后再开始
+    const raf = requestAnimationFrame(() => {
+      const el = outputElRef.current;
+      if (el) void hydrateExtensions(el, token);
+    });
+    return () => {
+      token.cancelled = true;
+      cancelAnimationFrame(raf);
+    };
+  }, [safeHtml]);
 
   // 文档标题更新
   useEffect(() => {

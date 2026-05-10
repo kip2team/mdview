@@ -1,8 +1,8 @@
 // mdview 引擎渲染入口
 // 输入：原始 markdown 字符串（可含 YAML front matter）
 // 输出：HTML 片段 + 解析后的元数据 + 标题树
-import MarkdownIt from 'markdown-it';
-import matter from 'gray-matter';
+import MarkdownIt, { type Options as MarkdownItOptions } from 'markdown-it';
+import { parseFrontMatter } from './front-matter.js';
 import { parseMetadata, mergeMetadata, type MdviewMetadata } from './metadata.js';
 import { applyExtensions } from './extensions/index.js';
 
@@ -15,7 +15,7 @@ export interface RenderOptions {
   /** 是否对 HTML 输出启用 sanitize（暂不实现，留接口） */
   sanitize?: boolean;
   /** markdown-it 选项 —— 默认开启 GFM 风格 */
-  markdownIt?: MarkdownIt.Options;
+  markdownIt?: MarkdownItOptions;
   /**
    * 显式指定本次渲染要启用的扩展 ID（最高优先级）；
    * 若未传，则取合并后元数据 meta.extensions。
@@ -52,9 +52,9 @@ export interface Heading {
  * const { html, meta } = render('# Hello', { themeDefaults: { theme: 'medium' } });
  */
 export function render(markdown: string, options: RenderOptions = {}): RenderResult {
-  // 1. 解析 front matter
-  const parsed = matter(markdown);
-  const fmMeta = parseMetadata(parsed.data ?? {});
+  // 1. 解析 front matter（用浏览器友好的 yaml 解析，避开 gray-matter 的 Buffer 依赖）
+  const parsed = parseFrontMatter(markdown);
+  const fmMeta = parseMetadata(parsed.data);
 
   // 2. 按 02 文档 §3.5 优先级合并：override > front matter > themeDefaults > defaults
   const meta = mergeMetadata(options.themeDefaults, fmMeta, options.override);

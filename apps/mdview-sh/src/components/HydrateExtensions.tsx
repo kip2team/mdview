@@ -16,13 +16,19 @@ async function hydrate(root: HTMLElement): Promise<void> {
 }
 
 async function hydrateMath(root: HTMLElement): Promise<void> {
-  const nodes = root.querySelectorAll<HTMLElement>('.mdv-math[data-mdv-math]');
+  // 选择器不依赖 data-mdv-math —— DOMPurify mXSS 会剥含特殊字符的 data 属性
+  const nodes = root.querySelectorAll<HTMLElement>('.mdv-math:not([data-mdv-hydrated])');
   if (nodes.length === 0) return;
   try {
     const katex = (await import('katex')).default;
     await import('katex/dist/katex.min.css');
     nodes.forEach((node) => {
-      const formula = node.dataset.mdvMath ?? '';
+      const formula =
+        node.dataset.mdvMath ??
+        node.querySelector('pre')?.textContent ??
+        node.textContent ??
+        '';
+      if (!formula.trim()) return;
       const isBlock = node.classList.contains('mdv-math-block');
       try {
         node.innerHTML = katex.renderToString(formula, {
@@ -40,19 +46,23 @@ async function hydrateMath(root: HTMLElement): Promise<void> {
 }
 
 async function hydrateMermaid(root: HTMLElement): Promise<void> {
-  const nodes = root.querySelectorAll<HTMLElement>('.mdv-mermaid[data-mdv-mermaid]');
+  const nodes = root.querySelectorAll<HTMLElement>('.mdv-mermaid:not([data-mdv-hydrated])');
   if (nodes.length === 0) return;
   try {
     const mermaid = (await import('mermaid')).default;
     mermaid.initialize({
       startOnLoad: false,
       theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+      securityLevel: 'loose',
     });
     let i = 0;
     for (const node of Array.from(nodes)) {
+      const fallback = node.querySelector<HTMLElement>('.mdv-mermaid-fallback');
+      const source = node.dataset.mdvMermaid ?? fallback?.textContent ?? '';
+      if (!source.trim()) continue;
       try {
         const id = `mdv-mermaid-${Date.now()}-${i++}`;
-        const { svg } = await mermaid.render(id, node.dataset.mdvMermaid ?? '');
+        const { svg } = await mermaid.render(id, source);
         node.innerHTML = svg;
         node.dataset.mdvHydrated = '1';
       } catch (err) {
