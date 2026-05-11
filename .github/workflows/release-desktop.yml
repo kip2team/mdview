@@ -19,8 +19,16 @@ concurrency:
 
 jobs:
   build:
-    name: Build & sign macOS universal
+    # 不用 --target universal-apple-darwin: 那条路径下 tauri-action 不会重新签名合并后的 tarball,
+    # 上次 run 日志里看到的 "Signature not found for the updater JSON. Skipping upload..." 就是这个坑。
+    # 改成 arm64/x86_64 两个 matrix job, 每个 job 自己 build + 自己签 + 自己 upload,
+    # tauri-action 会把两个 job 的产物自动 merge 到同一个 release + latest.json。
+    name: Build & sign macOS (${{ matrix.target }})
     runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [aarch64-apple-darwin, x86_64-apple-darwin]
     steps:
       - uses: actions/checkout@v4
 
@@ -34,10 +42,10 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Setup Rust toolchain (universal mac)
+      - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-apple-darwin,x86_64-apple-darwin
+          targets: ${{ matrix.target }}
 
       - name: Install workspace deps
         run: pnpm install --frozen-lockfile
@@ -58,9 +66,8 @@ jobs:
           releaseName: 'mdview ${{ github.ref_name }}'
           releaseDraft: false
           prerelease: false
-          # universal-apple-darwin 一次产出同时支持 arm64+x86_64 的 .app
-          # tauri-action 自动产出 .dmg (首装) + .app.tar.gz (updater) + latest.json
-          args: --target universal-apple-darwin
+          # 单 target 构建: tauri-action 产出 .dmg (首装) + .app.tar.gz (updater) + .sig + latest.json
+          args: --target ${{ matrix.target }}
 
   publish-manifest:
     name: Publish latest.json to main
