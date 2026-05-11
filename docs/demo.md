@@ -197,4 +197,4 @@ Above this line is the body. Below is a footer.
 
 ## Footer
 
-You've reached the end of the demo. Now go [build something with mdview](https://github.com/mdview-sh/mdview).
+You've reached the end of the demo. Now go [build something with mdview](https://github.com/kip2team/mdview).

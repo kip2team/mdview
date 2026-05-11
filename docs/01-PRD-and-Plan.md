@@ -505,7 +505,7 @@ cdn.mdview.sh/
 > 这些是马上能做的，不带时间估计。按顺序做掉这一批，Phase 0 就完成了。
 
 1. 完成 §11.4 中所有 P0 占名（域名 / GitHub / npm）
-2. 创建 monorepo 仓库 `mdview-sh/mdview`，license MIT
+2. 创建 monorepo 仓库 `kip2team/mdview`，license MIT
 3. `pnpm init -w` 搭 monorepo 骨架，建 `packages/core` `packages/ui` `packages/themes`
 4. 基于 markdown-it 实现 `core.render(md, opts) → { html, meta }`，含 front matter 解析
 5. 写第一个主题 CSS（默认主题，克隆 GitHub README 风格）

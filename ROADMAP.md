@@ -7,7 +7,7 @@
 ### Engine
 
 - `@mdview/core` —— Markdown 解析 / 渲染 / 元数据合并 / 标题树
-- `@mdview/themes` —— 三个内置主题（default / github / medium）+ 扩展共享样式
+- `@mdview/themes` —— 六个内置主题（default / github / medium / dark / solarized / sepia）+ 扩展共享样式
 - `@mdview/format` —— `.mdv.html` 三形态序列化与互转
 - `@mdview/cli` —— `mdview render / export / convert` 命令行
 - `@mdview/engine-browser` —— 部署到 cdn.mdview.sh 的浏览器自启动包
@@ -18,6 +18,11 @@
 - `mdv:callout` —— Obsidian 风格 `> [!warning]` 提示块
 - `mdv:math` —— `$inline$` / `$$block$$` 占位 + 客户端 KaTeX hydrate
 - `mdv:mermaid` —— ` ```mermaid ` 占位 + 客户端 mermaid hydrate
+- `mdv:badge` —— `![[badge:passing|green]]` 内联徽章(命名色 + hex)
+- `mdv:kbd` —— `[[⌘K]]` 渲染键盘按键序列
+- `mdv:details` —— `::: details Title ... :::` 折叠块
+- `mdv:progress` —— `[==70%==|green]` 进度条
+- `mdv:sub-sup` —— `^上标^` / `~下标~`
 - **Plugin SDK** —— 第三方可 `registerExtension(id, factory)`
 
 ### Surfaces
@@ -42,9 +47,6 @@
 
 - 浏览器扩展 Firefox 兼容 + Chrome Web Store 上架
 - VS Code 扩展打磨 + Marketplace 上架
-- cdn.mdview.sh 实际部署（占位 URL → 真实 CDN）
-- mdview.sh 主域名启用
-- 更多内置扩展：`mdv:kbd` / `mdv:badge` / `mdv:progress`
 - desktop 性能优化：大文件（>1 MB）流式渲染
 - desktop 文件系统级 QuickLook（macOS）
 - AI 增强阅读：摘要 / 翻译 / 智能 TOC
@@ -72,7 +74,7 @@ mdview 由社区 / 单人独立开发，**不承诺时间表**。每个里程碑
 如果你想知道某个具体功能什么时候做：
 
 - 看本页"Next up"里有没有 → 已在路线
-- 没有的话开个 [GitHub issue](https://github.com/mdview-sh/mdview/issues/new) 讨论
+- 没有的话开个 [GitHub issue](https://github.com/kip2team/mdview/issues/new) 讨论
 
 ## 贡献
 

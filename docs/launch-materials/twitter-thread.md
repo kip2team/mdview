@@ -10,7 +10,7 @@ I just shipped mdview — a Markdown reader that works identically on desktop, w
 
 One engine, six surfaces, one consistent reading experience.
 
-Demo + code: https://github.com/mdview-sh/mdview
+Demo + code: https://github.com/kip2team/mdview
 
 [attach: GIF of opening a .md file in desktop, switching themes]
 
@@ -67,7 +67,7 @@ Send this .md to anyone — every viewer respects your settings. No "open in X t
 Try it:
 
 → Web: https://mdview.sh
-→ Desktop: https://github.com/mdview-sh/mdview/releases (Tauri, ~6MB)
+→ Desktop: https://github.com/kip2team/mdview/releases (Tauri, ~6MB)
 → CLI: `npm create mdview-doc my-article`
 → MCP server for Claude Desktop also shipping today
 

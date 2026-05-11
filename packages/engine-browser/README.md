@@ -17,6 +17,13 @@ pnpm --filter @mdview/engine-browser build
 
 打出来的是单文件 IIFE，可以直接上传到任意静态资源服务（CDN、R2、S3）。
 
-## 部署到 cdn.mdview.sh
+## 部署
 
-详见 `docs/host-actions.md` 中关于 CDN 部署的章节（待添加）。
+打出来的 `dist/v1.js` 是单文件 IIFE,直接上传到任意 CDN / 静态资源服务即可。
+官方公开镜像位于 `https://cdn.mdview.sh/r/v1.js`,由本仓库根目录的脚本部署到 Cloudflare Pages:
+
+```bash
+# 从仓库根目录
+pnpm cdn:build       # 同时打包 v1.js / themes / extensions, 输出到 cdn-dist/
+pnpm cdn:deploy      # build + wrangler pages deploy cdn-dist
+```

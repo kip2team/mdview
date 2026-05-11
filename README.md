@@ -56,9 +56,9 @@ mdview is a reader-first home for Markdown. Same engine on every surface, identi
 # Web — paste any markdown URL
 open https://mdview.sh
 
-# Desktop — needs Rust + Tauri prereqs (one-time setup)
-git clone https://github.com/kip2team/mdview
-cd mdview && pnpm install && pnpm desktop:dev
+# Desktop — download a pre-built dmg from
+#   https://github.com/kip2team/mdview/releases/latest
+# (or build from source: pnpm install && pnpm desktop:dev — needs Rust + Tauri prereqs)
 
 # CLI
 npm install -g @mdview/cli

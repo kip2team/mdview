@@ -82,7 +82,7 @@ The brand colors are #0969da and #ff6b35. Hex literals get a tiny swatch.
 
 - [mdview docs](https://mdview.sh/docs)
 - [Format spec](https://mdview.sh/docs/02-Format-Spec)
-- [GitHub](https://github.com/mdview-sh/mdview)
+- [GitHub](https://github.com/kip2team/mdview)
 `;
 }
 

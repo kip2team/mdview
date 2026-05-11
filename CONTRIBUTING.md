@@ -40,7 +40,7 @@ docs/            # PRD, format spec, cookbook, roadmap, launch materials
 - **Bug reports with a reproducer** — a minimal `.md` file that triggers the bug, plus what you saw vs expected
 - **New themes** in `packages/themes/src/themes/<id>/{theme.css, theme.json}` — single CSS file, follows the existing CSS-variable pattern
 - **Third-party extensions** as standalone npm packages — see `docs/plugin-authoring.md`. We'll happily list them in the official extension index.
-- **i18n** for desktop UI strings (see `apps/desktop/src/i18n/` — coming soon)
+- **i18n** for desktop UI strings — `apps/desktop/src/i18n/` already has `en.json` + `zh-CN.json`, add a new locale by copying one and translating
 - **Doc fixes / typos** — these go through review fast
 
 ### Medium-value

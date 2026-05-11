@@ -90,7 +90,7 @@ Or visit [mdview.sh](https://mdview.sh) and paste a Markdown URL.
 
 ## What's next
 
-mdview hits its first usable release today. The roadmap is on [GitHub](https://github.com/mdview-sh/mdview/blob/main/ROADMAP.md). Big upcoming items: theme marketplace, AI-powered reading enhancements, JetBrains plugin.
+mdview hits its first usable release today. The roadmap is on [GitHub](https://github.com/kip2team/mdview/blob/main/ROADMAP.md). Big upcoming items: theme marketplace, AI-powered reading enhancements, JetBrains plugin.
 
 If "a beautiful place to read Markdown" sounds useful to you, install the desktop app or visit mdview.sh. If you want to contribute, the codebase is MIT and the engine is small enough to read in an afternoon.
 
@@ -98,4 +98,4 @@ Markdown deserves a reader. mdview is that reader.
 
 ---
 
-*[GitHub](https://github.com/mdview-sh/mdview) · [Docs](https://mdview.sh/docs) · [.mdv.html spec](https://mdview.sh/docs/02-Format-Spec)*
+*[GitHub](https://github.com/kip2team/mdview) · [Docs](https://mdview.sh/docs) · [.mdv.html spec](https://mdview.sh/docs/02-Format-Spec)*

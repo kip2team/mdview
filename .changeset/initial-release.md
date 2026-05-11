@@ -59,4 +59,4 @@ Initial public release of the mdview engine and surrounding packages.
 - Tools: `render`, `export_mdv_html`, `convert_form`, `list_themes`
 - Drop-in for Claude Desktop's `mcpServers` config
 
-See [ROADMAP.md](https://github.com/mdview-sh/mdview/blob/main/ROADMAP.md) for what's next.
+See [ROADMAP.md](https://github.com/kip2team/mdview/blob/main/ROADMAP.md) for what's next.

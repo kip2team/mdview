@@ -39,7 +39,7 @@ Linux / Windows 用户参考 https://tauri.app/start/prerequisites/。
 ## 2. 拉代码 + 装依赖
 
 ```bash
-git clone git@github.com:mdview-sh/mdview.git
+git clone git@github.com:kip2team/mdview.git
 cd mdview
 pnpm install
 ```

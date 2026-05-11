@@ -6,7 +6,7 @@ If you discover a security issue in mdview — engine, themes, format, CLI, web 
 
 ### How to report
 
-**Email**: king@kip2.com
+**Email**: support@kip2.com
 
 If the issue is sensitive, encrypt your report with PGP. Public key fingerprint is published at <https://mdview.sh/.well-known/security.txt> (when available).
 
