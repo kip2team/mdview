@@ -855,6 +855,65 @@ const themes = [
       box-shadow: 0 2px 8px rgba(68, 147, 248, 0.35);
     }
     .kicker { color: #4493f8; }
+
+    /* —— 边框 & 分割线在暗底上提亮 —— */
+    .topbar {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+    .url-form {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .surface-card {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .surface-card:hover {
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    }
+    .hv-card {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .sample-chip {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+    .sample-chip:hover {
+      border-color: rgba(255, 255, 255, 0.32);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .sample-chip-demo {
+      border-color: rgba(68, 147, 248, 0.5);
+      color: #4493f8;
+    }
+    .btn-ghost {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .sitefoot {
+      border-top-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* —— 暗底上 logo 不需要黑色投影,改成中性白 halo,微微浮起来 —— */
+    .brand-mark {
+      filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.06));
+    }
+
+    /* —— 顶导 github 图标提亮 —— */
+    .topnav-github { opacity: 0.75; }
+    .topnav a { opacity: 0.8; }
+
+    /* —— hero 前后对比里的「绿色字符串」token,在暗卡上换更亮的绿 —— */
+    .hv-card-rendered .tok-str { color: #3fb950; }
+
+    /* —— Themes 网格里 Dark 主题卡和页面底色一致,加阴影/外圈分离 —— */
+    .theme-card {
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+    .theme-card:hover {
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        0 12px 32px -10px rgba(0, 0, 0, 0.5);
+    }
     .sample-chip-demo {
       border-color: rgba(68, 147, 248, 0.4);
       color: #4493f8;
@@ -882,6 +941,7 @@ const themes = [
     }
     .hv-arrow { transform: rotate(90deg); }
     .hv-card-url, .hv-card-rendered { transform: none; }
+    .hv-card { min-height: 0; }
     .url-form { flex-wrap: wrap; }
     .url-form input { min-width: 0; flex: 1 1 200px; }
     .surfaces, .mdvhtml, .themes { padding: 56px 20px; }
