@@ -73,8 +73,10 @@ jobs:
           prerelease: false
           args: --target ${{ matrix.target }}
 
-      - name: Upload .sig + emit manifest fragment
-        # tauri-action 不上传 .sig (已知 bug), 这里手动 cp 出来上传 + 同时把 signature 内容写到 artifact
+      - name: Re-sign tarball + upload .sig + emit manifest fragment
+        # tauri-action 在重打包 .app.tar.gz 后没重新签 (它内部把 .sig 视作 latest.json 的一部分,
+        # 但 latest.json 生成失败时连 .sig 一起丢了),所以这里自己用 tauri CLI signer 兜底:
+        # 拿 tauri-action 重打包后的 .app.tar.gz 重签 -> 把 .sig 上传到 release -> 写 manifest 片段
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
@@ -82,13 +84,31 @@ jobs:
           ARCH_SHORT: ${{ matrix.arch_short }}
           UPDATER_KEY: ${{ matrix.updater_key }}
           REPO: ${{ github.repository }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          sig_src="apps/desktop/src-tauri/target/${TARGET}/release/bundle/macos/mdview.app.tar.gz.sig"
-          if [ ! -f "$sig_src" ]; then
-            echo "ERROR: signature file missing at $sig_src — TAURI_SIGNING_PRIVATE_KEY 没生效?" >&2
+          bundle_dir="apps/desktop/src-tauri/target/${TARGET}/release/bundle/macos"
+          echo "----- ls $bundle_dir -----"
+          ls -la "$bundle_dir" || true
+
+          tarball="${bundle_dir}/mdview.app.tar.gz"
+          if [ ! -f "$tarball" ]; then
+            echo "ERROR: tarball missing at $tarball" >&2
             exit 1
           fi
+
+          # 显式重签 (--force 覆盖任何已存在的 .sig)
+          # tauri signer 接受 TAURI_SIGNING_PRIVATE_KEY/TAURI_SIGNING_PRIVATE_KEY_PASSWORD env
+          pnpm --filter @mdview/desktop exec tauri signer sign --force "$tarball"
+
+          sig_src="${tarball}.sig"
+          if [ ! -f "$sig_src" ]; then
+            echo "ERROR: signer did not produce $sig_src" >&2
+            ls -la "$bundle_dir"
+            exit 1
+          fi
+
           sig_dst="mdview_${ARCH_SHORT}.app.tar.gz.sig"
           cp "$sig_src" "$sig_dst"
           gh release upload "$TAG" "$sig_dst" --clobber
@@ -102,6 +122,8 @@ jobs:
             --argjson signature "$sig_json" \
             '{ signature: $signature, url: $url }' \
             > "out/${UPDATER_KEY}.json"
+          echo "----- fragment -----"
+          cat "out/${UPDATER_KEY}.json"
 
       - name: Upload manifest fragment artifact
         uses: actions/upload-artifact@v4
