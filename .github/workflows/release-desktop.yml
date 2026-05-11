@@ -147,6 +147,28 @@ jobs:
           fi
           rm -f "$raw_file"
 
+          # 写完文件后再做一次 line-by-line 诊断,看 body 行长度 / 是否含空格
+          python3 - "$key_file" <<'EOF'
+          import sys
+          path = sys.argv[1]
+          with open(path, 'rb') as f:
+              data = f.read()
+          print(f"key file bytes: {len(data)}")
+          lines = data.split(b'\n')
+          for i, line in enumerate(lines):
+              if not line:
+                  print(f"  line {i}: (empty)")
+                  continue
+              info = f"  line {i}: {len(line)} bytes"
+              if b' ' in line:
+                  idx = line.index(b' ')
+                  info += f", first space at offset {idx}"
+              # 末尾字符判断有无 \r
+              if line.endswith(b'\r'):
+                  info += ", ends with CR"
+              print(info)
+          EOF
+
           # signer 的 --private-key-path 和 env TAURI_SIGNING_PRIVATE_KEY 互斥, unset 环境
           unset TAURI_SIGNING_PRIVATE_KEY
           pnpm --filter @mdview/desktop exec tauri signer sign \
