@@ -165,8 +165,9 @@ pub fn run() {
                 .items(&[&file_menu, &view_menu, &help_menu])
                 .build()?;
             app.set_menu(menu)?;
-            // 命令行参数里第一个非自身的参数视作待打开文件路径
-            // macOS 双击 .md 时也会把路径作为命令行参数传入
+            // 命令行参数 -> 待打开文件路径
+            // 这条路径只对 Linux/Windows 命令行启动有用; macOS 双击 .md (Launch Services)
+            // 走 Apple Event, 由下面 .run(...) 里的 RunEvent::Opened 处理。
             let args: Vec<String> = std::env::args().skip(1).collect();
             if let Some(path) = args.iter().find(|a| !a.starts_with('-')) {
                 let handle = app.handle().clone();
@@ -179,6 +180,28 @@ pub fn run() {
             }
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("error while running mdview desktop");
+        .build(tauri::generate_context!())
+        .expect("error while building mdview desktop")
+        .run(|app_handle, event| {
+            // macOS 双击 .md / "用 mdview 打开"会走 Apple Event (application:openURLs:),
+            // 不进 std::env::args, 必须在这里接住; 否则应用启动后停在欢迎页 ——
+            // 这是 0.0.2 之前的严重 bug。
+            if let tauri::RunEvent::Opened { urls } = event {
+                for url in urls {
+                    // 只接受 file:// URL (custom schemes 暂不处理)
+                    if let Ok(path) = url.to_file_path() {
+                        if let Some(p) = path.to_str() {
+                            let handle = app_handle.clone();
+                            let p = p.to_string();
+                            // 冷启动时 Opened 可能在前端 React 挂载完之前到达,
+                            // 跟 cli args 那条路径一样 sleep 一下等 listener 就位
+                            std::thread::spawn(move || {
+                                std::thread::sleep(std::time::Duration::from_millis(300));
+                                let _ = handle.emit("mdview://open-path", p);
+                            });
+                        }
+                    }
+                }
+            }
+        });
 }
