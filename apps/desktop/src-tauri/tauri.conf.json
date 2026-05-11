@@ -46,5 +46,13 @@
       }
     ]
   },
-  "plugins": {}
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://raw.githubusercontent.com/kip2team/mdview/main/apps/mdview-sh/public/release/latest.json",
+        "https://mdview.sh/release/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhBN0QyODkxMUFDRkRCODgKUldTSTI4OGFrU2g5aW9FMVRrRUdqR0N6QTIwNmQ2QWorVm1lZi9iaU9OUFlPemJ3YzdCQmFKbkQK"
+    }
+  }
 }

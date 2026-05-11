@@ -1,7 +1,10 @@
-// 与 Rust 端的桥接 —— 用 Tauri 官方插件
+// 与 Rust 端的桥接
+// 文件读写走自家 invoke 命令(read_markdown_file/write_markdown_file/stat_mtime),
+// 不用 @tauri-apps/plugin-fs ——那个走前端编译期 scope 白名单, Recent 等任意路径会被拒;
+// 自家命令在 Rust 端直接 std::fs, 边界由 OS 决定(macOS TCC 首次访问会弹原生授权框)。
 // 在浏览器里跑（vite dev 时）这些函数会回退到 input[type=file]，方便不装 Rust 也能调试 UI
 import { open, save } from '@tauri-apps/plugin-dialog';
-import { readTextFile, writeTextFile, stat } from '@tauri-apps/plugin-fs';
+import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 
 declare global {
@@ -41,7 +44,7 @@ export async function openFileDialog(): Promise<string | undefined> {
 /** 读取 markdown 文本 */
 export async function readMarkdownFile(path: string): Promise<string> {
   if (isTauri()) {
-    return readTextFile(path);
+    return invoke<string>('read_markdown_file', { path });
   }
   // dev fallback：从 openFileDialog 暂存的 File 拿内容
   const cached = (window as unknown as { __mdview_devFile?: File }).__mdview_devFile;
@@ -73,7 +76,8 @@ export type MenuId =
   | 'palette'
   | 'zen'
   | 'cycle-view'
-  | 'docs';
+  | 'docs'
+  | 'check-updates';
 
 /** 监听 native 菜单点击 —— 各菜单 id 见 src-tauri/src/lib.rs */
 export function listenForMenuEvents(handler: (id: MenuId) => void): (() => void) | undefined {
@@ -96,8 +100,7 @@ export function watchFileMtime(
   const tick = async () => {
     if (stopped) return;
     try {
-      const info = await stat(path);
-      const m = info.mtime ? new Date(info.mtime).getTime() : 0;
+      const m = await invoke<number>('stat_mtime', { path });
       if (lastMtime !== undefined && m > lastMtime) {
         onChange();
       }
@@ -145,7 +148,7 @@ export function isTauriRuntime(): boolean {
  */
 export async function writeTextToFile(path: string, content: string): Promise<void> {
   if (isTauri()) {
-    await writeTextFile(path, content);
+    await invoke('write_markdown_file', { path, content });
     return;
   }
   // dev fallback：触发浏览器下载，path 末尾段做文件名

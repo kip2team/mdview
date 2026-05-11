@@ -1,15 +1,12 @@
 {
   "$schema": "https://schema.tauri.app/config/2/security/capabilities",
   "identifier": "default",
-  "description": "默认能力集 —— 桌面端阅读器最小权限：可读用户选定的文件、可弹对话框",
+  "description": "默认能力集 —— 仅需对话框 + 自家 invoke 命令(读写交给 Rust 命令处理,边界由 OS 决定)",
   "windows": ["main"],
   "permissions": [
     "core:default",
     "dialog:default",
-    "fs:default",
-    "fs:allow-read-text-file",
-    "fs:allow-read-file",
-    "fs:allow-write-text-file",
-    "fs:allow-write-file"
+    "updater:default",
+    "process:default"
   ]
 }

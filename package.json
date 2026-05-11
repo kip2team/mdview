@@ -39,6 +39,7 @@
     "release:cdn": "pnpm cdn:deploy",
     "release:npm": "pnpm build && pnpm changeset publish",
     "release:all": "node scripts/release-all.js",
+    "release:desktop:bump": "node scripts/bump-desktop.js",
     "changeset": "changeset",
     "changeset:version": "changeset version && pnpm install --lockfile-only"
   },

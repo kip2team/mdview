@@ -1,0 +1,103 @@
+name: release-desktop
+
+# 触发: 推送 desktop-v* tag
+# 流程: 构建 universal mac 二进制 -> 用 minisign 私钥签名 -> 上传到同名 GH Release ->
+#       把 latest.json commit 到 main 的 apps/mdview-sh/public/release/latest.json,
+#       桌面端 plugin-updater 通过 raw.githubusercontent.com 立即拿到新版本。
+
+on:
+  push:
+    tags:
+      - 'desktop-v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-desktop-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build & sign macOS universal
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Rust toolchain (universal mac)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Install workspace deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build workspace JS packages (consumed by desktop)
+        run: pnpm -r --filter '@mdview/core' --filter '@mdview/themes' --filter '@mdview/format' run build
+
+      - name: Build, sign & publish desktop release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ↓ 在 GitHub Secrets 里加这两个 (没 password 时第二个留空)
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: 'mdview ${{ github.ref_name }}'
+          releaseDraft: false
+          prerelease: false
+          # universal-apple-darwin 一次产出同时支持 arm64+x86_64 的 .app
+          # tauri-action 自动产出 .dmg (首装) + .app.tar.gz (updater) + latest.json
+          args: --target universal-apple-darwin
+
+  publish-manifest:
+    name: Publish latest.json to main
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          # 默认 GITHUB_TOKEN 有 contents:write,可以 push 到 main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for release assets to settle
+        # tauri-action 上传 latest.json 是 build job 末尾, 理论上 needs:build 完成时已就绪;
+        # 但 GH Release API 偶有数秒延迟, 睡 10s 兜底
+        run: sleep 10
+
+      - name: Download latest.json from release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir -p apps/mdview-sh/public/release
+          gh release download "$TAG" \
+            --pattern 'latest.json' \
+            --output apps/mdview-sh/public/release/latest.json \
+            --clobber
+
+      - name: Commit & push manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/mdview-sh/public/release/latest.json
+          if git diff --cached --quiet; then
+            echo "manifest unchanged — nothing to commit"
+            exit 0
+          fi
+          git commit -m "chore(release): publish desktop ${{ github.ref_name }} manifest"
+          git push origin main

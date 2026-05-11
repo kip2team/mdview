@@ -29,6 +29,7 @@ import { ReadingStats } from './components/ReadingStats';
 import { FolderSidebar } from './components/FolderSidebar';
 import { browseFolder, type FolderEntry } from './lib/folder-browse';
 import { Onboarding } from './components/Onboarding';
+import { checkForUpdate, type AvailableUpdate } from './lib/updater';
 
 /** 三态视图模式：纯阅读 / 分屏（左源右渲染）/ 纯源码 */
 type ViewMode = 'read' | 'split' | 'source';
@@ -81,6 +82,31 @@ export function App(): JSX.Element {
   const [folder, setFolder] = useState<{ root: string; files: FolderEntry[] } | null>(null);
   const [dragging, setDragging] = useState(false);
   const [recents, setRecents] = useState<RecentFile[]>(() => loadRecents());
+  // 短暂错误提示 —— 文件读取失败等场景给用户一条可见反馈,4s 自动消失
+  const [errorToast, setErrorToast] = useState<string | null>(null);
+  useEffect(() => {
+    if (!errorToast) return;
+    const t = setTimeout(() => setErrorToast(null), 4000);
+    return () => clearTimeout(t);
+  }, [errorToast]);
+
+  // 应用内自动更新 —— 启动后异步 check,有新版就显示一个常驻 banner;
+  // 没配签名/endpoints 或离线时静默 no-op,不打扰用户
+  const [availableUpdate, setAvailableUpdate] = useState<AvailableUpdate | null>(null);
+  const [installing, setInstalling] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    // 延迟 5s 后再 check,避开启动时和必要资源争 IO
+    const timer = setTimeout(() => {
+      void checkForUpdate().then((u) => {
+        if (!cancelled && u) setAvailableUpdate(u);
+      });
+    }, 5000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, []);
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     try {
       const v = localStorage.getItem(VIEW_MODE_KEY);
@@ -236,6 +262,8 @@ export function App(): JSX.Element {
       setRecents(pushRecent(path));
     } catch (err) {
       console.error('Failed to load file:', err);
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorToast(`Couldn't open ${path.split('/').pop() ?? path}: ${msg}`);
     }
   }, []);
 
@@ -333,6 +361,19 @@ export function App(): JSX.Element {
           break;
         case 'docs':
           window.open('https://mdview.sh/docs', '_blank');
+          break;
+        case 'check-updates':
+          // 手动触发: 比启动 5s 自动检查更直观,适合排错。
+          // 控制台会有 "[mdview] updater:" 系列日志,UI 也给一条 toast。
+          setErrorToast('Checking for updates…');
+          void checkForUpdate().then((u) => {
+            if (u) {
+              setAvailableUpdate(u);
+              setErrorToast(null);
+            } else {
+              setErrorToast("You're on the latest version.");
+            }
+          });
           break;
       }
     });
@@ -447,7 +488,7 @@ export function App(): JSX.Element {
             title="Open Markdown file (⌘O)"
             onClick={handleOpen}
           >
-            <span aria-hidden>📂</span>
+            <span aria-hidden>📄</span>
             <span className="mdv-toolbar-btn-label">Open</span>
           </button>
           <button
@@ -457,6 +498,7 @@ export function App(): JSX.Element {
             onClick={handleOpenFolder}
           >
             <span aria-hidden>📁</span>
+            <span className="mdv-toolbar-btn-label">Folder</span>
           </button>
           <ViewModeToggle value={viewMode} onChange={setViewMode} />
           <button
@@ -536,6 +578,46 @@ export function App(): JSX.Element {
           filePath={filePath}
           onClose={() => setExportOpen(false)}
         />
+      )}
+
+      {errorToast && (
+        <div className="mdv-toast" role="status" aria-live="polite">
+          {errorToast}
+        </div>
+      )}
+
+      {availableUpdate && (
+        <div className="mdv-update-banner" role="status">
+          <span className="mdv-update-text">
+            New version <strong>{availableUpdate.version}</strong> available
+          </span>
+          <button
+            type="button"
+            className="mdv-update-btn"
+            disabled={installing}
+            onClick={async () => {
+              setInstalling(true);
+              try {
+                await availableUpdate.install();
+                // relaunch 会接管,下面这行实际不会执行
+              } catch (err) {
+                setInstalling(false);
+                const msg = err instanceof Error ? err.message : String(err);
+                setErrorToast(`Update failed: ${msg}`);
+              }
+            }}
+          >
+            {installing ? 'Installing…' : 'Install & restart'}
+          </button>
+          <button
+            type="button"
+            className="mdv-update-dismiss"
+            aria-label="Dismiss update notice"
+            onClick={() => setAvailableUpdate(null)}
+          >
+            ×
+          </button>
+        </div>
       )}
     </>
   );

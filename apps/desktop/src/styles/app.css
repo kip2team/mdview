@@ -99,9 +99,10 @@ body.mdv-zen #mdview-output {
   gap: 8px;
   padding: 6px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.78);
+  /* color-mix 让 toolbar 永远是"主题底色 + 一点透明",在亮暗主题下都不破坏页面 */
+  background: color-mix(in srgb, var(--bg, #ffffff) 78%, transparent);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.06));
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   opacity: 0.55;
   transition: opacity 120ms ease;
@@ -118,14 +119,14 @@ body.mdv-zen #mdview-output {
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: #1f2328;
+  color: var(--fg, #1f2328);
   font-size: 13px;
   font-family: inherit;
   cursor: pointer;
   transition: background 80ms ease;
 }
 .mdv-toolbar-btn:hover {
-  background: rgba(0, 0, 0, 0.06);
+  background: color-mix(in srgb, currentColor 10%, transparent);
 }
 .mdv-toolbar-btn-label {
   font-weight: 500;
@@ -144,8 +145,9 @@ body.mdv-zen #mdview-output {
   margin: 0;
   padding: 4px;
   list-style: none;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--bg, #ffffff);
+  color: var(--fg, #1f2328);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
@@ -162,23 +164,24 @@ body.mdv-zen #mdview-output {
   border: 0;
   border-radius: 5px;
   background: transparent;
+  color: inherit;
   cursor: pointer;
   font-family: inherit;
   font-size: 13px;
 }
 .mdv-theme-menu button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, currentColor 8%, transparent);
 }
 .mdv-theme-menu button.is-active {
-  background: rgba(9, 105, 218, 0.08);
-  color: #0969da;
+  background: color-mix(in srgb, var(--link, #0969da) 12%, transparent);
+  color: var(--link, #0969da);
 }
 .mdv-theme-menu button strong {
   font-weight: 600;
 }
 .mdv-theme-menu button span {
   font-size: 11.5px;
-  color: rgba(31, 35, 40, 0.6);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.6));
 }
 
 /* ── 文件夹侧栏（D5）───────────────────────────────── */
@@ -188,9 +191,10 @@ body.mdv-zen #mdview-output {
   left: 0;
   width: 240px;
   height: 100vh;
-  background: rgba(246, 248, 250, 0.95);
+  background: color-mix(in srgb, var(--pre-bg, #f6f8fa) 95%, transparent);
+  color: var(--fg, #1f2328);
   backdrop-filter: blur(8px);
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-right: 1px solid var(--border, rgba(0, 0, 0, 0.08));
   overflow-y: auto;
   z-index: 800;
   font-size: 13px;
@@ -200,7 +204,7 @@ body.mdv-zen #mdview-output {
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.06));
   font-size: 12.5px;
   position: sticky;
   top: 0;
@@ -219,7 +223,7 @@ body.mdv-zen #mdview-output {
 .mdv-folder-empty {
   padding: 14px;
   font-size: 12px;
-  color: rgba(31, 35, 40, 0.5);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.5));
 }
 .mdv-folder-sidebar ul {
   list-style: none;
@@ -240,15 +244,15 @@ body.mdv-zen #mdview-output {
   cursor: pointer;
 }
 .mdv-folder-sidebar li button:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: color-mix(in srgb, currentColor 6%, transparent);
 }
 .mdv-folder-sidebar li button.is-active {
-  background: rgba(9, 105, 218, 0.1);
-  color: #0969da;
+  background: color-mix(in srgb, var(--link, #0969da) 14%, transparent);
+  color: var(--link, #0969da);
 }
 .mdv-folder-dir {
   font-size: 11px;
-  color: rgba(31, 35, 40, 0.5);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.5));
   font-family: ui-monospace, SFMono-Regular, monospace;
 }
 body:has(.mdv-folder-sidebar) #mdview-output,
@@ -256,20 +260,7 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   margin-left: 240px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .mdv-folder-sidebar {
-    background: rgba(13, 17, 23, 0.95);
-    border-right-color: rgba(255, 255, 255, 0.08);
-  }
-  .mdv-folder-header { border-bottom-color: rgba(255, 255, 255, 0.06); }
-  .mdv-folder-empty { color: rgba(230, 237, 243, 0.5); }
-  .mdv-folder-sidebar li button:hover { background: rgba(255, 255, 255, 0.04); }
-  .mdv-folder-sidebar li button.is-active {
-    background: rgba(56, 139, 253, 0.15);
-    color: #4493f8;
-  }
-  .mdv-folder-dir { color: rgba(230, 237, 243, 0.5); }
-}
+/* folder-sidebar 的暗色已经走 var(--bg/--fg/--border/--link),不再需要 @media 重复 */
 
 /* ── 阅读统计（字数 / 时长）─────────────────────────── */
 .mdv-output-wrap {
@@ -293,7 +284,7 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
 /* ── 视图模式切换器 ─────────────────────────────────── */
 .mdv-viewmode-toggle {
   display: inline-flex;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
   border-radius: 6px;
   overflow: hidden;
 }
@@ -304,17 +295,19 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   padding: 6px 10px;
   border: 0;
   background: transparent;
-  color: #1f2328;
+  color: var(--fg, #1f2328);
   font-size: 13px;
   font-family: inherit;
   cursor: pointer;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-right: 1px solid var(--border, rgba(0, 0, 0, 0.08));
 }
 .mdv-viewmode-toggle button:last-child { border-right: 0; }
-.mdv-viewmode-toggle button:hover:not(.is-active) { background: rgba(0, 0, 0, 0.05); }
+.mdv-viewmode-toggle button:hover:not(.is-active) {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
 .mdv-viewmode-toggle button.is-active {
-  background: rgba(9, 105, 218, 0.1);
-  color: #0969da;
+  background: color-mix(in srgb, var(--link, #0969da) 14%, transparent);
+  color: var(--link, #0969da);
   font-weight: 500;
 }
 
@@ -333,7 +326,7 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   height: 100vh;
   overflow: auto;
   padding: 32px;
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 1px solid var(--border, rgba(0, 0, 0, 0.08));
 }
 /* source 模式：编辑器全屏 */
 .mdv-stage.mdv-mode-source .mdv-editor {
@@ -354,27 +347,12 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   font-family: inherit;
 }
 
-@media (prefers-color-scheme: dark) {
-  .mdv-viewmode-toggle {
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-  .mdv-viewmode-toggle button {
-    color: #e6edf3;
-    border-right-color: rgba(255, 255, 255, 0.1);
-  }
-  .mdv-viewmode-toggle button:hover:not(.is-active) {
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .mdv-viewmode-toggle button.is-active {
-    background: rgba(56, 139, 253, 0.15);
-    color: #4493f8;
-  }
-  .mdv-stage.mdv-mode-split #mdview-output {
-    border-left-color: rgba(255, 255, 255, 0.08);
-  }
-}
+/* viewmode-toggle / split-mode 边框已经走 var(--border / --link / --fg),不再需要 @media 重复 */
 
 /* ── 欢迎页 ─────────────────────────────────────────── */
+/* 颜色全部走主题 CSS 变量,这样换主题(亮/暗)时 chrome 自动跟随,
+   不依赖 @media (prefers-color-scheme),否则"暗主题 + 亮系统"或反过来会黑底黑字。
+   var(--fg, ...) 的兜底值用于主题尚未加载时也能正常显示。 */
 .mdv-welcome {
   min-height: 100vh;
   display: flex;
@@ -382,7 +360,7 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   justify-content: center;
   padding: 32px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #1f2328;
+  color: var(--fg, #1f2328);
 }
 .mdv-welcome-card {
   width: 100%;
@@ -401,7 +379,7 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
 }
 .mdv-welcome-tagline {
   font-size: 14px;
-  color: rgba(31, 35, 40, 0.6);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.6));
   margin: 0 0 28px;
 }
 .mdv-welcome-actions {
@@ -417,11 +395,11 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
 }
 .mdv-welcome-hint {
   font-size: 12.5px;
-  color: rgba(31, 35, 40, 0.55);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.55));
 }
 .mdv-welcome-hint code {
   font-family: ui-monospace, SFMono-Regular, monospace;
-  background: rgba(0, 0, 0, 0.06);
+  background: var(--code-bg, rgba(0, 0, 0, 0.06));
   padding: 0.05em 0.4em;
   border-radius: 3px;
 }
@@ -433,7 +411,7 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(31, 35, 40, 0.5);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.5));
   margin: 0 0 8px;
 }
 .mdv-welcome-recent ul {
@@ -454,20 +432,22 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   border: 0;
   border-radius: 6px;
   background: transparent;
+  color: inherit;
   font-family: inherit;
   font-size: 13px;
   cursor: pointer;
   text-align: left;
 }
+/* hover 用 currentColor 的低 alpha 形式,亮暗主题下都能看到“轻微高亮”的同感受 */
 .mdv-welcome-recent button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, currentColor 8%, transparent);
 }
 .mdv-recent-name {
   font-weight: 500;
 }
 .mdv-recent-path {
   font-size: 11.5px;
-  color: rgba(31, 35, 40, 0.5);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.5));
   font-family: ui-monospace, SFMono-Regular, monospace;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -479,16 +459,16 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   justify-content: center;
   gap: 20px;
   font-size: 12px;
-  color: rgba(31, 35, 40, 0.55);
+  color: var(--fg-muted, rgba(31, 35, 40, 0.55));
 }
 .mdv-welcome-shortcuts kbd {
   display: inline-block;
   padding: 1px 6px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.15));
   border-radius: 4px;
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 11px;
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--code-bg, rgba(0, 0, 0, 0.03));
   margin-right: 4px;
 }
 
@@ -958,21 +938,84 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
     color: rgba(230, 237, 243, 0.85);
   }
 
-  .mdv-welcome { color: #e6edf3; }
-  .mdv-welcome-tagline,
-  .mdv-welcome-hint,
-  .mdv-welcome-shortcuts { color: rgba(230, 237, 243, 0.55); }
-  .mdv-welcome-hint code { background: rgba(255, 255, 255, 0.08); }
-  .mdv-welcome-recent h2 { color: rgba(230, 237, 243, 0.45); }
-  .mdv-welcome-recent button:hover { background: rgba(255, 255, 255, 0.05); }
-  .mdv-recent-path { color: rgba(230, 237, 243, 0.45); }
-  .mdv-welcome-shortcuts kbd {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
+  /* welcome 区块的颜色已经走主题 var(--fg / --fg-muted / --code-bg / --border),不需要额外覆盖 */
   .mdv-drop-overlay {
     border-color: rgba(68, 147, 248, 0.6);
     background: rgba(68, 147, 248, 0.1);
   }
   .mdv-drop-overlay-inner { color: #4493f8; }
 }
+
+/* 错误提示 toast —— 4s 自动消失,固定在窗口顶部居中 */
+.mdv-toast {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: min(640px, calc(100vw - 32px));
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: rgba(220, 53, 69, 0.95);
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  animation: mdv-toast-in 160ms ease-out;
+  pointer-events: none;
+}
+@keyframes mdv-toast-in {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* 应用内更新提示 banner —— 不自动消失,用户主动点 Install 或 × */
+.mdv-update-banner {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1100;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px 10px 16px;
+  border-radius: 999px;
+  background: var(--bg, #ffffff);
+  color: var(--fg, #1f2328);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  font-size: 13px;
+  animation: mdv-toast-in 200ms ease-out;
+  /* 上面 keyframes 是基于 translate(-50%, ...) 设计的,这里位置不同需要单独定义 */
+  animation-name: mdv-update-banner-in;
+}
+@keyframes mdv-update-banner-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mdv-update-text { white-space: nowrap; }
+.mdv-update-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--link, #0969da);
+  color: #ffffff;
+}
+.mdv-update-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.mdv-update-dismiss {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 6px;
+  opacity: 0.55;
+}
+.mdv-update-dismiss:hover { opacity: 1; }

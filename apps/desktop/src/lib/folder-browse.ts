@@ -1,7 +1,8 @@
-// 文件夹浏览 —— Tauri 用 readDir 列 .md；dev 浏览器模式回退到 input[type=file] webkitdirectory
-// Tauri 端：选文件夹后递归列出所有 .md / .markdown / .mdv，限定 200 个文件以防卡死
-import { readDir, type DirEntry } from '@tauri-apps/plugin-fs';
+// 文件夹浏览 —— 走自家 invoke('list_markdown_dir', {root}), Rust 端递归列 .md/.markdown/.mdv
+// 不用 @tauri-apps/plugin-fs::readDir, 那个受前端 scope 限制读不到任意目录;
+// Rust 端 std::fs 由 OS ACL/TCC 控制, macOS 首次访问受保护目录时会弹原生授权框。
 import { open } from '@tauri-apps/plugin-dialog';
+import { invoke } from '@tauri-apps/api/core';
 
 declare global {
   interface Window {
@@ -10,9 +11,6 @@ declare global {
 }
 
 const isTauri = (): boolean => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
-
-const MAX_ENTRIES = 200;
-const MD_EXT = /\.(md|markdown|mdv)$/i;
 
 export interface FolderEntry {
   name: string;
@@ -27,30 +25,12 @@ export async function browseFolder(): Promise<{
   files: FolderEntry[];
 } | null> {
   if (!isTauri()) {
-    // dev 浏览器模式不支持递归读真实文件夹，给个空兜底
+    // dev 浏览器模式没有真实目录访问能力，直接返回空
     console.warn('[mdview] folder browse only works in Tauri runtime');
     return null;
   }
   const selected = await open({ directory: true, multiple: false });
   if (typeof selected !== 'string') return null;
-  const files = await collectMarkdown(selected, '');
-  return { root: selected, files: files.slice(0, MAX_ENTRIES) };
-}
-
-async function collectMarkdown(dir: string, relative: string): Promise<FolderEntry[]> {
-  const entries: DirEntry[] = await readDir(dir);
-  const out: FolderEntry[] = [];
-  for (const e of entries) {
-    if (e.name?.startsWith('.') || e.name?.startsWith('node_modules')) continue;
-    const childPath = `${dir}/${e.name}`;
-    const childRel = relative ? `${relative}/${e.name}` : e.name!;
-    if (e.isDirectory) {
-      const sub = await collectMarkdown(childPath, childRel);
-      out.push(...sub);
-    } else if (e.isFile && e.name && MD_EXT.test(e.name)) {
-      out.push({ name: e.name, path: childPath, relativePath: childRel });
-    }
-    if (out.length >= MAX_ENTRIES) break;
-  }
-  return out;
+  const files = await invoke<FolderEntry[]>('list_markdown_dir', { root: selected });
+  return { root: selected, files };
 }

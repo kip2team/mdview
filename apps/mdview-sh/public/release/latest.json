@@ -1,0 +1,6 @@
+{
+  "version": "0.0.0",
+  "notes": "Seed manifest. Real releases will overwrite this file via .github/workflows/release-desktop.yml.",
+  "pub_date": "2026-01-01T00:00:00Z",
+  "platforms": {}
+}
