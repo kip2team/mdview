@@ -42,9 +42,5 @@ function deriveTitle(url: string): string {
 }
 
 function safeForSvg(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .substring(0, 80);
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').substring(0, 80);
 }

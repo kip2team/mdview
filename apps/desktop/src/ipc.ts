@@ -13,8 +13,7 @@ declare global {
   }
 }
 
-const isTauri = (): boolean =>
-  typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+const isTauri = (): boolean => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 /** 弹出系统文件选择框，返回选中的 markdown 文件绝对路径 */
 export async function openFileDialog(): Promise<string | undefined> {
@@ -90,10 +89,7 @@ export function listenForMenuEvents(handler: (id: MenuId) => void): (() => void)
 }
 
 /** 轮询 mtime 检测外部修改 —— 简单可靠，每 2 秒一次 */
-export function watchFileMtime(
-  path: string,
-  onChange: () => void,
-): (() => void) | undefined {
+export function watchFileMtime(path: string, onChange: () => void): (() => void) | undefined {
   if (!isTauri()) return undefined;
   let lastMtime: number | undefined;
   let stopped = false;
@@ -134,7 +130,10 @@ export async function saveFileDialog(opts: {
     return typeof result === 'string' ? result : undefined;
   }
   // dev fallback：让用户输个文件名，调用方拿到伪路径后通过 download 触发下载
-  const name = window.prompt('Save as (dev mode, will trigger browser download)', opts.defaultPath ?? 'export.mdv.html');
+  const name = window.prompt(
+    'Save as (dev mode, will trigger browser download)',
+    opts.defaultPath ?? 'export.mdv.html',
+  );
   return name ?? undefined;
 }
 

@@ -72,11 +72,11 @@ they're scattered across Slack threads instead of pinned to the doc.
 
 ## Metrics
 
-| Metric | Today | Target |
-|---|---|---|
-| Median time-to-first-reply | 2.4 days | < 4 hours |
-| % docs with at least 1 thread | 12% | > 35% |
-| Thread resolution rate | n/a | > 80% within 1 week |
+| Metric                        | Today    | Target              |
+| ----------------------------- | -------- | ------------------- |
+| Median time-to-first-reply    | 2.4 days | < 4 hours           |
+| % docs with at least 1 thread | 12%      | > 35%               |
+| Thread resolution rate        | n/a      | > 80% within 1 week |
 
 ## Open questions
 
@@ -87,8 +87,8 @@ they're scattered across Slack threads instead of pinned to the doc.
 ## Sign-off
 
 | Stakeholder | Name | Status |
-|---|---|---|
-| Eng lead | _ | _ |
-| Design lead | _ | _ |
-| Legal | _ | _ |
-| PM | _ | _ |
+| ----------- | ---- | ------ |
+| Eng lead    | \_   | \_     |
+| Design lead | \_   | \_     |
+| Legal       | \_   | \_     |
+| PM          | \_   | \_     |

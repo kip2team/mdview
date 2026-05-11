@@ -55,17 +55,21 @@ if (!DRY_RUN) {
   const localSha = (git(['rev-parse', 'main']).stdout || '').trim();
   const remoteSha = (git(['rev-parse', 'origin/main']).stdout || '').trim();
   if (localSha !== remoteSha) {
-    const ab = (git(['rev-list', '--left-right', '--count', 'origin/main...main']).stdout || '').trim();
+    const ab = (
+      git(['rev-list', '--left-right', '--count', 'origin/main...main']).stdout || ''
+    ).trim();
     abort(
       `local main 与 origin/main 不一致 (behind\tahead = ${ab})\n` +
-      `先跑 \`git pull origin main --rebase\` (或确认 ahead 后 \`git push\`) 再重试`,
+        `先跑 \`git pull origin main --rebase\` (或确认 ahead 后 \`git push\`) 再重试`,
     );
   }
 
   if (git(['rev-parse', '--verify', `refs/tags/${TAG}`]).status === 0) {
     abort(`tag ${TAG} 本地已存在`);
   }
-  const remoteTag = (git(['ls-remote', '--tags', 'origin', `refs/tags/${TAG}`]).stdout || '').trim();
+  const remoteTag = (
+    git(['ls-remote', '--tags', 'origin', `refs/tags/${TAG}`]).stdout || ''
+  ).trim();
   if (remoteTag) abort(`tag ${TAG} 已经在 origin 上了`);
 }
 
@@ -91,8 +95,10 @@ patchJson(TAURI);
 patchCargo(CARGO);
 
 if (DRY_RUN) {
-  console.log('\n--dry-run: 文件已改, 不会 commit/tag/push. 想撤销跑 `git checkout -- ' +
-    'apps/desktop/package.json apps/desktop/src-tauri/tauri.conf.json apps/desktop/src-tauri/Cargo.toml`');
+  console.log(
+    '\n--dry-run: 文件已改, 不会 commit/tag/push. 想撤销跑 `git checkout -- ' +
+      'apps/desktop/package.json apps/desktop/src-tauri/tauri.conf.json apps/desktop/src-tauri/Cargo.toml`',
+  );
   process.exit(0);
 }
 
@@ -105,11 +111,15 @@ const pushMain = spawnSync('git', ['push', 'origin', 'main'], { cwd: ROOT, stdio
 if (pushMain.status !== 0) {
   console.error(
     '\n\u2717 push main 失败 (可能有人在 fetch 之后又推了一次).\n' +
-    '解决: git pull origin main --rebase\n' +
-    '      git push origin main\n' +
-    '      git tag ' + TAG + '\n' +
-    '      git push origin ' + TAG + '\n' +
-    '本地 bump commit 已留在 HEAD, 没创建 tag.',
+      '解决: git pull origin main --rebase\n' +
+      '      git push origin main\n' +
+      '      git tag ' +
+      TAG +
+      '\n' +
+      '      git push origin ' +
+      TAG +
+      '\n' +
+      '本地 bump commit 已留在 HEAD, 没创建 tag.',
   );
   process.exit(pushMain.status ?? 1);
 }

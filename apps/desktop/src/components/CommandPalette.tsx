@@ -173,9 +173,27 @@ function buildCommands(props: Props): CommandItem[] {
       },
     );
     cmds.push(
-      { id: 'view-read', label: 'View: Read', hint: '⌘\\', group: 'View', run: () => props.onSetViewMode('read') },
-      { id: 'view-split', label: 'View: Split', hint: '⌘\\', group: 'View', run: () => props.onSetViewMode('split') },
-      { id: 'view-source', label: 'View: Source', hint: '⌘\\', group: 'View', run: () => props.onSetViewMode('source') },
+      {
+        id: 'view-read',
+        label: 'View: Read',
+        hint: '⌘\\',
+        group: 'View',
+        run: () => props.onSetViewMode('read'),
+      },
+      {
+        id: 'view-split',
+        label: 'View: Split',
+        hint: '⌘\\',
+        group: 'View',
+        run: () => props.onSetViewMode('split'),
+      },
+      {
+        id: 'view-source',
+        label: 'View: Source',
+        hint: '⌘\\',
+        group: 'View',
+        run: () => props.onSetViewMode('source'),
+      },
     );
   }
   for (const t of THEME_OPTIONS) {

@@ -39,10 +39,7 @@ async function hydrateMath(root: HTMLElement, token: CancelToken): Promise<void>
     if (node.dataset.mdvHydrated) continue;
     // 行内 math 的公式直接在节点 textContent；块级在内层 <pre> 里。两种都覆盖
     const formula =
-      node.dataset.mdvMath ??
-      node.querySelector('pre')?.textContent ??
-      node.textContent ??
-      '';
+      node.dataset.mdvMath ?? node.querySelector('pre')?.textContent ?? node.textContent ?? '';
     if (!formula.trim()) continue;
     const isBlock = node.classList.contains('mdv-math-block');
     try {

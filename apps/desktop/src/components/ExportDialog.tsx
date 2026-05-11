@@ -5,12 +5,7 @@ import { themeDefaults } from '@mdview/themes';
 import { toMdvHtml, type MdvForm } from '@mdview/format';
 import { saveFileDialog, writeTextToFile } from '../ipc';
 import { THEME_OPTIONS } from '../lib/theme-loader';
-import {
-  THEME_CSS_RAW,
-  EXTENSIONS_CSS_RAW,
-  cdnThemeUrl,
-  cdnEngineUrl,
-} from '../lib/theme-assets';
+import { THEME_CSS_RAW, EXTENSIONS_CSS_RAW, cdnThemeUrl, cdnEngineUrl } from '../lib/theme-assets';
 
 interface ExportDialogProps {
   /** 当前在阅读的 markdown 内容 */
@@ -98,12 +93,7 @@ export function ExportDialog({
       }}
       role="presentation"
     >
-      <div
-        className="mdv-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="mdv-export-title"
-      >
+      <div className="mdv-modal" role="dialog" aria-modal="true" aria-labelledby="mdv-export-title">
         <h2 id="mdv-export-title" className="mdv-modal-title">
           Export as .mdv.html
         </h2>

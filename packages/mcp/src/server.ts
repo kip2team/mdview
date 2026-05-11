@@ -7,18 +7,12 @@
 //   - convert_form(html, to)                       → { html }
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { render } from '@mdview/core';
 import { themeDefaults, BUILT_IN_THEMES } from '@mdview/themes';
 import { toMdvHtml, convertForm, type MdvForm } from '@mdview/format';
 
-const server = new Server(
-  { name: 'mdview', version: '0.0.1' },
-  { capabilities: { tools: {} } },
-);
+const server = new Server({ name: 'mdview', version: '0.0.1' }, { capabilities: { tools: {} } });
 
 // ── Tool 描述 ──────────────────────────────────────────────────
 server.setRequestHandler(ListToolsRequestSchema, async () => ({

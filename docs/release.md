@@ -24,14 +24,14 @@ pnpm release:all
 
 ## 发布的是什么、发到哪里
 
-| Surface              | 内容                              | 平台                       | 一键命令              |
-| -------------------- | --------------------------------- | -------------------------- | --------------------- |
-| **mdview.sh**        | Astro Worker（在线渲染、首页）    | Cloudflare Workers         | `pnpm release:web`    |
-| **cdn.mdview.sh**    | engine-browser + themes（IIFE）   | Cloudflare Pages           | `pnpm release:cdn`    |
-| **npm 包**           | 8 个 `@mdview/*` 包               | registry.npmjs.org         | `pnpm release:npm`    |
-| **桌面端**           | Tauri `.dmg` / `.exe`             | GitHub Releases            | `pnpm desktop:build`  |
-| **浏览器扩展**       | Chrome / Firefox / Edge           | 各自 store                 | 见下文                |
-| **VS Code 插件**     | `.vsix`                           | VS Code Marketplace        | 见下文                |
+| Surface           | 内容                            | 平台                | 一键命令             |
+| ----------------- | ------------------------------- | ------------------- | -------------------- |
+| **mdview.sh**     | Astro Worker（在线渲染、首页）  | Cloudflare Workers  | `pnpm release:web`   |
+| **cdn.mdview.sh** | engine-browser + themes（IIFE） | Cloudflare Pages    | `pnpm release:cdn`   |
+| **npm 包**        | 8 个 `@mdview/*` 包             | registry.npmjs.org  | `pnpm release:npm`   |
+| **桌面端**        | Tauri `.dmg` / `.exe`           | GitHub Releases     | `pnpm desktop:build` |
+| **浏览器扩展**    | Chrome / Firefox / Edge         | 各自 store          | 见下文               |
+| **VS Code 插件**  | `.vsix`                         | VS Code Marketplace | 见下文               |
 
 ---
 

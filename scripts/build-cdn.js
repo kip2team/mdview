@@ -29,9 +29,7 @@ async function main() {
   // 1. engine —— 必须先跑过 pnpm --filter @mdview/engine-browser build
   const enginePath = resolve(ROOT, 'packages/engine-browser/dist/v1.js');
   if (!existsSync(enginePath)) {
-    fail(
-      `Missing ${enginePath}. Run: pnpm --filter @mdview/engine-browser build first.`,
-    );
+    fail(`Missing ${enginePath}. Run: pnpm --filter @mdview/engine-browser build first.`);
   }
   const engineContent = await readFile(enginePath);
   const engineHash = sha384(engineContent).slice(0, 16);

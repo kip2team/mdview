@@ -30,11 +30,11 @@ render(md, {
 
 通过 `meta.extensions` 或 `options.extensions` 启用：
 
-| ID | 描述 |
-|---|---|
-| `mdv:color` | `#ff6b35` 自动渲染为色块预览 |
-| `mdv:callout` | `> [!warning] 标题` Obsidian 风格提示块 |
-| `mdv:math` | `$inline$` / `$$block$$` 占位标记，由消费者侧 hydrate KaTeX |
+| ID            | 描述                                                        |
+| ------------- | ----------------------------------------------------------- |
+| `mdv:color`   | `#ff6b35` 自动渲染为色块预览                                |
+| `mdv:callout` | `> [!warning] 标题` Obsidian 风格提示块                     |
+| `mdv:math`    | `$inline$` / `$$block$$` 占位标记，由消费者侧 hydrate KaTeX |
 | `mdv:mermaid` | ` ```mermaid ... ``` ` 占位标记，由消费者侧 hydrate mermaid |
 
 ## 进一步阅读

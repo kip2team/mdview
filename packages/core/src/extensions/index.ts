@@ -50,9 +50,7 @@ const externalRegistry = new Map<string, ExtensionFactory>();
  */
 export function registerExtension(id: string, factory: ExtensionFactory): void {
   if (id.startsWith('mdv:')) {
-    throw new Error(
-      `Extension id "${id}" uses reserved prefix "mdv:". Use a different namespace.`,
-    );
+    throw new Error(`Extension id "${id}" uses reserved prefix "mdv:". Use a different namespace.`);
   }
   if (BUILT_IN_EXTENSIONS[id] || externalRegistry.has(id)) {
     throw new Error(`Extension "${id}" is already registered.`);

@@ -15,7 +15,7 @@ For tiny fixes (typo, comment), feel free to delete sections that don't apply.
 
 <!-- Bullet list of meaningful changes. Skip trivial mechanical edits. -->
 
-- 
+-
 
 ## Test plan
 

@@ -19,7 +19,11 @@ import { importTyporaTheme } from '@mdview/importer';
 import { readFile } from 'node:fs/promises';
 
 const css = await readFile('Lapis.css', 'utf8');
-const { css: mdviewCss, meta, warnings } = importTyporaTheme(css, {
+const {
+  css: mdviewCss,
+  meta,
+  warnings,
+} = importTyporaTheme(css, {
   id: 'lapis',
   name: 'Lapis',
 });

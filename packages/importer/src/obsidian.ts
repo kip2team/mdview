@@ -81,11 +81,7 @@ export function importObsidianTheme(
 }
 
 // 共用底层工具，与 typora.ts 同一份逻辑（避免循环导入直接复制）
-function stripRulesMatching(
-  css: string,
-  dropPatterns: RegExp[],
-  warnings: string[],
-): string {
+function stripRulesMatching(css: string, dropPatterns: RegExp[], warnings: string[]): string {
   const out: string[] = [];
   let i = 0;
   const n = css.length;
@@ -128,7 +124,10 @@ function findUnquoted(css: string, target: string, from: number): number {
   while (i < css.length) {
     const ch = css[i]!;
     if (inStr) {
-      if (ch === '\\') { i += 2; continue; }
+      if (ch === '\\') {
+        i += 2;
+        continue;
+      }
       if (ch === inStr) inStr = null;
     } else {
       if (ch === '"' || ch === "'") inStr = ch;
@@ -146,7 +145,10 @@ function findMatchingClose(css: string, openPos: number): number {
   while (i < css.length) {
     const ch = css[i]!;
     if (inStr) {
-      if (ch === '\\') { i += 2; continue; }
+      if (ch === '\\') {
+        i += 2;
+        continue;
+      }
       if (ch === inStr) inStr = null;
     } else {
       if (ch === '"' || ch === "'") inStr = ch;

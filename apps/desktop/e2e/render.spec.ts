@@ -66,9 +66,7 @@ test.describe('Rendering pipeline', () => {
     // 选 Medium
     await page.getByRole('option', { name: /Medium/i }).click();
     // <link> href 应切到 medium 主题
-    await expect(
-      page.locator('link[data-mdview-theme="medium"]'),
-    ).toHaveCount(1);
+    await expect(page.locator('link[data-mdview-theme="medium"]')).toHaveCount(1);
   });
 
   test('⌘\\\\ 切换三态视图', async ({ page }) => {

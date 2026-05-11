@@ -21,9 +21,7 @@ export function Editor({ value, onChange }: EditorProps): JSX.Element {
   // 初始化一次
   useEffect(() => {
     if (!hostRef.current) return;
-    const isDark =
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     const state = EditorState.create({
       doc: value,

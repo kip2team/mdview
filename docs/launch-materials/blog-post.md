@@ -1,6 +1,6 @@
 ---
 mdview: 1
-title: "Introducing mdview: Markdown, beautifully rendered everywhere"
+title: 'Introducing mdview: Markdown, beautifully rendered everywhere'
 description: A reader-first home for Markdown — desktop, web, browser extensions, IDE plugins, CLI, and MCP — all from one engine.
 theme: medium
 font: charter
@@ -45,7 +45,7 @@ This is the difference between "Markdown reader" and "Markdown reading platform.
 
 ### 2. Metadata as stage direction
 
-YAML front matter in mdview isn't just attributes — it's the author's voice for how the document should *look*:
+YAML front matter in mdview isn't just attributes — it's the author's voice for how the document should _look_:
 
 ```yaml
 ---
@@ -67,9 +67,9 @@ When you export from mdview, you get an HTML file. But unlike most exports, the 
 
 ```html
 <script type="text/x-mdview" id="mdview-source">
-# My document
+  # My document
 
-This is the original markdown.
+  This is the original markdown.
 </script>
 ```
 
@@ -98,4 +98,4 @@ Markdown deserves a reader. mdview is that reader.
 
 ---
 
-*[GitHub](https://github.com/kip2team/mdview) · [Docs](https://mdview.sh/docs) · [.mdv.html spec](https://mdview.sh/docs/02-Format-Spec)*
+_[GitHub](https://github.com/kip2team/mdview) · [Docs](https://mdview.sh/docs) · [.mdv.html spec](https://mdview.sh/docs/02-Format-Spec)_

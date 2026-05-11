@@ -1,7 +1,6 @@
 // 浏览器扩展打包：把 content.ts / popup.ts 各打成单文件，复制 manifest 与 HTML
 import { build, context } from 'esbuild';
-import { mkdir, copyFile, cp, readdir, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { mkdir, copyFile, writeFile } from 'node:fs/promises';
 import { argv } from 'node:process';
 import { resolve } from 'node:path';
 
@@ -23,10 +22,7 @@ await Promise.all([
 // 复制扩展 + 默认主题 CSS（来自 @mdview/themes）
 const themesPkg = resolve('../../packages/themes/src');
 await copyFile(resolve(themesPkg, 'extensions.css'), resolve(OUT, 'styles/extensions.css'));
-await copyFile(
-  resolve(themesPkg, 'themes/default.css'),
-  resolve(OUT, 'styles/default-theme.css'),
-);
+await copyFile(resolve(themesPkg, 'themes/default.css'), resolve(OUT, 'styles/default-theme.css'));
 
 // 占位图标 —— 实际发布前需要替换
 const placeholderIcon = `<?xml version="1.0"?>

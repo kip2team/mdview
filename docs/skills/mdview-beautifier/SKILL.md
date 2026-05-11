@@ -73,7 +73,7 @@ User: "Write me a one-pager on rate limiting strategies."
 
 Output:
 
-```markdown
+````markdown
 ---
 mdview: 1
 title: Rate Limiting Strategies
@@ -104,12 +104,14 @@ graph LR
   B -->|Yes| C[Allow]
   B -->|No| D[429]
 ```
+````
 
 ## Comparison
 
 | Strategy | Burst handling | Implementation cost |
 | -------- | -------------- | ------------------- |
 | …        | …              | …                   |
+
 ```
 
 After producing the markdown, offer to export it: "Want me to save this as a
@@ -121,3 +123,4 @@ shareable `.mdv.html` file? Just say yes."
 - Do NOT manually write inline `<div class="mdv-...">` — let the engine produce them
 - Keep body content valid CommonMark + mdview extension syntax only
 - Never write malformed YAML in front matter
+```

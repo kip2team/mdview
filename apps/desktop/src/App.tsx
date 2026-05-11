@@ -213,10 +213,7 @@ export function App(): JSX.Element {
 
   // 渲染产物 —— 仅当有 markdown 时才跑
   const result = useMemo(
-    () =>
-      markdown != null
-        ? render(markdown, { themeDefaults: themeDefaults(themeId) })
-        : null,
+    () => (markdown != null ? render(markdown, { themeDefaults: themeDefaults(themeId) }) : null),
     [markdown, themeId],
   );
 
@@ -525,7 +522,11 @@ export function App(): JSX.Element {
           <button
             type="button"
             className={`mdv-toolbar-btn${wideMode ? ' is-active' : ''}`}
-            title={wideMode ? 'Wide layout on — click for narrow column' : 'Wide layout off — click to fill window'}
+            title={
+              wideMode
+                ? 'Wide layout on — click for narrow column'
+                : 'Wide layout off — click to fill window'
+            }
             aria-pressed={wideMode}
             onClick={() => setWideMode((v) => !v)}
           >
@@ -570,9 +571,7 @@ export function App(): JSX.Element {
           )}
           {(viewMode === 'split' || viewMode === 'read') && (
             <div className="mdv-output-wrap">
-              {result?.meta.readingTime && (
-                <ReadingStats markdown={markdown} show={true} />
-              )}
+              {result?.meta.readingTime && <ReadingStats markdown={markdown} show={true} />}
               <main
                 id="mdview-output"
                 ref={outputRef}

@@ -20,7 +20,13 @@
     "./extensions.css": "./src/extensions.css",
     "./print.css": "./src/print.css"
   },
-  "files": ["dist", "src/themes", "src/extensions.css", "src/print.css", "README.md"],
+  "files": [
+    "dist",
+    "src/themes",
+    "src/extensions.css",
+    "src/print.css",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },

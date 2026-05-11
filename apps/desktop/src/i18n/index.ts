@@ -24,8 +24,7 @@ let currentDict: Dict = DICTS[DEFAULT_LOCALE]!;
 export function initI18n(localeOverride?: string): void {
   const candidate = localeOverride ?? detectLocale();
   // 精确匹配 → 否则回退到语言头（zh-CN → zh）
-  const dict =
-    DICTS[candidate] ?? DICTS[candidate.split('-')[0] ?? ''] ?? DICTS[DEFAULT_LOCALE]!;
+  const dict = DICTS[candidate] ?? DICTS[candidate.split('-')[0] ?? ''] ?? DICTS[DEFAULT_LOCALE]!;
   currentLocale = candidate;
   currentDict = dict;
 }

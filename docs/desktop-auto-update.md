@@ -53,9 +53,9 @@ pnpm tauri signer generate -w ~/.tauri/mdview.key --ci
 
 仓库 → Settings → Secrets and variables → Actions:
 
-| Secret | 值 |
-| --- | --- |
-| `TAURI_SIGNING_PRIVATE_KEY` | `cat ~/.tauri/mdview.key` 的完整内容(单行 base64) |
+| Secret                               | 值                                                                                                            |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `TAURI_SIGNING_PRIVATE_KEY`          | `cat ~/.tauri/mdview.key` 的完整内容(单行 base64)                                                             |
 | `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | `--ci` 模式无密码 → **不要创建**(GitHub 不允许空值;workflow 读 `${{ secrets.X }}` 解析为空字符串,signer 接受) |
 
 > 提交 secrets 之前最后确认一次 `~/.tauri/mdview.key` **没被 git 跟踪**。
@@ -109,21 +109,21 @@ pnpm web:deploy
   4. 双击启动。
 - **后续更新**: 应用启动 5s 后,如果有新版,右下角浮一个 pill:
   > New version **0.1.0** available · `Install & restart`
-  点一下:下载 + 验签 + 替换 + 重启,全程不离开应用。
+  > 点一下:下载 + 验签 + 替换 + 重启,全程不离开应用。
 - **手动检查**: 菜单 Help → "Check for Updates…",立即触发一次 check;UI 给即时反馈,DevTools Console 有 `[mdview] updater: …` 日志。
 
 ## 常见问题
 
-| 现象 | 原因 | 怎么排查 |
-| --- | --- | --- |
-| 控制台无 updater 日志 | `checkForUpdate()` 没调到 | 看 [App.tsx](../apps/desktop/src/App.tsx) 里 5s `setTimeout` 有没有被 unmount 提前清掉 |
-| `[mdview] updater: check failed — Network` | endpoint 不通 | 浏览器直接打开 `https://mdview.sh/release/latest.json` 验,或检查代理/证书 |
-| `[mdview] updater: check failed — signature` | latest.json 里的 `signature` 与桌面端 `pubkey` 不匹配 | 私钥/公钥对应不上 → 重新生成 keypair 并同步更新 `tauri.conf.json#pubkey` 与 secret |
-| 一直 `already up to date` | manifest 里的 version ≤ 当前 | bump 脚本是否真的改到 3 处 + push 是否成功 |
-| GH Release 里没有 `.sig` | tauri-action 非 universal 模式签名上传 bug;workflow 已自家 `tauri signer sign` 兜底重签 | 看 `Re-sign tarball + upload .sig` step 日志 |
-| `latest.json` 没 commit 到 main | `publish-manifest` job 失败 | Actions 里看具体 step;常见是 fragments artifact 没产出(check build job 是否绿) |
-| `mdview.sh/release/latest.json` 返回 500 | mdview-sh worker 还没重发,新文件不在 bundle 里 | `pnpm web:deploy` 手动发(或接 CF Workers Builds 自动化) |
-| 首次安装时弹 "mdview.app 已损坏" | mdview 还没上 Apple 公证;Gatekeeper 拒绝执行任何未签名的下载应用 | `xattr -dr com.apple.quarantine /Applications/mdview.app` 后再开。**只首次需要**,以后 in-app 自动更新不会再触发(updater 替换 bundle 走的不是 Gatekeeper 通道) |
+| 现象                                         | 原因                                                                                    | 怎么排查                                                                                                                                                      |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 控制台无 updater 日志                        | `checkForUpdate()` 没调到                                                               | 看 [App.tsx](../apps/desktop/src/App.tsx) 里 5s `setTimeout` 有没有被 unmount 提前清掉                                                                        |
+| `[mdview] updater: check failed — Network`   | endpoint 不通                                                                           | 浏览器直接打开 `https://mdview.sh/release/latest.json` 验,或检查代理/证书                                                                                     |
+| `[mdview] updater: check failed — signature` | latest.json 里的 `signature` 与桌面端 `pubkey` 不匹配                                   | 私钥/公钥对应不上 → 重新生成 keypair 并同步更新 `tauri.conf.json#pubkey` 与 secret                                                                            |
+| 一直 `already up to date`                    | manifest 里的 version ≤ 当前                                                            | bump 脚本是否真的改到 3 处 + push 是否成功                                                                                                                    |
+| GH Release 里没有 `.sig`                     | tauri-action 非 universal 模式签名上传 bug;workflow 已自家 `tauri signer sign` 兜底重签 | 看 `Re-sign tarball + upload .sig` step 日志                                                                                                                  |
+| `latest.json` 没 commit 到 main              | `publish-manifest` job 失败                                                             | Actions 里看具体 step;常见是 fragments artifact 没产出(check build job 是否绿)                                                                                |
+| `mdview.sh/release/latest.json` 返回 500     | mdview-sh worker 还没重发,新文件不在 bundle 里                                          | `pnpm web:deploy` 手动发(或接 CF Workers Builds 自动化)                                                                                                       |
+| 首次安装时弹 "mdview.app 已损坏"             | mdview 还没上 Apple 公证;Gatekeeper 拒绝执行任何未签名的下载应用                        | `xattr -dr com.apple.quarantine /Applications/mdview.app` 后再开。**只首次需要**,以后 in-app 自动更新不会再触发(updater 替换 bundle 走的不是 Gatekeeper 通道) |
 
 ## Windows / Linux 何时加
 
@@ -134,10 +134,30 @@ pnpm web:deploy
    strategy:
      matrix:
        include:
-         - { runner: macos-14, target: aarch64-apple-darwin, arch_short: aarch64, updater_key: darwin-aarch64 }
-         - { runner: macos-14, target: x86_64-apple-darwin, arch_short: x64, updater_key: darwin-x86_64 }
-         - { runner: windows-latest, target: x86_64-pc-windows-msvc, arch_short: x64, updater_key: windows-x86_64 }
-         - { runner: ubuntu-22.04, target: x86_64-unknown-linux-gnu, arch_short: x64, updater_key: linux-x86_64 }
+         - {
+             runner: macos-14,
+             target: aarch64-apple-darwin,
+             arch_short: aarch64,
+             updater_key: darwin-aarch64,
+           }
+         - {
+             runner: macos-14,
+             target: x86_64-apple-darwin,
+             arch_short: x64,
+             updater_key: darwin-x86_64,
+           }
+         - {
+             runner: windows-latest,
+             target: x86_64-pc-windows-msvc,
+             arch_short: x64,
+             updater_key: windows-x86_64,
+           }
+         - {
+             runner: ubuntu-22.04,
+             target: x86_64-unknown-linux-gnu,
+             arch_short: x64,
+             updater_key: linux-x86_64,
+           }
    ```
 2. 重签步骤的产物路径需要对 Windows 用 `.exe`/`.msi`,对 Linux 用 `.AppImage` 适配。
 3. Windows 还需要 EV code signing(否则用户首次会看到 SmartScreen 警告);Linux 端 AppImage / deb 都支持自更新。

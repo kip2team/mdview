@@ -12,12 +12,12 @@ toc: true
 
 ## 场景索引
 
-| 场景 | 推荐主题 | 推荐扩展 | 模板 |
-|---|---|---|---|
-| 技术博客文章 | `medium` | callout / color / math / mermaid / kbd | [tech-blog.md](./tech-blog.md) |
-| 产品 PRD | `default` | callout / kbd | [product-prd.md](./product-prd.md) |
-| 读书笔记 | `medium` | callout | [book-note.md](./book-note.md) |
-| API 文档 | `github` | callout / kbd | [api-doc.md](./api-doc.md) |
+| 场景         | 推荐主题  | 推荐扩展                               | 模板                               |
+| ------------ | --------- | -------------------------------------- | ---------------------------------- |
+| 技术博客文章 | `medium`  | callout / color / math / mermaid / kbd | [tech-blog.md](./tech-blog.md)     |
+| 产品 PRD     | `default` | callout / kbd                          | [product-prd.md](./product-prd.md) |
+| 读书笔记     | `medium`  | callout                                | [book-note.md](./book-note.md)     |
+| API 文档     | `github`  | callout / kbd                          | [api-doc.md](./api-doc.md)         |
 
 ## 通用配方原则
 

@@ -7,10 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@mdview/desktop",
-    "@mdview/mdview-sh",
-    "@mdview/browser-ext",
-    "mdview"
-  ]
+  "ignore": ["@mdview/desktop", "@mdview/mdview-sh", "@mdview/browser-ext", "mdview"]
 }

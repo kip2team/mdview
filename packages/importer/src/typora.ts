@@ -97,15 +97,11 @@ export function importTyporaTheme(
  * 极简 CSS 规则解析：以最外层 `}` 为边界切片，丢掉 selector 中包含 dropList 的规则。
  * 不处理 nested at-rules（@media 内部 nested 规则会被整体保留），对 Typora 主题足够。
  */
-function stripRulesMatching(
-  css: string,
-  dropPatterns: RegExp[],
-  warnings: string[],
-): string {
+function stripRulesMatching(css: string, dropPatterns: RegExp[], warnings: string[]): string {
   const out: string[] = [];
   let i = 0;
   const n = css.length;
-  let inComment = false;
+  const inComment = false;
 
   while (i < n) {
     // 跳过注释

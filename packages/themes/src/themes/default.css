@@ -53,8 +53,9 @@ body {
 }
 
 #mdview-output {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 16px;
   line-height: 1.65;
   max-width: 760px;
@@ -75,21 +76,50 @@ body {
   margin: 1.8em 0 0.6em;
   scroll-margin-top: 2rem;
 }
-#mdview-output h1 { font-size: 2em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
-#mdview-output h2 { font-size: 1.5em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
-#mdview-output h3 { font-size: 1.25em; }
-#mdview-output h4 { font-size: 1em; }
-#mdview-output h5 { font-size: 0.875em; }
-#mdview-output h6 { font-size: 0.85em; color: var(--fg-muted); }
+#mdview-output h1 {
+  font-size: 2em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3em;
+}
+#mdview-output h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3em;
+}
+#mdview-output h3 {
+  font-size: 1.25em;
+}
+#mdview-output h4 {
+  font-size: 1em;
+}
+#mdview-output h5 {
+  font-size: 0.875em;
+}
+#mdview-output h6 {
+  font-size: 0.85em;
+  color: var(--fg-muted);
+}
 
-#mdview-output p { margin: 0 0 1em; }
+#mdview-output p {
+  margin: 0 0 1em;
+}
 
-#mdview-output a { color: var(--link); text-decoration: none; }
-#mdview-output a:hover { text-decoration: underline; }
+#mdview-output a {
+  color: var(--link);
+  text-decoration: none;
+}
+#mdview-output a:hover {
+  text-decoration: underline;
+}
 
 #mdview-output ul,
-#mdview-output ol { margin: 0 0 1em; padding-left: 2em; }
-#mdview-output li + li { margin-top: 0.25em; }
+#mdview-output ol {
+  margin: 0 0 1em;
+  padding-left: 2em;
+}
+#mdview-output li + li {
+  margin-top: 0.25em;
+}
 
 #mdview-output blockquote {
   margin: 0 0 1em;
@@ -99,7 +129,8 @@ body {
 }
 
 #mdview-output code {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 0.9em;
   padding: 0.2em 0.4em;
   background: var(--code-bg);
@@ -114,7 +145,11 @@ body {
   border-radius: 6px;
   line-height: 1.5;
 }
-#mdview-output pre code { padding: 0; background: transparent; font-size: 0.875em; }
+#mdview-output pre code {
+  padding: 0;
+  background: transparent;
+  font-size: 0.875em;
+}
 
 #mdview-output table {
   display: block;
@@ -128,7 +163,10 @@ body {
   padding: 0.5em 0.75em;
   border: 1px solid var(--border-strong);
 }
-#mdview-output th { background: var(--th-bg); font-weight: 600; }
+#mdview-output th {
+  background: var(--th-bg);
+  font-weight: 600;
+}
 
 #mdview-output hr {
   height: 1px;

@@ -32,7 +32,11 @@ body {
   max-width: calc(100vw - 48px);
   animation: mdv-fade-in 200ms ease;
 }
-.mdv-onboarding-content { display: inline-flex; align-items: center; gap: 8px; }
+.mdv-onboarding-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 .mdv-onboarding-content strong {
   background: rgba(255, 255, 255, 0.15);
   padding: 2px 7px;
@@ -62,7 +66,9 @@ body {
   padding: 0 6px;
   opacity: 0.6;
 }
-.mdv-onboarding-dismiss:hover { opacity: 1; }
+.mdv-onboarding-dismiss:hover {
+  opacity: 1;
+}
 
 /* ── Zen 沉浸阅读模式 ──────────────────────────────── */
 /* ⌘. 切换；隐藏所有 chrome，只剩内容 */
@@ -301,7 +307,9 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   cursor: pointer;
   border-right: 1px solid var(--border, rgba(0, 0, 0, 0.08));
 }
-.mdv-viewmode-toggle button:last-child { border-right: 0; }
+.mdv-viewmode-toggle button:last-child {
+  border-right: 0;
+}
 .mdv-viewmode-toggle button:hover:not(.is-active) {
   background: color-mix(in srgb, currentColor 8%, transparent);
 }
@@ -337,7 +345,8 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   display: block;
   height: 100vh;
   overflow: hidden;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 14px;
 }
 .mdv-editor .cm-editor {
@@ -510,12 +519,18 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   line-height: 1.5;
   color: rgba(31, 35, 40, 0.7);
 }
-.mdv-toc-right { right: 24px; }
-.mdv-toc-left  { left: 24px; }
+.mdv-toc-right {
+  right: 24px;
+}
+.mdv-toc-left {
+  left: 24px;
+}
 
 /* 视口过窄时藏起 TOC，避免和正文重叠 */
 @media (max-width: 1280px) {
-  .mdv-toc { display: none; }
+  .mdv-toc {
+    display: none;
+  }
 }
 
 .mdv-toc-title {
@@ -543,27 +558,53 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   border-left: 1px solid transparent;
   color: inherit;
   text-decoration: none;
-  transition: color 80ms ease, border-color 80ms ease;
+  transition:
+    color 80ms ease,
+    border-color 80ms ease;
 }
-.mdv-toc nav a:hover { color: #0969da; }
+.mdv-toc nav a:hover {
+  color: #0969da;
+}
 .mdv-toc nav a.is-active {
   color: #0969da;
   border-left-color: #0969da;
 }
-.mdv-toc-l1 > a { font-weight: 600; }
-.mdv-toc-l2 > a { padding-left: 12px; }
-.mdv-toc-l3 > a { padding-left: 24px; }
-.mdv-toc-l4 > a { padding-left: 36px; }
-.mdv-toc-l5 > a { padding-left: 48px; }
-.mdv-toc-l6 > a { padding-left: 60px; }
+.mdv-toc-l1 > a {
+  font-weight: 600;
+}
+.mdv-toc-l2 > a {
+  padding-left: 12px;
+}
+.mdv-toc-l3 > a {
+  padding-left: 24px;
+}
+.mdv-toc-l4 > a {
+  padding-left: 36px;
+}
+.mdv-toc-l5 > a {
+  padding-left: 48px;
+}
+.mdv-toc-l6 > a {
+  padding-left: 60px;
+}
 
 @media (prefers-color-scheme: dark) {
-  .mdv-toc { color: rgba(230, 237, 243, 0.65); }
-  .mdv-toc-title { color: rgba(230, 237, 243, 0.5); }
-  .mdv-toc nav ul { border-left-color: rgba(255, 255, 255, 0.1); }
+  .mdv-toc {
+    color: rgba(230, 237, 243, 0.65);
+  }
+  .mdv-toc-title {
+    color: rgba(230, 237, 243, 0.5);
+  }
+  .mdv-toc nav ul {
+    border-left-color: rgba(255, 255, 255, 0.1);
+  }
   .mdv-toc nav a:hover,
-  .mdv-toc nav a.is-active { color: #4493f8; }
-  .mdv-toc nav a.is-active { border-left-color: #4493f8; }
+  .mdv-toc nav a.is-active {
+    color: #4493f8;
+  }
+  .mdv-toc nav a.is-active {
+    border-left-color: #4493f8;
+  }
 }
 
 /* ── Shiki 双主题桥接 ─────────────────────────────────
@@ -750,7 +791,9 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 6px;
   cursor: pointer;
-  transition: background 80ms ease, border-color 80ms ease;
+  transition:
+    background 80ms ease,
+    border-color 80ms ease;
 }
 .mdv-form-option:hover {
   background: rgba(0, 0, 0, 0.03);
@@ -943,7 +986,9 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
     border-color: rgba(68, 147, 248, 0.6);
     background: rgba(68, 147, 248, 0.1);
   }
-  .mdv-drop-overlay-inner { color: #4493f8; }
+  .mdv-drop-overlay-inner {
+    color: #4493f8;
+  }
 }
 
 /* 错误提示 toast —— 4s 自动消失,固定在窗口顶部居中 */
@@ -965,8 +1010,14 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   pointer-events: none;
 }
 @keyframes mdv-toast-in {
-  from { opacity: 0; transform: translate(-50%, -8px); }
-  to   { opacity: 1; transform: translate(-50%, 0); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 
 /* 应用内更新提示 banner —— 不自动消失,用户主动点 Install 或 × */
@@ -990,10 +1041,18 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   animation-name: mdv-update-banner-in;
 }
 @keyframes mdv-update-banner-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.mdv-update-text { white-space: nowrap; }
+.mdv-update-text {
+  white-space: nowrap;
+}
 .mdv-update-btn {
   border: 0;
   border-radius: 999px;
@@ -1018,8 +1077,9 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   padding: 0 6px;
   opacity: 0.55;
 }
-.mdv-update-dismiss:hover { opacity: 1; }
-
+.mdv-update-dismiss:hover {
+  opacity: 1;
+}
 
 /* ── 正文宽度 ─────────────────────────────────────────
    覆盖主题给 #mdview-output 的死宽 760px。

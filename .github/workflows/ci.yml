@@ -34,14 +34,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build
+        # Build 必须先于 Typecheck: packages/vscode 和 packages/format 引用 @mdview/core 的
+        # dist 类型声明, 没 build 出 dist 时 typecheck 找不到模块
+        run: pnpm -r run build
+
       - name: Typecheck
         run: pnpm -r run typecheck
 
       - name: Test
         run: pnpm -r run test
-
-      - name: Build
-        run: pnpm -r run build
 
   e2e:
     name: e2e (chromium)

@@ -16,31 +16,29 @@ cli
   .command('[name]', '在当前目录下脚手架一个 mdview 文档项目')
   .option('--theme <id>', '初始主题（default / github / medium）', { default: 'medium' })
   .option('--no-git', '跳过 git init')
-  .action(
-    async (name: string | undefined, options: { theme: string; git: boolean }) => {
-      const projectName = (name ?? 'mdview-doc').toLowerCase().replace(/[^a-z0-9-]/g, '-');
-      const target = resolve(process.cwd(), projectName);
-      if (existsSync(target)) {
-        console.error(`error: directory already exists: ${target}`);
-        process.exit(1);
-      }
-      await mkdir(target, { recursive: true });
+  .action(async (name: string | undefined, options: { theme: string; git: boolean }) => {
+    const projectName = (name ?? 'mdview-doc').toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    const target = resolve(process.cwd(), projectName);
+    if (existsSync(target)) {
+      console.error(`error: directory already exists: ${target}`);
+      process.exit(1);
+    }
+    await mkdir(target, { recursive: true });
 
-      const docFilename = `${projectName}.md`;
-      await writeFile(resolve(target, docFilename), starterDoc(projectName, options.theme), 'utf8');
-      await writeFile(resolve(target, 'package.json'), starterPkg(projectName), 'utf8');
-      await writeFile(resolve(target, 'README.md'), starterReadme(projectName, docFilename), 'utf8');
-      await writeFile(resolve(target, '.gitignore'), '*.mdv.html\nnode_modules\n', 'utf8');
+    const docFilename = `${projectName}.md`;
+    await writeFile(resolve(target, docFilename), starterDoc(projectName, options.theme), 'utf8');
+    await writeFile(resolve(target, 'package.json'), starterPkg(projectName), 'utf8');
+    await writeFile(resolve(target, 'README.md'), starterReadme(projectName, docFilename), 'utf8');
+    await writeFile(resolve(target, '.gitignore'), '*.mdv.html\nnode_modules\n', 'utf8');
 
-      console.log(`✓ created ${target}`);
-      console.log('\nNext steps:\n');
-      console.log(`  cd ${projectName}`);
-      console.log(`  npm install`);
-      console.log(`  npm run preview          # 在浏览器里预览`);
-      console.log(`  npm run export:standalone # 导出离线 .mdv.html`);
-      console.log('');
-    },
-  );
+    console.log(`✓ created ${target}`);
+    console.log('\nNext steps:\n');
+    console.log(`  cd ${projectName}`);
+    console.log(`  npm install`);
+    console.log(`  npm run preview          # 在浏览器里预览`);
+    console.log(`  npm run export:standalone # 导出离线 .mdv.html`);
+    console.log('');
+  });
 
 cli.help();
 cli.version('0.0.1');
@@ -87,25 +85,27 @@ The brand colors are #0969da and #ff6b35. Hex literals get a tiny swatch.
 }
 
 function starterPkg(name: string): string {
-  return JSON.stringify(
-    {
-      name,
-      version: '0.0.1',
-      private: true,
-      scripts: {
-        preview: `mdview render ${name}.md --theme medium > ${name}.preview.html && open ${name}.preview.html`,
-        'export:progressive': `mdview export ${name}.md --form progressive`,
-        'export:minimal': `mdview export ${name}.md --form minimal`,
-        'export:standalone': `mdview export ${name}.md --form standalone`,
-        'export:all': `mdview export ${name}.md --form all`,
+  return (
+    JSON.stringify(
+      {
+        name,
+        version: '0.0.1',
+        private: true,
+        scripts: {
+          preview: `mdview render ${name}.md --theme medium > ${name}.preview.html && open ${name}.preview.html`,
+          'export:progressive': `mdview export ${name}.md --form progressive`,
+          'export:minimal': `mdview export ${name}.md --form minimal`,
+          'export:standalone': `mdview export ${name}.md --form standalone`,
+          'export:all': `mdview export ${name}.md --form all`,
+        },
+        dependencies: {
+          '@mdview/cli': 'latest',
+        },
       },
-      dependencies: {
-        '@mdview/cli': 'latest',
-      },
-    },
-    null,
-    2,
-  ) + '\n';
+      null,
+      2,
+    ) + '\n'
+  );
 }
 
 function starterReadme(name: string, docFile: string): string {

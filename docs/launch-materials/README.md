@@ -2,11 +2,11 @@
 
 发布日要用的素材集中在这里。
 
-| 文件 | 用途 |
-|---|---|
-| [blog-post.md](./blog-post.md) | 博客主推文，可以放 mdview.sh / 个人博客 |
-| [hn-post.md](./hn-post.md) | Hacker News 提交标题 + 第一条评论 |
-| [twitter-thread.md](./twitter-thread.md) | X / Twitter 5 条推文串 |
+| 文件                                     | 用途                                    |
+| ---------------------------------------- | --------------------------------------- |
+| [blog-post.md](./blog-post.md)           | 博客主推文，可以放 mdview.sh / 个人博客 |
+| [hn-post.md](./hn-post.md)               | Hacker News 提交标题 + 第一条评论       |
+| [twitter-thread.md](./twitter-thread.md) | X / Twitter 5 条推文串                  |
 
 ## 发布日检查清单
 
@@ -45,9 +45,9 @@
 
 ## 已知风险
 
-| 风险 | 缓解 |
-|---|---|
-| HN 流量打爆 mdview.sh | Cloudflare Workers 自动 scale，但 KV 写有限制；准备好 read-only 降级模式 |
-| 用户找渠道不便 | 顶部 nav 全有：CLI / desktop / web / extension 安装入口齐全 |
+| 风险                        | 缓解                                                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------- |
+| HN 流量打爆 mdview.sh       | Cloudflare Workers 自动 scale，但 KV 写有限制；准备好 read-only 降级模式                    |
+| 用户找渠道不便              | 顶部 nav 全有：CLI / desktop / web / extension 安装入口齐全                                 |
 | Demo .md 渲染失败被截图传播 | 发布前用 Playwright 在 Chrome / Safari / Firefox 各跑一次 demo.md，确保所有扩展正常 hydrate |
-| 项目过早暴露 = 半成品口碑 | 路线图明确写"alpha"，期望管理 |
+| 项目过早暴露 = 半成品口碑   | 路线图明确写"alpha"，期望管理                                                               |

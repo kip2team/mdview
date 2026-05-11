@@ -5,7 +5,10 @@
   "license": "MIT",
   "type": "module",
   "main": "./dist/v1.js",
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },

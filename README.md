@@ -73,14 +73,14 @@ npm create mdview-doc my-article
 
 ## Documentation
 
-| Doc | Use |
-| --- | --- |
-| [PRD & Plan](./docs/01-PRD-and-Plan.md) | Vision, architecture, decisions |
-| [`.mdv.html` Format Spec](./docs/02-Format-Spec.md) | The self-rendering HTML protocol |
-| [Feature Backlog](./docs/03-Feature-Backlog.md) | Full feature catalog with priorities |
-| [Plugin authoring](./docs/plugin-authoring.md) | Write your own `mdv:*` extensions |
-| [Cookbook](./docs/cookbook/README.md) | Real-world templates |
-| [Roadmap](./ROADMAP.md) | Public roadmap |
+| Doc                                                 | Use                                  |
+| --------------------------------------------------- | ------------------------------------ |
+| [PRD & Plan](./docs/01-PRD-and-Plan.md)             | Vision, architecture, decisions      |
+| [`.mdv.html` Format Spec](./docs/02-Format-Spec.md) | The self-rendering HTML protocol     |
+| [Feature Backlog](./docs/03-Feature-Backlog.md)     | Full feature catalog with priorities |
+| [Plugin authoring](./docs/plugin-authoring.md)      | Write your own `mdv:*` extensions    |
+| [Cookbook](./docs/cookbook/README.md)               | Real-world templates                 |
+| [Roadmap](./ROADMAP.md)                             | Public roadmap                       |
 
 ## Repository
 

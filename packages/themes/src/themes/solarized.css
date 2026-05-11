@@ -75,16 +75,38 @@ body {
   line-height: 1.3;
   margin: 1.8em 0 0.6em;
 }
-#mdview-output h1 { font-size: 2em; border-bottom: 1px solid var(--border-soft); padding-bottom: 0.3em; }
-#mdview-output h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-soft); padding-bottom: 0.3em; }
-#mdview-output h3 { font-size: 1.25em; }
+#mdview-output h1 {
+  font-size: 2em;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 0.3em;
+}
+#mdview-output h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 0.3em;
+}
+#mdview-output h3 {
+  font-size: 1.25em;
+}
 
-#mdview-output p { margin: 0 0 1em; }
-#mdview-output a { color: var(--link); text-decoration: none; border-bottom: 1px dotted var(--link); }
-#mdview-output a:hover { color: var(--link-hover); border-bottom-color: var(--link-hover); }
+#mdview-output p {
+  margin: 0 0 1em;
+}
+#mdview-output a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--link);
+}
+#mdview-output a:hover {
+  color: var(--link-hover);
+  border-bottom-color: var(--link-hover);
+}
 
 #mdview-output ul,
-#mdview-output ol { margin: 0 0 1em; padding-left: 1.8em; }
+#mdview-output ol {
+  margin: 0 0 1em;
+  padding-left: 1.8em;
+}
 
 #mdview-output blockquote {
   margin: 1em 0;
@@ -110,10 +132,28 @@ body {
   overflow: auto;
 }
 
-#mdview-output table { border-collapse: collapse; margin: 1em 0; }
+#mdview-output table {
+  border-collapse: collapse;
+  margin: 1em 0;
+}
 #mdview-output th,
-#mdview-output td { padding: 0.4em 0.8em; border: 1px solid var(--border-soft); }
-#mdview-output th { background: var(--bg-alt); font-weight: 600; }
+#mdview-output td {
+  padding: 0.4em 0.8em;
+  border: 1px solid var(--border-soft);
+}
+#mdview-output th {
+  background: var(--bg-alt);
+  font-weight: 600;
+}
 
-#mdview-output hr { height: 1px; border: 0; background: var(--border-soft); margin: 2em 0; }
-#mdview-output img { max-width: 100%; height: auto; border-radius: 3px; }
+#mdview-output hr {
+  height: 1px;
+  border: 0;
+  background: var(--border-soft);
+  margin: 2em 0;
+}
+#mdview-output img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 3px;
+}

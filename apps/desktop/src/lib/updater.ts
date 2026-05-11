@@ -17,8 +17,7 @@ declare global {
   }
 }
 
-const isTauri = (): boolean =>
-  typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+const isTauri = (): boolean => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 export interface AvailableUpdate {
   version: string;

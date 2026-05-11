@@ -131,9 +131,7 @@ check('  all packages have publishConfig.access=public', () => {
   ];
   const missing = [];
   for (const p of pkgs) {
-    const pj = JSON.parse(
-      readFileSync(resolve(ROOT, 'packages', p, 'package.json'), 'utf8'),
-    );
+    const pj = JSON.parse(readFileSync(resolve(ROOT, 'packages', p, 'package.json'), 'utf8'));
     if (pj.publishConfig?.access !== 'public') missing.push(p);
   }
   if (missing.length) {

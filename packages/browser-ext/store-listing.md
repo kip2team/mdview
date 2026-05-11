@@ -16,7 +16,7 @@ Stop reading raw Markdown. mdview takes over `.md` URLs in your browser and rend
 
 What it does:
 
-• Auto-renders any `.md` page (raw.githubusercontent.com, gist, *.md URLs)
+• Auto-renders any `.md` page (raw.githubusercontent.com, gist, \*.md URLs)
 • 6 built-in themes — Default, GitHub, Medium, Dark, Solarized, Sepia
 • Syntax-highlighted code blocks (shiki)
 • Live KaTeX math + Mermaid diagrams

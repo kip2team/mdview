@@ -175,9 +175,7 @@ describe('mdv:mermaid extension', () => {
   });
 
   it('通过 front matter 启用 mermaid', () => {
-    const md = ['---', 'extensions: [mdv:mermaid]', '---', '```mermaid', 'A-->B', '```'].join(
-      '\n',
-    );
+    const md = ['---', 'extensions: [mdv:mermaid]', '---', '```mermaid', 'A-->B', '```'].join('\n');
     const { html } = render(md);
     expect(html).toContain('class="mdv-mermaid"');
   });

@@ -20,7 +20,11 @@ cli
       options: { id?: string; name?: string; author?: string; out?: string },
     ) => {
       const cssText = await readFile(resolve(cssFile), 'utf8');
-      const id = options.id ?? basename(cssFile, '.css').toLowerCase().replace(/[^a-z0-9-]/g, '-');
+      const id =
+        options.id ??
+        basename(cssFile, '.css')
+          .toLowerCase()
+          .replace(/[^a-z0-9-]/g, '-');
       const result = importTyporaTheme(cssText, {
         id,
         name: options.name,
@@ -31,11 +35,7 @@ cli
       await mkdir(dirname(outDir), { recursive: true });
       await mkdir(outDir, { recursive: true });
       await writeFile(resolve(outDir, 'theme.css'), result.css, 'utf8');
-      await writeFile(
-        resolve(outDir, 'theme.json'),
-        JSON.stringify(result.meta, null, 2),
-        'utf8',
-      );
+      await writeFile(resolve(outDir, 'theme.json'), JSON.stringify(result.meta, null, 2), 'utf8');
 
       console.log(`✓ wrote ${outDir}/theme.css`);
       console.log(`✓ wrote ${outDir}/theme.json`);
@@ -62,7 +62,10 @@ cli
     ) => {
       const cssText = await readFile(resolve(cssFile), 'utf8');
       const id =
-        options.id ?? basename(cssFile, '.css').toLowerCase().replace(/[^a-z0-9-]/g, '-');
+        options.id ??
+        basename(cssFile, '.css')
+          .toLowerCase()
+          .replace(/[^a-z0-9-]/g, '-');
       const result = importObsidianTheme(cssText, {
         id,
         name: options.name,
@@ -73,11 +76,7 @@ cli
       await mkdir(dirname(outDir), { recursive: true });
       await mkdir(outDir, { recursive: true });
       await writeFile(resolve(outDir, 'theme.css'), result.css, 'utf8');
-      await writeFile(
-        resolve(outDir, 'theme.json'),
-        JSON.stringify(result.meta, null, 2),
-        'utf8',
-      );
+      await writeFile(resolve(outDir, 'theme.json'), JSON.stringify(result.meta, null, 2), 'utf8');
 
       console.log(`✓ wrote ${outDir}/theme.css`);
       console.log(`✓ wrote ${outDir}/theme.json`);

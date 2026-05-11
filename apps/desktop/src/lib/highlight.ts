@@ -41,8 +41,7 @@ async function getHighlighter(): Promise<Highlighter> {
 }
 
 /** 匹配 markdown-it 输出的代码块：<pre><code class="language-XX">...</code></pre> */
-const CODE_BLOCK_RE =
-  /<pre><code class="language-([A-Za-z0-9_+-]+)">([\s\S]*?)<\/code><\/pre>/g;
+const CODE_BLOCK_RE = /<pre><code class="language-([A-Za-z0-9_+-]+)">([\s\S]*?)<\/code><\/pre>/g;
 
 /**
  * 把 HTML 中所有有语言标识的代码块用 shiki 重新渲染。

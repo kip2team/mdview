@@ -25,7 +25,7 @@ Substitute your own book and your own takeaways.
 ### 1. Adding people to a late project makes it later
 
 Brooks' Law. The intuition: each new person needs ramp-up time, and they pull
-existing people away from work to onboard them. The *coordination cost* grows
+existing people away from work to onboard them. The _coordination cost_ grows
 faster than linearly with team size — every pair of people is a potential
 communication channel, so adding one person to a team of N adds N new channels.
 

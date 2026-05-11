@@ -9,13 +9,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function FolderSidebar({
-  root,
-  files,
-  activePath,
-  onPick,
-  onClose,
-}: Props): JSX.Element {
+export function FolderSidebar({ root, files, activePath, onPick, onClose }: Props): JSX.Element {
   return (
     <aside className="mdv-folder-sidebar" aria-label="Folder files">
       <div className="mdv-folder-header">
@@ -43,9 +37,9 @@ export function FolderSidebar({
               >
                 {f.name}
                 {f.relativePath !== f.name && (
-                  <span className="mdv-folder-dir">{
-                    f.relativePath.slice(0, -f.name.length).replace(/\/$/, '')
-                  }</span>
+                  <span className="mdv-folder-dir">
+                    {f.relativePath.slice(0, -f.name.length).replace(/\/$/, '')}
+                  </span>
                 )}
               </button>
             </li>

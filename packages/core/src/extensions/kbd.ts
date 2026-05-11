@@ -56,7 +56,10 @@ function buildKbdTokens(state: { Token: typeof Token }, raw: string): Token[] {
   // 同时按用 "+"，顺序按用空格
   const isSequential = !trimmed.includes('+') && trimmed.includes(' ');
   const sep = isSequential ? ' ' : '+';
-  const parts = trimmed.split(sep).map((s) => s.trim()).filter(Boolean);
+  const parts = trimmed
+    .split(sep)
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   const out: Token[] = [];
   parts.forEach((p, i) => {

@@ -25,12 +25,12 @@ If the issue is sensitive, encrypt your report with PGP. Public key fingerprint 
 
 ## Response timeline
 
-| Stage | SLA |
-|---|---|
-| Acknowledge receipt | Within 48 hours |
-| Initial triage (severity assessment) | Within 5 business days |
-| Patch released for confirmed issues | Within 30 days for high/critical, best-effort for medium/low |
-| Public advisory (CVE / security note) | Coordinated with reporter |
+| Stage                                 | SLA                                                          |
+| ------------------------------------- | ------------------------------------------------------------ |
+| Acknowledge receipt                   | Within 48 hours                                              |
+| Initial triage (severity assessment)  | Within 5 business days                                       |
+| Patch released for confirmed issues   | Within 30 days for high/critical, best-effort for medium/low |
+| Public advisory (CVE / security note) | Coordinated with reporter                                    |
 
 ## Scope
 

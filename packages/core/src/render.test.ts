@@ -15,9 +15,7 @@ describe('render', () => {
   });
 
   it('解析 YAML front matter 并合并到元数据', () => {
-    const md = ['---', 'title: 我的文章', 'theme: medium', 'lang: zh-CN', '---', '# Hi'].join(
-      '\n',
-    );
+    const md = ['---', 'title: 我的文章', 'theme: medium', 'lang: zh-CN', '---', '# Hi'].join('\n');
     const { meta, body } = render(md);
     expect(meta.title).toBe('我的文章');
     expect(meta.theme).toBe('medium');

@@ -120,24 +120,17 @@ export function fromMdvHtml(html: string): FromMdvHtmlResult {
   const title = matchInner(html, /<title>([\s\S]*?)<\/title>/i);
 
   const sourceMatch = html.match(
-    new RegExp(
-      `<script[^>]*type="${MDVIEW_SOURCE_SCRIPT_TYPE}"[^>]*>([\\s\\S]*?)<\\/script>`,
-      'i',
-    ),
+    new RegExp(`<script[^>]*type="${MDVIEW_SOURCE_SCRIPT_TYPE}"[^>]*>([\\s\\S]*?)<\\/script>`, 'i'),
   );
-  const source = sourceMatch
-    ? sourceMatch[1]!.replace(/<\\\/script>/gi, '</script>').trim()
-    : '';
+  const source = sourceMatch ? sourceMatch[1]!.replace(/<\\\/script>/gi, '</script>').trim() : '';
 
   // 引擎 / 主题 URL 嗅探（粗粒度，容忍多种写法）
-  const engineUrl = matchAttr(
-    html,
-    /<script[^>]*src="([^"]*\/(?:r|engine)\/[^"]+\.js)"/i,
-  );
+  const engineUrl = matchAttr(html, /<script[^>]*src="([^"]*\/(?:r|engine)\/[^"]+\.js)"/i);
   const engineInline = !engineUrl && /<script(?![^>]*src=)[^>]*>[\s\S]{200,}<\/script>/.test(html);
 
-  const themeUrl = matchAttr(html, /<link[^>]*\bdata-mdview-theme[^>]*\bhref="([^"]+)"/i)
-    ?? matchAttr(html, /<link[^>]*\bhref="([^"]*\/themes\/[^"]+\.css)"/i);
+  const themeUrl =
+    matchAttr(html, /<link[^>]*\bdata-mdview-theme[^>]*\bhref="([^"]+)"/i) ??
+    matchAttr(html, /<link[^>]*\bhref="([^"]*\/themes\/[^"]+\.css)"/i);
   const themeInline = !themeUrl && /<style[^>]*>[\s\S]{200,}<\/style>/.test(html);
 
   return {

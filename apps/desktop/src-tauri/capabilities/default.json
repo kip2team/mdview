@@ -3,10 +3,5 @@
   "identifier": "default",
   "description": "默认能力集 —— 仅需对话框 + 自家 invoke 命令(读写交给 Rust 命令处理,边界由 OS 决定)",
   "windows": ["main"],
-  "permissions": [
-    "core:default",
-    "dialog:default",
-    "updater:default",
-    "process:default"
-  ]
+  "permissions": ["core:default", "dialog:default", "updater:default", "process:default"]
 }

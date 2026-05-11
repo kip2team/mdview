@@ -24,16 +24,16 @@ assignees: ''
 
 ## Steps
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Environment
 
 - Surface: <!-- desktop / web (mdview.sh) / browser ext / VS Code / CLI / MCP -->
 - Version: <!-- e.g. desktop 0.1.0, @mdview/core 0.1.0 -->
 - OS: <!-- macOS 15, Windows 11, Linux distro -->
-- Browser (if applicable): 
+- Browser (if applicable):
 
 ## Screenshots / logs
 

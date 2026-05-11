@@ -48,8 +48,8 @@ body {
 }
 
 #mdview-output {
-  font-family: 'Charter', 'Iowan Old Style', 'Georgia', 'Source Serif Pro', 'PingFang SC',
-    'Songti SC', serif;
+  font-family:
+    'Charter', 'Iowan Old Style', 'Georgia', 'Source Serif Pro', 'PingFang SC', 'Songti SC', serif;
   font-size: 20px;
   line-height: 1.7;
   max-width: 680px;
@@ -71,12 +71,23 @@ body {
   color: var(--fg);
   scroll-margin-top: 2rem;
 }
-#mdview-output h1 { font-size: 2.4em; margin-top: 0.6em; }
-#mdview-output h2 { font-size: 1.7em; }
-#mdview-output h3 { font-size: 1.3em; }
-#mdview-output h4 { font-size: 1.1em; }
+#mdview-output h1 {
+  font-size: 2.4em;
+  margin-top: 0.6em;
+}
+#mdview-output h2 {
+  font-size: 1.7em;
+}
+#mdview-output h3 {
+  font-size: 1.3em;
+}
+#mdview-output h4 {
+  font-size: 1.1em;
+}
 
-#mdview-output p { margin: 0 0 1.4em; }
+#mdview-output p {
+  margin: 0 0 1.4em;
+}
 
 #mdview-output a {
   color: var(--fg);
@@ -84,11 +95,18 @@ body {
   text-decoration-color: var(--link-underline);
   text-underline-offset: 3px;
 }
-#mdview-output a:hover { text-decoration-color: var(--link-underline-hover); }
+#mdview-output a:hover {
+  text-decoration-color: var(--link-underline-hover);
+}
 
 #mdview-output ul,
-#mdview-output ol { margin: 0 0 1.4em; padding-left: 1.6em; }
-#mdview-output li { margin-bottom: 0.4em; }
+#mdview-output ol {
+  margin: 0 0 1.4em;
+  padding-left: 1.6em;
+}
+#mdview-output li {
+  margin-bottom: 0.4em;
+}
 
 #mdview-output blockquote {
   margin: 1.4em 0;
@@ -116,7 +134,11 @@ body {
   line-height: 1.5;
   font-size: 0.85em;
 }
-#mdview-output pre code { padding: 0; background: transparent; font-size: 1em; }
+#mdview-output pre code {
+  padding: 0;
+  background: transparent;
+  font-size: 1em;
+}
 
 #mdview-output img {
   display: block;
@@ -143,5 +165,11 @@ body {
   width: 100%;
 }
 #mdview-output th,
-#mdview-output td { padding: 0.5em 0.8em; border-bottom: 1px solid var(--border-soft); }
-#mdview-output th { font-weight: 700; text-align: left; }
+#mdview-output td {
+  padding: 0.5em 0.8em;
+  border-bottom: 1px solid var(--border-soft);
+}
+#mdview-output th {
+  font-weight: 700;
+  text-align: left;
+}

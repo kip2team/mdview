@@ -36,8 +36,8 @@ But the body of that HTML is still Markdown:
 
 ```html
 <script type="text/x-mdview">
-# My document
-Real markdown here.
+  # My document
+  Real markdown here.
 </script>
 ```
 

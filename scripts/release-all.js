@@ -36,7 +36,9 @@ for (const step of steps) {
     console.log(red(`\n✗ failed at step ${stepIdx}: ${step.name}`));
     console.log(dim(`  Exit code: ${r.status}`));
     console.log(dim(`  Resume from this step after fixing:`));
-    console.log(dim(`    pnpm ${step.args.join(' ').startsWith('release:') ? step.args[0] : 'release:all'}`));
+    console.log(
+      dim(`    pnpm ${step.args.join(' ').startsWith('release:') ? step.args[0] : 'release:all'}`),
+    );
     process.exit(r.status ?? 1);
   }
 }

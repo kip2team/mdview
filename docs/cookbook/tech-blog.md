@@ -56,12 +56,12 @@ flowchart LR
 
 ## Sizing budget
 
-| Component | Goal | Worst case |
-|---|---|---|
-| Parser core | 20KB | 35KB |
-| Default theme references | 0KB (CSS separate) | 0KB |
-| Renderer | 8KB | 15KB |
-| Total | < 30KB | < 50KB |
+| Component                | Goal               | Worst case |
+| ------------------------ | ------------------ | ---------- |
+| Parser core              | 20KB               | 35KB       |
+| Default theme references | 0KB (CSS separate) | 0KB        |
+| Renderer                 | 8KB                | 15KB       |
+| Total                    | < 30KB             | < 50KB     |
 
 ## The compression formula
 
@@ -82,6 +82,7 @@ the visible UI.
 ## Conclusion
 
 > [!success] Design checklist
+>
 > 1. Find a single trigger node (e.g. `#x-source`)
 > 2. Exit silently if absent — be a quiet guest
 > 3. Inline only the interpreter, not data

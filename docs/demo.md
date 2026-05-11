@@ -28,7 +28,7 @@ This single document exercises every mdview feature. If something on this page r
 
 ### Inline elements
 
-Plain text with **strong**, *emphasis*, ***both***, ~~strikethrough~~, `inline code`, and a [link](https://mdview.sh).
+Plain text with **strong**, _emphasis_, **_both_**, ~~strikethrough~~, `inline code`, and a [link](https://mdview.sh).
 
 A keyboard shortcut: <kbd>⌘ + K</kbd>. A subscript: H<sub>2</sub>O. A superscript: E = mc<sup>2</sup>.
 
@@ -94,14 +94,14 @@ def fib(n):
 
 ## Tables
 
-| Feature       | Status | Phase   |
-| ------------- | ------ | ------- |
-| Engine        | ✅     | Phase 0 |
-| Desktop       | ✅     | Phase 1 |
-| Web preview   | ✅     | Phase 2 |
-| Browser ext   | ✅     | Phase 4 |
-| MCP           | ✅     | Phase 6 |
-| Marketplace   | ⏳     | Phase 5 |
+| Feature     | Status | Phase   |
+| ----------- | ------ | ------- |
+| Engine      | ✅     | Phase 0 |
+| Desktop     | ✅     | Phase 1 |
+| Web preview | ✅     | Phase 2 |
+| Browser ext | ✅     | Phase 4 |
+| MCP         | ✅     | Phase 6 |
+| Marketplace | ⏳     | Phase 5 |
 
 ## Callouts (mdv:callout)
 

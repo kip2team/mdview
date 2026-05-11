@@ -43,7 +43,6 @@ export function sanitize(html: string): string {
     ADD_DATA_URI_TAGS: [],
     FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'],
     FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur'],
-    ALLOWED_URI_REGEXP:
-      /^(?:(?:https?|mailto|tel|ftp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel|ftp):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
   });
 }

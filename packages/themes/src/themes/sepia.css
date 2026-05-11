@@ -73,11 +73,21 @@ body {
   line-height: 1.3;
   margin: 1.8em 0 0.6em;
 }
-#mdview-output h1 { font-size: 2.1em; }
-#mdview-output h2 { font-size: 1.55em; border-bottom: 1px solid var(--border-soft); padding-bottom: 0.2em; }
-#mdview-output h3 { font-size: 1.25em; }
+#mdview-output h1 {
+  font-size: 2.1em;
+}
+#mdview-output h2 {
+  font-size: 1.55em;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 0.2em;
+}
+#mdview-output h3 {
+  font-size: 1.25em;
+}
 
-#mdview-output p { margin: 0 0 1.3em; }
+#mdview-output p {
+  margin: 0 0 1.3em;
+}
 
 #mdview-output a {
   color: var(--link);
@@ -85,10 +95,15 @@ body {
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
-#mdview-output a:hover { color: var(--link-hover); }
+#mdview-output a:hover {
+  color: var(--link-hover);
+}
 
 #mdview-output ul,
-#mdview-output ol { margin: 0 0 1.3em; padding-left: 1.8em; }
+#mdview-output ol {
+  margin: 0 0 1.3em;
+  padding-left: 1.8em;
+}
 
 #mdview-output blockquote {
   margin: 1.3em 0;
@@ -114,13 +129,41 @@ body {
   font-size: 0.85em;
   line-height: 1.55;
 }
-#mdview-output pre code { padding: 0; background: transparent; font-size: 1em; }
+#mdview-output pre code {
+  padding: 0;
+  background: transparent;
+  font-size: 1em;
+}
 
-#mdview-output table { border-collapse: collapse; margin: 1.3em 0; width: 100%; }
+#mdview-output table {
+  border-collapse: collapse;
+  margin: 1.3em 0;
+  width: 100%;
+}
 #mdview-output th,
-#mdview-output td { padding: 0.4em 0.8em; border-bottom: 1px solid var(--border-soft); }
-#mdview-output th { font-weight: 700; text-align: left; }
+#mdview-output td {
+  padding: 0.4em 0.8em;
+  border-bottom: 1px solid var(--border-soft);
+}
+#mdview-output th {
+  font-weight: 700;
+  text-align: left;
+}
 
-#mdview-output hr { border: 0; text-align: center; margin: 2.5em 0; }
-#mdview-output hr::before { content: '· · ·'; color: var(--fg-muted); font-size: 1.4em; letter-spacing: 0.5em; }
-#mdview-output img { display: block; max-width: 100%; height: auto; margin: 2em auto; }
+#mdview-output hr {
+  border: 0;
+  text-align: center;
+  margin: 2.5em 0;
+}
+#mdview-output hr::before {
+  content: '· · ·';
+  color: var(--fg-muted);
+  font-size: 1.4em;
+  letter-spacing: 0.5em;
+}
+#mdview-output img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 2em auto;
+}

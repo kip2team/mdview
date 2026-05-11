@@ -36,10 +36,7 @@ export function pushRecent(path: string): RecentFile[] {
   const name = path.split(/[\\/]/).pop() || path;
   const now = Date.now();
   const existing = loadRecents().filter((f) => f.path !== path);
-  const next: RecentFile[] = [{ path, name, lastOpened: now }, ...existing].slice(
-    0,
-    MAX_RECENTS,
-  );
+  const next: RecentFile[] = [{ path, name, lastOpened: now }, ...existing].slice(0, MAX_RECENTS);
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   } catch {

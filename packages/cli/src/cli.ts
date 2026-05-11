@@ -51,8 +51,7 @@ cli
       },
     ) => {
       const md = await readFile(resolve(file), 'utf8');
-      const themeUrl =
-        options.themeUrl ?? `https://cdn.mdview.sh/themes/${options.theme}.css`;
+      const themeUrl = options.themeUrl ?? `https://cdn.mdview.sh/themes/${options.theme}.css`;
 
       const forms: MdvForm[] =
         options.form === 'all'

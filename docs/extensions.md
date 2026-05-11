@@ -41,10 +41,10 @@ extensions:
 
 Hex literals get a small swatch preview. Useful for design / branding documents.
 
-| Syntax | Example |
-| --- | --- |
-| `#rgb` | #f0a |
-| `#rrggbb` | #0969da |
+| Syntax      | Example   |
+| ----------- | --------- |
+| `#rgb`      | #f0a      |
+| `#rrggbb`   | #0969da   |
 | `#rrggbbaa` | #ff6b35cc |
 
 Inline `<code>` blocks are not affected.
@@ -66,6 +66,7 @@ Built-in types: `note` `tip` `success` `info` `warning` `danger` `caution` `impo
 ```markdown
 Inline: $E = mc^2$
 Block:
+
 $$
 \nabla \cdot \vec{E} = \frac{\rho}{\varepsilon_0}
 $$

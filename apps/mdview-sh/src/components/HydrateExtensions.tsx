@@ -24,10 +24,7 @@ async function hydrateMath(root: HTMLElement): Promise<void> {
     await import('katex/dist/katex.min.css');
     nodes.forEach((node) => {
       const formula =
-        node.dataset.mdvMath ??
-        node.querySelector('pre')?.textContent ??
-        node.textContent ??
-        '';
+        node.dataset.mdvMath ?? node.querySelector('pre')?.textContent ?? node.textContent ?? '';
       if (!formula.trim()) return;
       const isBlock = node.classList.contains('mdv-math-block');
       try {

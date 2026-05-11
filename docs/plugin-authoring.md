@@ -102,7 +102,7 @@ registerExtension('rfc:keywords', (md) => {
 mdview 保证：
 
 - **未识别的扩展 ID 不会报错**——只是静默忽略。这样旧文档开了某个扩展但当前环境没装，不会爆炸
-- **内置 mdv:* 扩展输出 HTML 结构稳定**——破坏性变更走 mdview 协议大版本（v2）
+- **内置 mdv:\* 扩展输出 HTML 结构稳定**——破坏性变更走 mdview 协议大版本（v2）
 - **第三方扩展自行负责兼容性**——你升级时请遵循 semver
 
 ## 上传到 npm
@@ -117,8 +117,8 @@ mdview 保证：
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
   "peerDependencies": {
-    "@mdview/core": "^0.1.0 || ^1.0.0"
-  }
+    "@mdview/core": "^0.1.0 || ^1.0.0",
+  },
 }
 ```
 

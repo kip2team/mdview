@@ -63,12 +63,12 @@ Render a Markdown source to HTML using the mdview engine.
 
 **Errors**
 
-| Code | Reason |
-|---|---|
-| 400 | Missing or invalid `markdown` field |
-| 401 | Token missing or invalid |
-| 413 | Markdown over 1 MB |
-| 429 | Rate limit |
+| Code | Reason                              |
+| ---- | ----------------------------------- |
+| 400  | Missing or invalid `markdown` field |
+| 401  | Token missing or invalid            |
+| 413  | Markdown over 1 MB                  |
+| 429  | Rate limit                          |
 
 ### `POST /export`
 
@@ -126,11 +126,11 @@ The API uses URL versioning (`/v1`). Breaking changes ship as a new major
 
 ## SDKs
 
-| Language | Package | Repo |
-|---|---|---|
+| Language          | Package       | Repo                                             |
+| ----------------- | ------------- | ------------------------------------------------ |
 | Node / TypeScript | `@mdview/sdk` | [npm](https://www.npmjs.com/package/@mdview/sdk) |
-| Python | `mdview-py` | (planned) |
-| Go | `mdview-go` | (planned) |
+| Python            | `mdview-py`   | (planned)                                        |
+| Go                | `mdview-go`   | (planned)                                        |
 
 ## Quick start
 
