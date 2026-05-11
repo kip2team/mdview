@@ -408,7 +408,9 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   margin-left: 2px;
 }
 @media (prefers-color-scheme: dark) {
-  .mdv-welcome-title .mdv-brand-md { color: #4493f8; }
+  .mdv-welcome-title .mdv-brand-md {
+    color: #4493f8;
+  }
 }
 .mdv-welcome-tagline {
   font-size: 14px;
