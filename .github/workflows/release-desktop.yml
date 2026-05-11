@@ -98,9 +98,15 @@ jobs:
             exit 1
           fi
 
-          # 显式重签 (--force 覆盖任何已存在的 .sig)
-          # tauri signer 接受 TAURI_SIGNING_PRIVATE_KEY/TAURI_SIGNING_PRIVATE_KEY_PASSWORD env
-          pnpm --filter @mdview/desktop exec tauri signer sign --force "$tarball"
+          # tauri signer sign 默认覆盖已有 .sig。私钥写到临时文件,密码显式传空字符串
+          # (我们 keypair 是 --ci 模式生成的,无密码;tauri CLI 的 -p 没有 --no-password 模式)
+          key_file=$(mktemp)
+          printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" > "$key_file"
+          pnpm --filter @mdview/desktop exec tauri signer sign \
+            --private-key-path "$key_file" \
+            --password "" \
+            "$tarball"
+          rm -f "$key_file"
 
           sig_src="${tarball}.sig"
           if [ ! -f "$sig_src" ]; then
