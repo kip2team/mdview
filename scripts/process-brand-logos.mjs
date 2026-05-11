@@ -112,6 +112,31 @@ async function main() {
   await emit(icon.buf, icon.info, join(root, 'apps/desktop/public/logo@2x.png'),
     { ...iconSquare, resize: { width: 512, height: 512 } });
 
+  // 暗色模式 icon 变体:灰度像素反相(白卡→深底、黑字→白字),彩色点保留
+  console.log('Processing icon (dark-mode variant)...');
+  const iconDark = Buffer.from(icon.buf);
+  for (let i = 0; i < iconDark.length; i += 4) {
+    const alpha = iconDark[i + 3];
+    if (alpha === 0) continue;
+    const r = iconDark[i];
+    const g = iconDark[i + 1];
+    const b = iconDark[i + 2];
+    const minRGB = Math.min(r, g, b);
+    const maxRGB = Math.max(r, g, b);
+    const sat = maxRGB - minRGB;
+    if (sat < 30) {
+      // 灰度:反相(255-x),把 white card → 深色、black md → 白字
+      iconDark[i] = 255 - r;
+      iconDark[i + 1] = 255 - g;
+      iconDark[i + 2] = 255 - b;
+    }
+    // 彩色像素(红/绿/蓝交通灯)保留
+  }
+  await emit(iconDark, icon.info, join(root, 'apps/mdview-sh/public/logo-dark.png'),
+    { ...iconSquare, resize: { width: 256, height: 256 } });
+  await emit(iconDark, icon.info, join(root, 'apps/mdview-sh/public/logo-dark@2x.png'),
+    { ...iconSquare, resize: { width: 512, height: 512 } });
+
   console.log('Processing wordmark (logo-wordmark.png)...');
   const wm = await whiteToTransparent(join(root, 'docs/logo/logo-wordmark.png'));
   // wordmark 保持原宽高比,只指定宽度
