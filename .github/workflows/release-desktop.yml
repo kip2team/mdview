@@ -19,16 +19,21 @@ concurrency:
 
 jobs:
   build:
-    # 不用 --target universal-apple-darwin: 那条路径下 tauri-action 不会重新签名合并后的 tarball,
-    # 上次 run 日志里看到的 "Signature not found for the updater JSON. Skipping upload..." 就是这个坑。
-    # 改成 arm64/x86_64 两个 matrix job, 每个 job 自己 build + 自己签 + 自己 upload,
-    # tauri-action 会把两个 job 的产物自动 merge 到同一个 release + latest.json。
+    # 每个 arch 一个 matrix job, 各自 build + 各自签。tauri-action 把 .dmg/.app.tar.gz 上传到 release;
+    # .sig 在它 v0.5 里有 bug 不会自动上传, 我们自己用 gh CLI 兜底, 再把 signature 内容作为 artifact
+    # 传给 publish-manifest job 拼装 latest.json。
     name: Build & sign macOS (${{ matrix.target }})
     runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
-        target: [aarch64-apple-darwin, x86_64-apple-darwin]
+        include:
+          - target: aarch64-apple-darwin
+            arch_short: aarch64       # tauri-action 给 .app.tar.gz 用的后缀
+            updater_key: darwin-aarch64  # plugin-updater 在 latest.json 里查找的 key
+          - target: x86_64-apple-darwin
+            arch_short: x64
+            updater_key: darwin-x86_64
     steps:
       - uses: actions/checkout@v4
 
@@ -66,8 +71,44 @@ jobs:
           releaseName: 'mdview ${{ github.ref_name }}'
           releaseDraft: false
           prerelease: false
-          # 单 target 构建: tauri-action 产出 .dmg (首装) + .app.tar.gz (updater) + .sig + latest.json
           args: --target ${{ matrix.target }}
+
+      - name: Upload .sig + emit manifest fragment
+        # tauri-action 不上传 .sig (已知 bug), 这里手动 cp 出来上传 + 同时把 signature 内容写到 artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          TARGET: ${{ matrix.target }}
+          ARCH_SHORT: ${{ matrix.arch_short }}
+          UPDATER_KEY: ${{ matrix.updater_key }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          sig_src="apps/desktop/src-tauri/target/${TARGET}/release/bundle/macos/mdview.app.tar.gz.sig"
+          if [ ! -f "$sig_src" ]; then
+            echo "ERROR: signature file missing at $sig_src — TAURI_SIGNING_PRIVATE_KEY 没生效?" >&2
+            exit 1
+          fi
+          sig_dst="mdview_${ARCH_SHORT}.app.tar.gz.sig"
+          cp "$sig_src" "$sig_dst"
+          gh release upload "$TAG" "$sig_dst" --clobber
+
+          mkdir -p out
+          # 用 jq -Rs 把 signature 文件内容(带换行)安全编码为 JSON string
+          sig_json=$(jq -Rs . < "$sig_src")
+          url="https://github.com/${REPO}/releases/download/${TAG}/mdview_${ARCH_SHORT}.app.tar.gz"
+          jq -n \
+            --arg url "$url" \
+            --argjson signature "$sig_json" \
+            '{ signature: $signature, url: $url }' \
+            > "out/${UPDATER_KEY}.json"
+
+      - name: Upload manifest fragment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifest-fragment-${{ matrix.arch_short }}
+          path: out/${{ matrix.updater_key }}.json
+          if-no-files-found: error
 
   publish-manifest:
     name: Publish latest.json to main
@@ -80,21 +121,35 @@ jobs:
           # 默认 GITHUB_TOKEN 有 contents:write,可以 push 到 main
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for release assets to settle
-        # tauri-action 上传 latest.json 是 build job 末尾, 理论上 needs:build 完成时已就绪;
-        # 但 GH Release API 偶有数秒延迟, 睡 10s 兜底
-        run: sleep 10
+      - name: Download all manifest fragments
+        uses: actions/download-artifact@v4
+        with:
+          pattern: manifest-fragment-*
+          merge-multiple: true
+          path: fragments
 
-      - name: Download latest.json from release
+      - name: Assemble latest.json
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
         run: |
+          set -euo pipefail
+          version="${TAG#desktop-v}"
+          pub_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           mkdir -p apps/mdview-sh/public/release
-          gh release download "$TAG" \
-            --pattern 'latest.json' \
-            --output apps/mdview-sh/public/release/latest.json \
-            --clobber
+          # 累加 platforms: { "darwin-aarch64": {signature,url}, "darwin-x86_64": {signature,url} }
+          platforms='{}'
+          for f in fragments/*.json; do
+            key=$(basename "$f" .json)
+            platforms=$(jq --arg k "$key" --slurpfile body "$f" '. + { ($k): $body[0] }' <<<"$platforms")
+          done
+          jq -n \
+            --arg version "$version" \
+            --arg pub_date "$pub_date" \
+            --argjson platforms "$platforms" \
+            '{ version: $version, notes: "", pub_date: $pub_date, platforms: $platforms }' \
+            > apps/mdview-sh/public/release/latest.json
+          echo "----- generated latest.json -----"
+          cat apps/mdview-sh/public/release/latest.json
 
       - name: Commit & push manifest
         run: |
