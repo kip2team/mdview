@@ -1,6 +1,6 @@
 [package]
 name = "mdview-desktop"
-version = "0.0.2"
+version = "0.0.3"
 description = "mdview desktop reader"
 authors = ["mdview contributors"]
 edition = "2021"
