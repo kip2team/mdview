@@ -381,10 +381,10 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   justify-content: center;
   margin-bottom: 12px;
 }
-.mdv-welcome-logo svg {
-  width: 72px;
-  height: 72px;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+.mdv-welcome-logo img {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.18));
 }
 .mdv-welcome-title {
   font-size: 36px;

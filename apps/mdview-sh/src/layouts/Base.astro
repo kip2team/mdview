@@ -35,7 +35,9 @@ const themeHref = themeId ? `https://cdn.mdview.sh/themes/${themeId}.css` : null
     <meta name="twitter:card" content="summary_large_image" />
 
     {themeHref && <link rel="stylesheet" href={themeHref} data-mdview-theme={themeId} />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/logo.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/logo@2x.png" />
+    <link rel="apple-touch-icon" href="/logo@2x.png" />
   </head>
   <body>
     <slot />

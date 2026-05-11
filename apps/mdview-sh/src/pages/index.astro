@@ -94,11 +94,26 @@ const themes = [
 
 <Base>
   <header class="topbar">
-    <a class="brand" href="/">
-      <img class="brand-mark" src="/favicon.svg" alt="" width="28" height="28" />
-      <span class="brand-text">
-        <span class="brand-md">md</span><span class="brand-view">view</span>
-      </span>
+    <a class="brand" href="/" aria-label="mdview">
+      <img
+        class="brand-mark"
+        src="/logo.png"
+        srcset="/logo.png 1x, /logo@2x.png 2x"
+        width="32"
+        height="32"
+        alt=""
+      />
+      <picture class="brand-wordmark">
+        <source
+          srcset="/logo-wordmark-dark.png 1x, /logo-wordmark-dark@2x.png 2x"
+          media="(prefers-color-scheme: dark)"
+        />
+        <img
+          src="/logo-wordmark.png"
+          srcset="/logo-wordmark.png 1x, /logo-wordmark@2x.png 2x"
+          alt="mdview"
+        />
+      </picture>
     </a>
     <nav class="topnav">
       <a href="/docs">Docs</a>
@@ -290,42 +305,24 @@ const themes = [
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     text-decoration: none;
     color: inherit;
-    letter-spacing: -0.01em;
   }
   .brand-mark {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     display: block;
-    border-radius: 7px;
-    /* 让 logo 在亮/暗背景下都有轻微阴影,提升精致感 */
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.12));
+    /* 透明背景 PNG,给个柔和投影提升立体感 */
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.15));
   }
-  /* 字标:md 与 view 不同字体 + 颜色 ——
-     md = 衬线/重磅/品牌蓝,呼应 "Markdown" 的文档感
-     view = 无衬线/中等/中性色,呼应 "查看/阅读" */
-  .brand-text {
+  .brand-wordmark {
     display: inline-flex;
-    align-items: baseline;
-    font-size: 19px;
-    line-height: 1;
   }
-  .brand-md {
-    font-family: 'Iowan Old Style', 'Charter', Georgia, 'Times New Roman', serif;
-    font-weight: 800;
-    font-style: italic;
-    color: #0969da;
-    letter-spacing: -0.02em;
-  }
-  .brand-view {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-weight: 500;
-    color: inherit;
-    opacity: 0.82;
-    margin-left: 1px;
-    letter-spacing: 0.005em;
+  .brand-wordmark img {
+    display: block;
+    height: 24px;
+    width: auto;
   }
   .topnav {
     display: flex;
@@ -852,7 +849,6 @@ const themes = [
       box-shadow: 0 2px 8px rgba(68, 147, 248, 0.35);
     }
     .kicker { color: #4493f8; }
-    .brand-md { color: #4493f8; }
     .sample-chip-demo {
       border-color: rgba(68, 147, 248, 0.4);
       color: #4493f8;
