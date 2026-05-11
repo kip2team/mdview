@@ -106,10 +106,9 @@ jobs:
                - Apple Silicon (M1 / M2 / M3 / M4) → `mdview_*_aarch64.dmg`
                - Intel → `mdview_*_x64.dmg`
             2. Open the dmg and drag `mdview.app` to `/Applications`.
-            3. **In Terminal**, run:
-               ```bash
-               xattr -dr com.apple.quarantine /Applications/mdview.app
-               ```
+            3. **Double-click `修复打开问题.command`** in the same dmg window (it sits next to the Applications shortcut). It runs the quarantine-clearing command for you.
+
+               Manual fallback: open Terminal and run `xattr -dr com.apple.quarantine /Applications/mdview.app`.
             4. Launch mdview — done.
 
             > Once mdview is open, **future updates are seamless** (the in-app updater verifies signatures separately from Gatekeeper). You only need step 3 the first time.
@@ -121,6 +120,67 @@ jobs:
             ## Changelog
 
             See commit history since the previous tag.
+
+      - name: Inject fix-gatekeeper.command into DMG
+        # tauri-action 产出的 .dmg 内只有 mdview.app + Applications 快捷方式。
+        # 这里把 apps/desktop/scripts/fix-gatekeeper.command 拷进 dmg,改名成中文,
+        # 让首次安装的用户可以双击修复 Gatekeeper "已损坏" 报错,免去开 Terminal。
+        # 实现:dmg 转 UDRW (read-write) -> 挂载 -> cp + chmod -> 卸载 ->
+        #       重压缩成 UDZO (zlib lvl9) -> gh release upload --clobber 覆盖原 dmg。
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          TARGET: ${{ matrix.target }}
+          ARCH_SHORT: ${{ matrix.arch_short }}
+        run: |
+          set -euo pipefail
+          version="${TAG#desktop-v}"
+          dmg_dir="apps/desktop/src-tauri/target/${TARGET}/release/bundle/dmg"
+          dmg_path="${dmg_dir}/mdview_${version}_${ARCH_SHORT}.dmg"
+
+          if [ ! -f "$dmg_path" ]; then
+            echo "ERROR: dmg missing at $dmg_path" >&2
+            echo "----- ls $dmg_dir -----"
+            ls -la "$dmg_dir" || true
+            exit 1
+          fi
+
+          script_src="apps/desktop/scripts/fix-gatekeeper.command"
+          if [ ! -f "$script_src" ]; then
+            echo "ERROR: helper script missing at $script_src" >&2
+            exit 1
+          fi
+
+          rw_dmg="$(mktemp -u).dmg"
+          mount_point="$(mktemp -d)"
+
+          echo "::group::Convert dmg to read-write"
+          hdiutil convert "$dmg_path" -format UDRW -o "$rw_dmg"
+          echo "::endgroup::"
+
+          echo "::group::Mount $rw_dmg at $mount_point"
+          hdiutil attach -nobrowse -noautoopen -mountpoint "$mount_point" "$rw_dmg"
+          echo "::endgroup::"
+
+          # dmg 内文件名用中文,Finder 里更直观
+          dst="${mount_point}/修复打开问题.command"
+          cp "$script_src" "$dst"
+          chmod +x "$dst"
+          ls -la "$mount_point"
+
+          sync
+          hdiutil detach "$mount_point"
+
+          echo "::group::Re-compress as UDZO"
+          hdiutil convert "$rw_dmg" -format UDZO -imagekey zlib-level=9 -ov -o "$dmg_path"
+          echo "::endgroup::"
+          rm -f "$rw_dmg"
+
+          echo "::group::Re-upload to GH Release (overwrite)"
+          gh release upload "$TAG" "$dmg_path" --clobber
+          echo "::endgroup::"
+
+          echo "✅ Injected 修复打开问题.command into ${dmg_path}"
 
       - name: Re-sign tarball + upload .sig + emit manifest fragment
         # tauri-action 在重打包 .app.tar.gz 后没重新签 (它内部把 .sig 视作 latest.json 的一部分,
