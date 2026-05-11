@@ -35,6 +35,7 @@ import { checkForUpdate, type AvailableUpdate } from './lib/updater';
 type ViewMode = 'read' | 'split' | 'source';
 const VIEW_MODES: ViewMode[] = ['read', 'split', 'source'];
 const VIEW_MODE_KEY = 'mdview:viewmode';
+const WIDE_MODE_KEY = 'mdview:wide';
 const VIEW_MODE_LABEL: Record<ViewMode, { icon: string; label: string }> = {
   read: { icon: '👁', label: 'Read' },
   split: { icon: '⊟', label: 'Split' },
@@ -123,6 +124,26 @@ export function App(): JSX.Element {
       // ignore
     }
   }, [viewMode]);
+
+  // 宽屏模式: 解除主题给 #mdview-output 的 max-width 上限, 让正文与窗口宽度对齐
+  // 关闭时走 CSS clamp 自适应宽度(720~920), 不再是 760 死宽
+  const [wideMode, setWideMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(WIDE_MODE_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem(WIDE_MODE_KEY, wideMode ? '1' : '0');
+    } catch {
+      // ignore
+    }
+  }, [wideMode]);
+  useEffect(() => {
+    document.body.classList.toggle('mdv-wide', wideMode);
+  }, [wideMode]);
 
   // 滚动同步用的元素引用（split 模式）
   const outputElRef = useRef<HTMLElement | null>(null);
@@ -501,6 +522,16 @@ export function App(): JSX.Element {
             <span className="mdv-toolbar-btn-label">Folder</span>
           </button>
           <ViewModeToggle value={viewMode} onChange={setViewMode} />
+          <button
+            type="button"
+            className={`mdv-toolbar-btn${wideMode ? ' is-active' : ''}`}
+            title={wideMode ? 'Wide layout on — click for narrow column' : 'Wide layout off — click to fill window'}
+            aria-pressed={wideMode}
+            onClick={() => setWideMode((v) => !v)}
+          >
+            <span aria-hidden>⇔</span>
+            <span className="mdv-toolbar-btn-label">Wide</span>
+          </button>
           <button
             type="button"
             className="mdv-toolbar-btn"

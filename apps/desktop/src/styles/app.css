@@ -1019,3 +1019,24 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   opacity: 0.55;
 }
 .mdv-update-dismiss:hover { opacity: 1; }
+
+
+/* ── 正文宽度 ─────────────────────────────────────────
+   覆盖主题给 #mdview-output 的死宽 760px。
+   - 默认: clamp 让正文栏跟着窗口宽度浮动, 但有上下封顶, 保证可读性
+   - body.mdv-wide: 用户主动开启宽屏, 撑满窗口
+   两条都用 `body #mdview-output` 提一档 specificity, 击败主题的 `#mdview-output` */
+body #mdview-output {
+  max-width: clamp(720px, 72vw, 920px);
+}
+body.mdv-wide #mdview-output {
+  max-width: none;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+/* toolbar 通用按钮 active 态(与 viewmode toggle 视觉一致) */
+.mdv-toolbar-btn.is-active {
+  background: color-mix(in srgb, var(--link, #0969da) 14%, transparent);
+  color: var(--link, #0969da);
+}
