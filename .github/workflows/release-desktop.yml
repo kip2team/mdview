@@ -130,9 +130,10 @@ jobs:
           key_file=$(mktemp)
           printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" > "$raw_file"
 
-          if base64 -d "$raw_file" 2>/dev/null | head -1 | grep -q '^untrusted comment:'; then
+          # macOS BSD base64 不接受位置参数,必须 stdin 或 -i;用 stdin 兼容 Linux/macOS
+          if base64 -d < "$raw_file" 2>/dev/null | head -1 | grep -q '^untrusted comment:'; then
             echo "secret is base64-encoded, decoding..."
-            base64 -d "$raw_file" > "$key_file"
+            base64 -d < "$raw_file" > "$key_file"
           elif head -1 "$raw_file" | grep -q '^untrusted comment:'; then
             echo "secret looks like plain minisign key, using as-is"
             cp "$raw_file" "$key_file"
