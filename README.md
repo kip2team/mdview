@@ -58,6 +58,8 @@ open https://mdview.sh
 
 # Desktop — download a pre-built dmg from
 #   https://github.com/kip2team/mdview/releases/latest
+# First launch (mdview is not yet Apple-notarized):
+#   xattr -dr com.apple.quarantine /Applications/mdview.app
 # (or build from source: pnpm install && pnpm desktop:dev — needs Rust + Tauri prereqs)
 
 # CLI

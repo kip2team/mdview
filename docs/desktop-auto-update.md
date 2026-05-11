@@ -99,7 +99,14 @@ pnpm web:deploy
 
 ## 用户视角
 
-- **首次安装**: 从 GitHub Releases 或官网下载 dmg → 拖到 /Applications。
+- **首次安装**:
+  1. 从 GitHub Releases 下载对应 arch 的 dmg(`mdview_*_aarch64.dmg` 对应 Apple Silicon / `mdview_*_x64.dmg` 对应 Intel)
+  2. 打开 dmg,把 `mdview.app` 拖到 `/Applications`
+  3. **首次必须手动剥离 Gatekeeper quarantine**(因为目前还没上 Apple 公证,Gatekeeper 会拒绝并显示"已损坏"):
+     ```bash
+     xattr -dr com.apple.quarantine /Applications/mdview.app
+     ```
+  4. 双击启动。
 - **后续更新**: 应用启动 5s 后,如果有新版,右下角浮一个 pill:
   > New version **0.1.0** available · `Install & restart`
   点一下:下载 + 验签 + 替换 + 重启,全程不离开应用。
@@ -116,6 +123,7 @@ pnpm web:deploy
 | GH Release 里没有 `.sig` | tauri-action 非 universal 模式签名上传 bug;workflow 已自家 `tauri signer sign` 兜底重签 | 看 `Re-sign tarball + upload .sig` step 日志 |
 | `latest.json` 没 commit 到 main | `publish-manifest` job 失败 | Actions 里看具体 step;常见是 fragments artifact 没产出(check build job 是否绿) |
 | `mdview.sh/release/latest.json` 返回 500 | mdview-sh worker 还没重发,新文件不在 bundle 里 | `pnpm web:deploy` 手动发(或接 CF Workers Builds 自动化) |
+| 首次安装时弹 "mdview.app 已损坏" | mdview 还没上 Apple 公证;Gatekeeper 拒绝执行任何未签名的下载应用 | `xattr -dr com.apple.quarantine /Applications/mdview.app` 后再开。**只首次需要**,以后 in-app 自动更新不会再触发(updater 替换 bundle 走的不是 Gatekeeper 通道) |
 
 ## Windows / Linux 何时加
 

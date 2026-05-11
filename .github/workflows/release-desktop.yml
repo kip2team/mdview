@@ -97,6 +97,30 @@ jobs:
           releaseDraft: false
           prerelease: false
           args: --target ${{ matrix.target }}
+          releaseBody: |
+            ## Install (macOS, first time)
+
+            mdview is not yet Apple-notarized, so macOS Gatekeeper marks the downloaded `.app` as "damaged" and refuses to open it (the file is fine — Gatekeeper just doesn't trust unsigned apps).
+
+            1. Pick the right `.dmg` for your Mac:
+               - Apple Silicon (M1 / M2 / M3 / M4) → `mdview_*_aarch64.dmg`
+               - Intel → `mdview_*_x64.dmg`
+            2. Open the dmg and drag `mdview.app` to `/Applications`.
+            3. **In Terminal**, run:
+               ```bash
+               xattr -dr com.apple.quarantine /Applications/mdview.app
+               ```
+            4. Launch mdview — done.
+
+            > Once mdview is open, **future updates are seamless** (the in-app updater verifies signatures separately from Gatekeeper). You only need step 3 the first time.
+
+            ## In-app auto-update
+
+            mdview checks `https://raw.githubusercontent.com/kip2team/mdview/main/apps/mdview-sh/public/release/latest.json` ~5 s after launch. If there's a new version, a banner appears in the bottom-right corner. Click **Install & restart** to download, verify, replace, and relaunch — no manual download needed.
+
+            ## Changelog
+
+            See commit history since the previous tag.
 
       - name: Re-sign tarball + upload .sig + emit manifest fragment
         # tauri-action 在重打包 .app.tar.gz 后没重新签 (它内部把 .sig 视作 latest.json 的一部分,
