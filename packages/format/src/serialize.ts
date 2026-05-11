@@ -124,12 +124,20 @@ export function fromMdvHtml(html: string): FromMdvHtmlResult {
   );
   const source = sourceMatch ? sourceMatch[1]!.replace(/<\\\/script>/gi, '</script>').trim() : '';
 
-  // 引擎 / 主题 URL 嗅探（粗粒度，容忍多种写法）
-  const engineUrl = matchAttr(html, /<script[^>]*src="([^"]*\/(?:r|engine)\/[^"]+\.js)"/i);
+  // 引擎 / 主题 URL 嗅探
+  // 主路径: 找带 data-mdview-engine / data-mdview-theme 标记的 tag, 从中抽 src/href
+  //         (toMdvHtml 永远会写这两个属性,顺序无关于 src/href, 之前用「先 attr 后 src」的
+  //          regex 顺序绑死,自定义 URL 一旦不走 /r/... 路径就丢)
+  // 兜底:   按 URL 路径形状嗅探,兼容历史 .mdv.html 文件
+  const engineScript = matchInner(html, /(<script\b[^>]*\bdata-mdview-engine\b[^>]*>)/i);
+  const engineUrl =
+    (engineScript && matchAttr(engineScript, /\bsrc="([^"]+)"/i)) ??
+    matchAttr(html, /<script[^>]*src="([^"]*\/(?:r|engine)\/[^"]+\.js)"/i);
   const engineInline = !engineUrl && /<script(?![^>]*src=)[^>]*>[\s\S]{200,}<\/script>/.test(html);
 
+  const themeLink = matchInner(html, /(<link\b[^>]*\bdata-mdview-theme\b[^>]*>)/i);
   const themeUrl =
-    matchAttr(html, /<link[^>]*\bdata-mdview-theme[^>]*\bhref="([^"]+)"/i) ??
+    (themeLink && matchAttr(themeLink, /\bhref="([^"]+)"/i)) ??
     matchAttr(html, /<link[^>]*\bhref="([^"]*\/themes\/[^"]+\.css)"/i);
   const themeInline = !themeUrl && /<style[^>]*>[\s\S]{200,}<\/style>/.test(html);
 
