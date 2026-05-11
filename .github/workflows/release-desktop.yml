@@ -152,14 +152,19 @@ jobs:
           fi
 
           rw_dmg="$(mktemp -u).dmg"
-          mount_point="$(mktemp -d)"
+          # 不用自定义 mountpoint —— Finder 的 `tell disk "mdview"` 需要卷挂到
+          # /Volumes/<volname>,否则找不到 disk。让 hdiutil 走默认路径。
+          mount_point="/Volumes/mdview"
+
+          # 兜底:若 runner 上有同名卷残留先弹出
+          if [ -d "$mount_point" ]; then hdiutil detach "$mount_point" -force || true; fi
 
           echo "::group::Convert dmg to read-write"
           hdiutil convert "$dmg_path" -format UDRW -o "$rw_dmg"
           echo "::endgroup::"
 
           echo "::group::Mount $rw_dmg at $mount_point"
-          hdiutil attach -nobrowse -noautoopen -mountpoint "$mount_point" "$rw_dmg"
+          hdiutil attach -nobrowse -noverify -noautoopen "$rw_dmg"
           echo "::endgroup::"
 
           # dmg 内文件名用中文,Finder 里更直观
@@ -167,6 +172,35 @@ jobs:
           cp "$script_src" "$dst"
           chmod +x "$dst"
           ls -la "$mount_point"
+
+          # 让 Finder 注册新挂载的卷,再用 AppleScript 把窗口拉大、安排 3 个 icon 位置 ——
+          # 默认 tauri 给的窗口太小,.command 文件会落在窗口外(本地实测过 540/640 都不够,
+          # 720×640 + icon 96 + .command (360,470) 的布局够大)。
+          sleep 2
+          osascript <<'OSA'
+          tell application "Finder"
+              activate
+              delay 1
+              tell disk "mdview"
+                  open
+                  delay 1
+                  set current view of container window to icon view
+                  set toolbar visible of container window to false
+                  set statusbar visible of container window to false
+                  set the bounds of container window to {180, 80, 900, 720}
+                  set viewOptions to the icon view options of container window
+                  set arrangement of viewOptions to not arranged
+                  set icon size of viewOptions to 96
+                  set text size of viewOptions to 13
+                  set position of item "mdview.app" of container window to {180, 220}
+                  set position of item "Applications" of container window to {540, 220}
+                  set position of item "修复打开问题.command" of container window to {360, 470}
+                  update without registering applications
+                  delay 2
+                  close
+              end tell
+          end tell
+          OSA
 
           sync
           hdiutil detach "$mount_point"
