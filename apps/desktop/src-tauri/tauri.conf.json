@@ -38,11 +38,7 @@
     ],
     "fileAssociations": [
       {
-        "ext": [
-          "md",
-          "markdown",
-          "mdv"
-        ],
+        "ext": ["md", "markdown", "mdv"],
         "name": "Markdown Document",
         "description": "Markdown document opened with mdview",
         "role": "Viewer",
