@@ -98,15 +98,28 @@ jobs:
             exit 1
           fi
 
-          # tauri signer sign 默认覆盖已有 .sig。私钥写到临时文件,密码显式传空字符串
-          # (我们 keypair 是 --ci 模式生成的,无密码;tauri CLI 的 -p 没有 --no-password 模式)
-          key_file=$(mktemp)
-          printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" > "$key_file"
-          pnpm --filter @mdview/desktop exec tauri signer sign \
-            --private-key-path "$key_file" \
-            --password "" \
-            "$tarball"
-          rm -f "$key_file"
+          # tauri signer 已从 TAURI_SIGNING_PRIVATE_KEY env 拿到 key, 不能再传 --private-key-path
+          # (二者互斥)。--password 也只能给一个;env 里 PASSWORD 是空字符串,等同无密码。
+          # secret 形状自检 (只看长度+换行数+是否带 'untrusted' 头, 不泄露 key 主体):
+          echo "::group::TAURI_SIGNING_PRIVATE_KEY shape check"
+          key_len=${#TAURI_SIGNING_PRIVATE_KEY}
+          # tr -cd 数 \n 个数(不依赖 wc -l 受最后一行影响)
+          nl_count=$(printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" | tr -cd '\n' | wc -c | tr -d ' ')
+          starts_with_untrusted=no
+          case "$TAURI_SIGNING_PRIVATE_KEY" in
+            "untrusted comment:"*) starts_with_untrusted=yes ;;
+          esac
+          echo "key length:            $key_len"
+          echo "key newline count:     $nl_count"
+          echo "starts with header:    $starts_with_untrusted"
+          if [ "$key_len" -lt 50 ] || [ "$starts_with_untrusted" = "no" ]; then
+            echo "ERROR: TAURI_SIGNING_PRIVATE_KEY 形状不像 minisign secret key" >&2
+            echo "应当是两行: 'untrusted comment: ...' + base64 主体" >&2
+            exit 1
+          fi
+          echo "::endgroup::"
+
+          pnpm --filter @mdview/desktop exec tauri signer sign "$tarball"
 
           sig_src="${tarball}.sig"
           if [ ! -f "$sig_src" ]; then
