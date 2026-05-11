@@ -128,12 +128,15 @@ jobs:
           key_file=$(mktemp)
           printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" > "$key_file"
 
+          # pnpm --filter exec 会把 cwd 切到 apps/desktop/,相对路径会拼成 apps/desktop/apps/desktop/...
+          # 必须用绝对路径
+          tarball_abs="$(pwd)/${tarball}"
           # signer 的 --private-key-path 和 env TAURI_SIGNING_PRIVATE_KEY 互斥, unset 环境
           unset TAURI_SIGNING_PRIVATE_KEY
           pnpm --filter @mdview/desktop exec tauri signer sign \
             --private-key-path "$key_file" \
             --password "" \
-            "$tarball"
+            "$tarball_abs"
           rm -f "$key_file"
 
           sig_src="${tarball}.sig"
