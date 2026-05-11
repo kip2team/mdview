@@ -123,51 +123,10 @@ jobs:
             exit 1
           fi
 
-          # 把 secret 写到文件,自动尝试 base64 解码
-          # (很多教程让你 `base64 -i ~/.tauri/mdview.key | pbcopy` 后粘到 secret;
-          #  也兼容直接粘原始两行格式)
-          raw_file=$(mktemp)
+          # `tauri signer generate -w mdview.key` 生成的文件本身就是单行 base64,
+          # 这种格式就是 tauri signer 期望的 key 输入 (--private-key-path 直接读它,不要解码)
           key_file=$(mktemp)
-          printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" > "$raw_file"
-
-          # macOS BSD base64 不接受位置参数,必须 stdin 或 -i;用 stdin 兼容 Linux/macOS
-          if base64 -d < "$raw_file" 2>/dev/null | head -1 | grep -q '^untrusted comment:'; then
-            echo "secret is base64-encoded, decoding..."
-            base64 -d < "$raw_file" > "$key_file"
-          elif head -1 "$raw_file" | grep -q '^untrusted comment:'; then
-            echo "secret looks like plain minisign key, using as-is"
-            cp "$raw_file" "$key_file"
-          else
-            echo "ERROR: TAURI_SIGNING_PRIVATE_KEY secret 形状不对" >&2
-            echo "  - 它既不是 base64-encoded 的 minisign key" >&2
-            echo "  - 也不是 'untrusted comment: ...' 开头的原文" >&2
-            echo "请在 GitHub Settings > Secrets 重设 TAURI_SIGNING_PRIVATE_KEY," >&2
-            echo "推荐方式: 本地跑 \`base64 -i ~/.tauri/mdview.key | pbcopy\` 然后粘贴" >&2
-            exit 1
-          fi
-          rm -f "$raw_file"
-
-          # 写完文件后再做一次 line-by-line 诊断,看 body 行长度 / 是否含空格
-          python3 - "$key_file" <<'EOF'
-          import sys
-          path = sys.argv[1]
-          with open(path, 'rb') as f:
-              data = f.read()
-          print(f"key file bytes: {len(data)}")
-          lines = data.split(b'\n')
-          for i, line in enumerate(lines):
-              if not line:
-                  print(f"  line {i}: (empty)")
-                  continue
-              info = f"  line {i}: {len(line)} bytes"
-              if b' ' in line:
-                  idx = line.index(b' ')
-                  info += f", first space at offset {idx}"
-              # 末尾字符判断有无 \r
-              if line.endswith(b'\r'):
-                  info += ", ends with CR"
-              print(info)
-          EOF
+          printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" > "$key_file"
 
           # signer 的 --private-key-path 和 env TAURI_SIGNING_PRIVATE_KEY 互斥, unset 环境
           unset TAURI_SIGNING_PRIVATE_KEY
