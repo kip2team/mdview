@@ -1,6 +1,6 @@
 {
   "name": "@mdview/themes",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Built-in mdview themes (default / github / medium).",
   "license": "MIT",
   "type": "module",

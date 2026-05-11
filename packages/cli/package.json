@@ -1,6 +1,6 @@
 {
   "name": "@mdview/cli",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "mdview command-line: render / export / convert / serve.",
   "license": "MIT",
   "type": "module",

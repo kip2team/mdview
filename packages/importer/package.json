@@ -1,6 +1,6 @@
 {
   "name": "@mdview/importer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Convert Typora / Obsidian themes into mdview themes by remapping selectors and tokens.",
   "license": "MIT",
   "type": "module",
