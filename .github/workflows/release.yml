@@ -1,8 +1,12 @@
 name: release
 
 on:
-  push:
-    branches: [main]
+  # 不挂 main push: 这个 workflow 真正需要 GH Actions 创建 PR 的权限
+  # (changesets/action 在有 pending changesets 时会自动开 Version PR)。
+  # 仓库当前 org 设置没放开"Allow GitHub Actions to create and approve pull requests",
+  # 让它每次 main push 都红没意义。改成手动触发:
+  # 要发版时:GitHub repo -> Actions -> release -> Run workflow
+  workflow_dispatch:
 
 concurrency:
   group: release-${{ github.ref }}
