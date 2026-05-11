@@ -1,6 +1,6 @@
 {
   "name": "@mdview/core",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "mdview rendering engine: markdown → HTML with metadata-as-stage-direction.",
   "license": "MIT",
   "type": "module",

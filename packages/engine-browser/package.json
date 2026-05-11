@@ -1,6 +1,6 @@
 {
   "name": "@mdview/engine-browser",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Self-bootstrapping browser engine for .mdv.html files. The single JS bundle served at cdn.mdview.sh/r/v1.js.",
   "license": "MIT",
   "type": "module",

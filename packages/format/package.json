@@ -1,6 +1,6 @@
 {
   "name": "@mdview/format",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Serialize / parse the .mdv.html self-rendering format (Minimal / Progressive / Standalone).",
   "license": "MIT",
   "type": "module",
