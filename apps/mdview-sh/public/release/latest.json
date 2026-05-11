@@ -1,15 +1,15 @@
 {
-  "version": "0.0.3",
+  "version": "0.0.4",
   "notes": "",
-  "pub_date": "2026-05-11T04:12:24Z",
+  "pub_date": "2026-05-11T04:32:25Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSTI4OGFrU2g5aXVNczlTUUdZMjNVeHF1T0xWdGxRZUlRaXZZWFR4MXd3eUZGZ1gxalIvOEtoQ0s3WjNIVkJGbWU1bnR5M0F3QW1uYUFOUEdQSFJ2L0JWWEczQzh4ZVFNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4NDcyNzIwCWZpbGU6bWR2aWV3LmFwcC50YXIuZ3oKS0dCWUJIeWZ3Q1VHV05oSTZmQWJvNTZNYzFJY3dnQXdIVEEyK3N5YmFaRE8ybDFEZ1ZWbmNPK0pTTlZ0azZPSzFFNy9Kb1FybkhqR2NQcXh6RWV0QXc9PQo=",
-      "url": "https://github.com/kip2team/mdview/releases/download/desktop-v0.0.3/mdview_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSTI4OGFrU2g5aWhWRGZGWE9keHZBc2hzdFhhbS9tVElOdjllSGdTbmVKZG1OVXE2T1Z2TlhwZEx2MTd5WStzSXFLQ2tGdjhnUVpTV1RCWDl2VkNySzNQOWVIbDE5VmdrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4NDczODcxCWZpbGU6bWR2aWV3LmFwcC50YXIuZ3oKcUp1K05ZMDArTkExWCtHdldhQnVCcHdYZndmdjJwdThpWkV0VEp6UitaSGUvM2tWS1c0V3pOTDZuN05LVVVIUTZ6bm4yVnRIbVpka3h1WFZENCthQWc9PQo=",
+      "url": "https://github.com/kip2team/mdview/releases/download/desktop-v0.0.4/mdview_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSTI4OGFrU2g5aXJDbUdMdExFR2dqT05UakovZjFTdU5DVXE3T3YzblZUMUtTZisxMERyRFhBRFFXWjlBMElIOG5nSlNYdDRmNDBUT0RTZXpKUTdvMjQ0UEM2MFhGSnd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4NDcyNzIzCWZpbGU6bWR2aWV3LmFwcC50YXIuZ3oKbU5tdU54Y1RwV3FJcTJOOENNU1ZZMU40b0RCOHFhN041enQ4M2ZudmFxemMrUEdieTd6b2dmYW9hZVBNcXFLblY2UGlmcEJYRmhoWTN6cmVQZ2FkRFE9PQo=",
-      "url": "https://github.com/kip2team/mdview/releases/download/desktop-v0.0.3/mdview_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSTI4OGFrU2g5aXVZY3p3K3k2N05oMW9HTldMbVMxS3YzbTV6dnFtWlFSTWhUTnQ0dkFpd1J6RmZ0T0NMWGpQME9WeWVOa0VCSDhMd3RHNG5PeXpNdDZjWUFYaWZjUndNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4NDczOTE5CWZpbGU6bWR2aWV3LmFwcC50YXIuZ3oKdWNSQlRKa2syKzhVaG50bnl3Q2hjV2JMSUJRT29nYmVxb2ZzcGhvSHZ4TWUvRnFLcXd2dW8vUURNYU1vQzNRV253eDFYbU82NHROS3p2SFlwYmt5QVE9PQo=",
+      "url": "https://github.com/kip2team/mdview/releases/download/desktop-v0.0.4/mdview_x64.app.tar.gz"
     }
   }
 }
