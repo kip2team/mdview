@@ -377,14 +377,38 @@ body:has(.mdv-folder-sidebar) .mdv-stage {
   text-align: center;
 }
 .mdv-welcome-logo {
-  font-size: 56px;
-  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.mdv-welcome-logo svg {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
 }
 .mdv-welcome-title {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 36px;
   margin: 0 0 4px;
   letter-spacing: -0.01em;
+  line-height: 1;
+}
+/* 字标:md 与 view 不同字体 + 颜色 */
+.mdv-welcome-title .mdv-brand-md {
+  font-family: 'Iowan Old Style', 'Charter', Georgia, 'Times New Roman', serif;
+  font-weight: 800;
+  font-style: italic;
+  color: #0969da;
+  letter-spacing: -0.02em;
+}
+.mdv-welcome-title .mdv-brand-view {
+  font-family: inherit;
+  font-weight: 500;
+  color: inherit;
+  opacity: 0.82;
+  margin-left: 2px;
+}
+@media (prefers-color-scheme: dark) {
+  .mdv-welcome-title .mdv-brand-md { color: #4493f8; }
 }
 .mdv-welcome-tagline {
   font-size: 14px;
