@@ -52,6 +52,31 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
+      - name: Diagnose TAURI_SIGNING_PRIVATE_KEY shape (no secret leak)
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          python3 <<'EOF'
+          import os, hashlib, base64, string
+          v = os.environ.get('TAURI_SIGNING_PRIVATE_KEY', '')
+          print(f"length: {len(v)}")
+          print(f"newline count: {v.count(chr(10))}")
+          print(f"starts with 'untrusted': {v.startswith('untrusted')}")
+          print(f"sha256 (first 16 hex chars): {hashlib.sha256(v.encode()).hexdigest()[:16]}")
+          b64_alphabet = set(string.ascii_letters + string.digits + '+/=\n\r')
+          print(f"is all-base64-charset: {all(c in b64_alphabet for c in v)}")
+          try:
+              decoded = base64.b64decode(v, validate=False)
+              print(f"base64 decode ok, decoded length: {len(decoded)}")
+              print(f"  decoded starts with 'untrusted': {decoded.startswith(b'untrusted')}")
+              print(f"  decoded newline count: {decoded.count(chr(10).encode())}")
+              # ascii-printable ratio (rough format hint)
+              printable = sum(1 for b in decoded if 32 <= b < 127 or b in (10, 13, 9))
+              print(f"  decoded printable ratio: {printable}/{len(decoded)}")
+          except Exception as e:
+              print(f"base64 decode error: {e}")
+          EOF
+
       - name: Install workspace deps
         run: pnpm install --frozen-lockfile
 
