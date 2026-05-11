@@ -98,28 +98,36 @@ jobs:
             exit 1
           fi
 
-          # tauri signer 已从 TAURI_SIGNING_PRIVATE_KEY env 拿到 key, 不能再传 --private-key-path
-          # (二者互斥)。--password 也只能给一个;env 里 PASSWORD 是空字符串,等同无密码。
-          # secret 形状自检 (只看长度+换行数+是否带 'untrusted' 头, 不泄露 key 主体):
-          echo "::group::TAURI_SIGNING_PRIVATE_KEY shape check"
-          key_len=${#TAURI_SIGNING_PRIVATE_KEY}
-          # tr -cd 数 \n 个数(不依赖 wc -l 受最后一行影响)
-          nl_count=$(printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" | tr -cd '\n' | wc -c | tr -d ' ')
-          starts_with_untrusted=no
-          case "$TAURI_SIGNING_PRIVATE_KEY" in
-            "untrusted comment:"*) starts_with_untrusted=yes ;;
-          esac
-          echo "key length:            $key_len"
-          echo "key newline count:     $nl_count"
-          echo "starts with header:    $starts_with_untrusted"
-          if [ "$key_len" -lt 50 ] || [ "$starts_with_untrusted" = "no" ]; then
-            echo "ERROR: TAURI_SIGNING_PRIVATE_KEY 形状不像 minisign secret key" >&2
-            echo "应当是两行: 'untrusted comment: ...' + base64 主体" >&2
+          # 把 secret 写到文件,自动尝试 base64 解码
+          # (很多教程让你 `base64 -i ~/.tauri/mdview.key | pbcopy` 后粘到 secret;
+          #  也兼容直接粘原始两行格式)
+          raw_file=$(mktemp)
+          key_file=$(mktemp)
+          printf '%s' "$TAURI_SIGNING_PRIVATE_KEY" > "$raw_file"
+
+          if base64 -d "$raw_file" 2>/dev/null | head -1 | grep -q '^untrusted comment:'; then
+            echo "secret is base64-encoded, decoding..."
+            base64 -d "$raw_file" > "$key_file"
+          elif head -1 "$raw_file" | grep -q '^untrusted comment:'; then
+            echo "secret looks like plain minisign key, using as-is"
+            cp "$raw_file" "$key_file"
+          else
+            echo "ERROR: TAURI_SIGNING_PRIVATE_KEY secret 形状不对" >&2
+            echo "  - 它既不是 base64-encoded 的 minisign key" >&2
+            echo "  - 也不是 'untrusted comment: ...' 开头的原文" >&2
+            echo "请在 GitHub Settings > Secrets 重设 TAURI_SIGNING_PRIVATE_KEY," >&2
+            echo "推荐方式: 本地跑 \`base64 -i ~/.tauri/mdview.key | pbcopy\` 然后粘贴" >&2
             exit 1
           fi
-          echo "::endgroup::"
+          rm -f "$raw_file"
 
-          pnpm --filter @mdview/desktop exec tauri signer sign "$tarball"
+          # signer 的 --private-key-path 和 env TAURI_SIGNING_PRIVATE_KEY 互斥, unset 环境
+          unset TAURI_SIGNING_PRIVATE_KEY
+          pnpm --filter @mdview/desktop exec tauri signer sign \
+            --private-key-path "$key_file" \
+            --password "" \
+            "$tarball"
+          rm -f "$key_file"
 
           sig_src="${tarball}.sig"
           if [ ! -f "$sig_src" ]; then
