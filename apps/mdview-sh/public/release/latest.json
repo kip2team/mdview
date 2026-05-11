@@ -1,6 +1,15 @@
 {
-  "version": "0.0.0",
-  "notes": "Seed manifest. Real releases will overwrite this file via .github/workflows/release-desktop.yml.",
-  "pub_date": "2026-01-01T00:00:00Z",
-  "platforms": {}
+  "version": "0.0.2",
+  "notes": "",
+  "pub_date": "2026-05-11T03:15:36Z",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSTI4OGFrU2g5aXF1WGpEbWV1RmJkL3ErTVFqZzQveE9WTU40aWpZRGdOM0ZMS2JwOVFVNGVGVWZEV2E5SjJ6VWhDNlhFdVNkeDJPS2hxQXNEMS8rbThVa0x3YWIwclFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4NDY5MzIzCWZpbGU6bWR2aWV3LmFwcC50YXIuZ3oKU0t6N2V3Y2JSMjBBUVBEbGRMOWM1dElkd1IycG9JZTlQS28xN1BtVHV4dDVqN0Z2cGpPdEVlei85bDQ5RU5lT2Y1ZE8rd2xJRDA5RmpyL1d5T1RhQ3c9PQo=",
+      "url": "https://github.com/kip2team/mdview/releases/download/desktop-v0.0.2/mdview_aarch64.app.tar.gz"
+    },
+    "darwin-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSTI4OGFrU2g5aXZhRUdXRk9XZTBiM2FoUURhNUJTaG5kbGRkN2h4MEFjODV0WTNFMkFWczdXbWE3VENtS1lEYTZOUllqV0xmZFdweXFESEtNZXhtaWs0N1pxVjlsWVF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4NDY5MjU5CWZpbGU6bWR2aWV3LmFwcC50YXIuZ3oKWEgyZmFnTmc5em9meGVMYmpITm9zWXVLUTNjWmNURFRiekNpUzE3M3FPNlhEbGhqWkwzSExTNlV2bExPQmsra2hCNXdjTVNIOXQzL1JoZ2l6c3NVQmc9PQo=",
+      "url": "https://github.com/kip2team/mdview/releases/download/desktop-v0.0.2/mdview_x64.app.tar.gz"
+    }
+  }
 }
