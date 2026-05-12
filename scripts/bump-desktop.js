@@ -83,9 +83,11 @@ function patchJson(path) {
 }
 function patchCargo(path) {
   const src = readFileSync(path, 'utf8');
-  const next = src.replace(/^version\s*=\s*"[^"]+"/m, `version = "${VERSION}"`);
-  if (next === src) throw new Error(`Cargo.toml: 没找到 [package].version 行 -> ${path}`);
-  writeFileSync(path, next);
+  const RE = /^version\s*=\s*"[^"]+"/m;
+  // 用 test 而不是 `next === src` 判断:版本号未变时 replace 结果跟原文相同,
+  // 但「未找到」和「值未变化」是两件事,前者要报错,后者要静默通过
+  if (!RE.test(src)) throw new Error(`Cargo.toml: 没找到 [package].version 行 -> ${path}`);
+  writeFileSync(path, src.replace(RE, `version = "${VERSION}"`));
   console.log(`  ${path}  -> ${VERSION}`);
 }
 
@@ -93,6 +95,16 @@ console.log(`Bumping desktop to ${VERSION}…`);
 patchJson(PKG);
 patchJson(TAURI);
 patchCargo(CARGO);
+
+// JSON.stringify 的格式跟 prettier 的不一致,直接 commit 会让 CI 的 lint·format 必失败,
+// 让用户 bump 完还得手动 `prettier --write && git add && commit`,体验差。这里 bump 完
+// 立即 prettier --write 一遍,产出就是 prettier 期望的样子。Cargo.toml 不归 prettier 管。
+console.log('Formatting bumped JSON files (prettier --write)…');
+const fmt = spawnSync('pnpm', ['exec', 'prettier', '--write', PKG, TAURI], {
+  cwd: ROOT,
+  stdio: 'inherit',
+});
+if (fmt.status !== 0) abort('prettier --write 失败');
 
 if (DRY_RUN) {
   console.log(
